@@ -1,5 +1,6 @@
 """Sherlock Project Controllers and Routes."""
 from flask import Blueprint, request, url_for, redirect, g
+from flask_login import login_required
 
 from sherlock import db
 from sherlock.data.model import Project
@@ -17,12 +18,14 @@ def get_scenario(endpoint, values):
 
 
 @project.route('/show/<int:project_id>', methods=['GET'])
+@login_required
 def show():
     """Show Project Details."""
     return g.project.name
 
 
 @project.route('/new', methods=['GET', 'POST'])
+@login_required
 def new():
     """POST endpoint for new projects.
 
@@ -42,6 +45,7 @@ def new():
 
 
 @project.route('/edit/<int:project_id>', methods=['GET', 'POST'])
+@login_required
 def edit():
     """POST endpoint for editing existing users.
 

@@ -1,5 +1,6 @@
 """Sherlock Scenario Controllers and Routes."""
 from flask import Blueprint, request, url_for, redirect, g
+from flask_login import login_required
 
 from sherlock import db
 from sherlock.data.model import Scenario, Project, Test_Case
@@ -9,6 +10,7 @@ test_case = Blueprint('test_cases', __name__)
 
 
 @test_case.url_value_preprocessor
+@login_required
 def get_test_case(endpoint, values):
     """Blueprint Object Query."""
     project = Project.query.filter_by(id=values.pop('project_id'))
@@ -20,12 +22,14 @@ def get_test_case(endpoint, values):
 
 
 @test_case.route('/', methods=['GET'])
+@login_required
 def show():
     """Docstring."""
     return g.test_case
 
 
 @test_case.route('/new', methods=['GET', 'POST'])
+@login_required
 def new():
     """POST endpoint for new scenarios.
 
@@ -46,6 +50,7 @@ def new():
 
 
 @test_case.route('/edit', methods=['GET', 'POST'])
+@login_required
 def edit():
     """POST endpoint for editing existing scenarios.
 

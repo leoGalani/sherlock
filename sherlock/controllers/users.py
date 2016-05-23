@@ -1,5 +1,6 @@
 """Sherlock User Controllers and Routes."""
 from flask import Blueprint, request, url_for, redirect, g
+from flask_login import login_required
 
 from sherlock import db
 from sherlock.data.model import User
@@ -16,6 +17,7 @@ def get_user(endpoint, values):
 
 
 @user.route('/show/<int:user_id>', methods=['GET'])
+@login_required
 def show():
     """Return a user."""
     return "{} e o nome de usuário é {} com a senha {}".format(
@@ -24,6 +26,7 @@ def show():
 
 
 @user.route('/new/', methods=['GET', 'POST'])
+@login_required
 def new():
     """POST endpoint for new users.
 
@@ -44,6 +47,7 @@ def new():
 
 
 @user.route('/edit/<int:user_id>', methods=['GET', 'POST'])
+@login_required
 def edit():
     """POST endpoint for editing existing users.
 
