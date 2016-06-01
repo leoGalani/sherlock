@@ -1,4 +1,10 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:400,300);
+a, a:hover, a:visited{
+  text-decoration: none;
+  color: #11252f;
+  bottom: 10vh;
+  font-weight: 400;
+}
 
 body{
   background-color: #96A7BB;
@@ -7,8 +13,22 @@ body{
   font-size: 4.8vh;
 }
 
+input[type="submit"]{
+  font-size: 3.8vh;
+  font-family: Lato, sans-serif;
+  border: none;
+  color: white;
+  padding: 9px 22px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  background-color: #96A7BB;
+  font-weight: 200;
+}
+
 .login-form{
-  width: 400px;
+  width: 365px;
   height: auto;
   background: white;
   box-sizing: border-box;
@@ -20,30 +40,13 @@ body{
 .login-inside-box{
   padding: 3vh;
   margin: 0;
-  font-weight: 300;
 }
 
-.login-form > div > h1{
-  color: #11252f;
-  font-weight: 400;
-}
-
-.login-buttons{
+.login-bottom{
   padding-top: 10px;
   padding-bottom: 10px;
-}
-
-.login-buttons > a, .login-buttons > a:visited, .login-buttons > a:hover {
-  text-decoration: none;
-  color: #11252f;
-  font-size: 4.8vh;
-  bottom: 10vh;
-  font-weight: 400;
-}
-.login-buttons{
   font-size: 3.8vh;
 }
-
 
 .login-inside-box > input {
   font-size: 2.5vh;
@@ -53,10 +56,5 @@ body{
   background: transparent;
   border: none;
   box-shadow: inset 0 -0.5vh rgba(0, 0, 0, 0.1);
-  outline: none;
-
-}
-
-.login-button:focus {
   outline: none;
 }
