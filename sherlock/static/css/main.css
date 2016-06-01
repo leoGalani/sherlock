@@ -1,0 +1,62 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:400,300);
+
+body{
+  background-color: #96A7BB;
+  font-family: Lato, sans-serif;
+  font-weight: 300;
+  font-size: 4.8vh;
+}
+
+.login-form{
+  width: 400px;
+  height: auto;
+  background: white;
+  box-sizing: border-box;
+  box-shadow: 0 0 2rem rgba(0, 0, 0, 0.1);
+  margin: auto;
+  margin-top: 70px;
+}
+
+.login-inside-box{
+  padding: 3vh;
+  margin: 0;
+  font-weight: 300;
+}
+
+.login-form > div > h1{
+  color: #11252f;
+  font-weight: 400;
+}
+
+.login-buttons{
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.login-buttons > a, .login-buttons > a:visited, .login-buttons > a:hover {
+  text-decoration: none;
+  color: #11252f;
+  font-size: 4.8vh;
+  bottom: 10vh;
+  font-weight: 400;
+}
+.login-buttons{
+  font-size: 3.8vh;
+}
+
+
+.login-inside-box > input {
+  font-size: 2.5vh;
+  width: calc(100% - 13vh);
+  height: 7.5vh;
+  margin-bottom: 2vh;
+  background: transparent;
+  border: none;
+  box-shadow: inset 0 -0.5vh rgba(0, 0, 0, 0.1);
+  outline: none;
+
+}
+
+.login-button:focus {
+  outline: none;
+}
