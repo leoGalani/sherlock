@@ -2,31 +2,27 @@
 from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+from flask_babel import Babel, lazy_gettext
 
 app = Flask(__name__, instance_relative_config=True)
 db_relative_path = '/data/sherlock.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://{}'.format(db_relative_path)
+app.config.from_object('config')
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'login'
+login_manager.login_message = lazy_gettext('Access deny. Please Login')
+
+babel = Babel(app)
 
 
-from sherlock.data import model, User
+from sherlock.data import model
 
 from sherlock.controllers.users import user
 from sherlock.controllers.projects import project
 from sherlock.controllers.scenarios import scenario
 
-
-@login_manager.user_loader
-def load_user(user_id):
-    """Given *user_id*, return the associated User.
-
-    param:
-        user_id: user_id (username) user to retrieve
-    """
-    return User.query.get(user_id)
 
 app.register_blueprint(user, url_prefix='/user')
 app.register_blueprint(project, url_prefix='/project')

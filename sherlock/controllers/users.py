@@ -1,9 +1,11 @@
 """Sherlock User Controllers and Routes."""
-from flask import Blueprint, request, url_for, redirect, g
+from flask import Blueprint, request, url_for, redirect, g, render_template
 from flask_login import login_required
 
-from sherlock import db
+from sherlock import db, login_manager
 from sherlock.data.model import User
+from sherlock.forms.user import LoginForm
+
 
 user = Blueprint('users', __name__)
 
@@ -68,3 +70,21 @@ def edit():
     elif request.method == 'GET':
             pass
             # TODO render template of the form.
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    """Given *user_id*, return the associated User.
+
+    param unicode user_id: user_id (username) user to retrieve
+    """
+    return User.query.get(user_id)
+
+
+@user.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        pass
+    elif request.method == 'GET':
+        form = LoginForm()
+        return render_template("user/login.html", title='Sign In', form=form)
