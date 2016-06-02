@@ -8,8 +8,14 @@
       {{ _('Welcome to Sherlock') }},<br>
       {{ _('sign in to continue') }}
         {{ form.email(placeholder= _('Enter your Email') ) }}
-        {{ form.email(placeholder= _('Enter your Password'), type='password' ) }}
+        {% for error in form.email.errors %}
+            <div class="error_msg">[{{ error }}]</div>
+        {% endfor %}<br>
 
+        {{ form.password(placeholder= _('Enter your Password'), type='password' ) }}
+        {% for error in form.password.errors %}
+            <div class="error_msg">[{{ error }}]</div>
+        {% endfor %}<br>
         <div class="login-bottom">
           <p><input type="submit" class="login-button" value="{{ _('Sign In') }}"></p>
           {{ _('Dont have an account?') }} <a href="#todo">{{ _('Sign Up') }}</a>

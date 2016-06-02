@@ -1,4 +1,5 @@
 """Setup for SHERLOCK database."""
+import bcrypt
 
 from sherlock import db
 from sherlock.helpers.string_operations import slugify
@@ -90,7 +91,8 @@ class User(db.Model):
         """Setting params to the object."""
         self.name = name
         self.username = username
-        self.password = password
+        self.password = bcrypt.hashpw(
+            password.encode('utf-8'), bcrypt.gensalt())
 
     def is_active(self):
         """True, as all users are active."""

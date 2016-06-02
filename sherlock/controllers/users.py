@@ -1,6 +1,9 @@
 """Sherlock User Controllers and Routes."""
 from flask import Blueprint, request, url_for, redirect, g, render_template
-from flask_login import login_required
+from flask import Response
+from flask_login import login_required, login_user, current_user
+
+import bcrypt
 
 from sherlock import db, login_manager
 from sherlock.data.model import User
@@ -19,7 +22,6 @@ def get_user(endpoint, values):
 
 
 @user.route('/show/<int:user_id>', methods=['GET'])
-@login_required
 def show():
     """Return a user."""
     return "{} e o nome de usuário é {} com a senha {}".format(
@@ -63,7 +65,8 @@ def edit():
         edited_user = g.user
         edited_user.name = request.form['name']
         edited_user.username = request.form['username']
-        edited_user.password = request.form['password']
+        edited_user.password = bcrypt.hashpw(
+            request.form['password'].encode('utf-8'), bcrypt.gensalt())
         db.session.add(edited_user)
         db.session.commit()
         return redirect(url_for('users.show', user_id=g.user.id))
@@ -78,13 +81,22 @@ def load_user(user_id):
 
     param unicode user_id: user_id (username) user to retrieve
     """
-    return User.query.get(user_id)
+    return User.query.filter_by(username=user_id).one_or_none()
 
 
 @user.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
+    form = LoginForm()
+
+    if request.method == 'GET':
+        return render_template("user/login.html", form=form)
+
+    if form.validate_on_submit() and request.method == 'POST':
+        user = User.query.filter_by(username=form.email.data).one_or_none()
+        if user:
+            pwd = (form.password.data).encode('utf-8')
+            if bcrypt.hashpw(pwd, user.password) == user.password:
+                login_user(user, remember=True)
+                return redirect(url_for("users.protected"),)
+    else:
         pass
-    elif request.method == 'GET':
-        form = LoginForm()
-        return render_template("user/login.html", title='Sign In', form=form)
