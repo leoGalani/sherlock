@@ -1,0 +1,30 @@
+{% extends "dashboard.html" %}
+{% block content %}
+<div class="row">
+  <div class="col-xs-4 col-sm-2"></div>
+  <form action="" method="post" name="edit">
+    {{ form.hidden_tag() }}
+    <div class="col-xs-10 col-sm-8 white-box">
+      <h1>{{ _('Edit Project') }} - {{g.project.name}} </h1>
+
+      <div class="high-light-text">
+        {{ _('Something about why you should choose a awesome name for your project.') }}
+      </div>
+      <br>
+      {{ form.name(placeholder= _('Enter a new name for your project') ) }}
+      {% for error in form.name.errors %}
+          <div class="error_msg">[{{ error }}]</div>
+      {% endfor %}<br>
+
+      <div class="form-buttons">
+        <p>
+          <input type="submit" class="button" value="{{ _('Edit Project') }}">
+        </p>
+      </div>
+
+    </div>
+  </form>
+  <div class="clearfix hidden-sm-up"></div>
+  <div class="col-xs-4 col-sm-2"></div>
+</div>
+{% endblock%}
