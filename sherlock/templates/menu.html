@@ -1,0 +1,41 @@
+<nav class="navbar navbar-dark bg-inverse">
+
+
+
+  <ul class="nav navbar-nav">
+    <li class="nav-item"> <a class="nav-link nav-logo" href="#">[LOGO]</a>
+    <li class="nav-item">
+       <select class="navbar-nav-select">
+         {% if g.project %}
+            <option>{{g.project.name}}</option>
+          {% else %}
+            <option>Select your project</option>
+         {% endif %}
+        <option>-----</option>
+       {% if g.projects %}
+         {% for project in g.projects %}
+           <option>{{ project.name}}</option>
+         {% endfor %}
+       {% endif %}
+
+       <option>Create New Project</option>
+     </select>
+    </li>
+
+    <li class="nav-item"> <a class="nav-link" href="#">Dashboard</a>
+    {% if g.project %}
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"
+       aria-haspopup="true" role="button"  aria-expanded="false">{{ _('Project Configuration') }} </a>
+        <div class="dropdown-menu" aria-labelledby="project_conf_dropdown">
+          <a class="dropdown-item" href={{ url_for('projects.edit', project_id=g.project.id)}}>
+            {{ _('Edit Project') }}</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </div>
+    </li>
+    {% endif %}
+
+  </ul>
+</nav>

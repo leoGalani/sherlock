@@ -1,3 +1,5 @@
+/* HTML Elements */
+
 @import url(https://fonts.googleapis.com/css?family=Lato:400,300);
 a, a:hover, a:visited{
   text-decoration: none;
@@ -13,12 +15,26 @@ body{
   font-size: 4.8vh;
 }
 
-input[type="submit"]{
+.white-box{
+  background: white;
+  box-sizing: border-box;
+  box-shadow: 0 0 2rem rgba(0, 0, 0, 0.1);
+  margin: auto;
+  padding: 25px;
+}
+
+.form-buttons{
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 3.8vh;
+}
+
+.button{
   font-size: 3.8vh;
   font-family: Lato, sans-serif;
   border: none;
   color: white;
-  padding: 9px 22px;
+  padding: 0px 22px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -27,34 +43,55 @@ input[type="submit"]{
   font-weight: 200;
 }
 
+input[type="reset"]{
+  background-color: #96A7BB;
+}
+
+
 .login-form{
-  width: 365px;
+  width: 360px;
   height: auto;
-  background: white;
-  box-sizing: border-box;
-  box-shadow: 0 0 2rem rgba(0, 0, 0, 0.1);
-  margin: auto;
   margin-top: 70px;
 }
 
 .login-inside-box{
-  padding: 3vh;
   margin: 0;
 }
 
-.login-bottom{
-  padding-top: 10px;
-  padding-bottom: 10px;
-  font-size: 3.8vh;
-}
-
-.login-inside-box > input {
-  font-size: 2.5vh;
+input {
+  font-size: 3.5vh;
   width: calc(100% - 13vh);
   height: 7.5vh;
   margin-bottom: 2vh;
   background: transparent;
   border: none;
-  box-shadow: inset 0 -0.5vh rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 -0.5vh rgba(150, 167, 187, 0.62);
   outline: none;
+}
+
+.navbar-nav-select{
+    padding:12px;
+    margin-top: 8px;
+    margin-right: 14px;
+    background: #f8f8f8;
+    outline:none;
+    display: inline-block;
+    cursor:pointer;
+    float: left;
+    width: 217px;
+}
+
+.dropbox-nav{
+  margin-left: 20px;
+  margin-right: 20px;
+}
+/* Commom Classes that doesnt depend the screen size */
+
+.error_msg{
+  color: red;
+  font-size: 17px;
+}
+
+.nav-logo{
+  margin-right: 100px;
 }

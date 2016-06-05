@@ -2,11 +2,12 @@
 {% block content %}
 <form action="" method="post" name="login">
   {{ form.hidden_tag() }}
-  <div class="login-form">
+  <div class="login-form white-box">
     <div class="login-inside-box">
       <img scr=""> <br>
       {{ _('Welcome to Sherlock') }},<br>
       {{ _('sign in to continue') }}
+      {% include 'flash.html' %}
         {{ form.email(placeholder= _('Enter your Email') ) }}
         {% for error in form.email.errors %}
             <div class="error_msg">[{{ error }}]</div>
@@ -16,8 +17,8 @@
         {% for error in form.password.errors %}
             <div class="error_msg">[{{ error }}]</div>
         {% endfor %}<br>
-        <div class="login-bottom">
-          <p><input type="submit" class="login-button" value="{{ _('Sign In') }}"></p>
+        <div class="form-buttons">
+          <p><input type="submit" class="button" value="{{ _('Sign In') }}"></p>
           {{ _('Dont have an account?') }} <a href="#todo">{{ _('Sign Up') }}</a>
         </div>
     </div>
