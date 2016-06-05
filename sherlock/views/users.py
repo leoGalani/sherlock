@@ -1,13 +1,14 @@
 """Sherlock User Controllers and Routes."""
 from flask import Blueprint, request, url_for, redirect, g, render_template
-from flask import Response
-from flask_login import login_required, login_user, current_user
+from flask import flash
+from flask_login import login_required, login_user
+from flask_babel import gettext
 
 import bcrypt
 
 from sherlock import db, login_manager
 from sherlock.data.model import User
-from sherlock.forms.user import LoginForm
+from sherlock.forms.user import login_form
 
 
 user = Blueprint('users', __name__)
@@ -86,17 +87,16 @@ def load_user(user_id):
 
 @user.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-
-    if request.method == 'GET':
-        return render_template("user/login.html", form=form)
+    form = login_form()
 
     if form.validate_on_submit() and request.method == 'POST':
         user = User.query.filter_by(username=form.email.data).one_or_none()
-        if user:
-            pwd = (form.password.data).encode('utf-8')
-            if bcrypt.hashpw(pwd, user.password) == user.password:
-                login_user(user, remember=True)
-                return redirect(url_for("users.protected"),)
-    else:
-        pass
+        pwd = form.password.data or ""
+        pwd = pwd.encode('utf-8')
+        if user and bcrypt.hashpw(pwd, user.password) == user.password:
+            login_user(user, remember=True)
+            return redirect(url_for("dashboard.home"),)
+        else:
+            flash(gettext('Wrong credentials'), 'danger')
+
+    return render_template("user/login.html", form=form)

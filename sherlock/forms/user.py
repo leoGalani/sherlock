@@ -4,7 +4,7 @@ from wtforms import StringField, BooleanField
 from wtforms.validators import DataRequired
 
 
-class LoginForm(Form):
+class login_form(Form):
     """WTForm for login."""
 
     email = StringField('email', validators=[DataRequired()])

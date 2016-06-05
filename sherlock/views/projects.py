@@ -1,18 +1,19 @@
 """Sherlock Project Controllers and Routes."""
-from flask import Blueprint, request, url_for, redirect, g
+from flask import Blueprint, request, url_for, redirect, g, render_template
 from flask_login import login_required
 
 from sherlock import db
 from sherlock.data.model import Project
+from sherlock.forms.project import new_project_form, edit_project_form
 
 
 project = Blueprint('projects', __name__)
 
 
 @project.url_value_preprocessor
-def get_scenario(endpoint, values):
+def get_project(endpoint, values):
     """Blueprint Object Query."""
-    if values.pop('project_id'):
+    if 'project_id' in values:
         query = Project.query.filter_by(id=values.pop('project_id'))
         g.project = query.first_or_404()
 
@@ -21,7 +22,7 @@ def get_scenario(endpoint, values):
 @login_required
 def show():
     """Show Project Details."""
-    return g.project.name
+    return render_template("project/show.html")
 
 
 @project.route('/new', methods=['GET', 'POST'])
@@ -31,17 +32,16 @@ def new():
 
     Param:
         name(required)
-        slug(required).
     """
-    if request.method == 'POST':
-        new_project = Project(name=request.form['project_name'],
-                              slug=request.form['project_name'])
+    form = new_project_form()
+
+    if form.validate_on_submit() and request.method == 'POST':
+        new_project = Project(name=request.form['name'])
         db.session.add(new_project)
         db.session.commit()
-        return redirect(url_for('show', project_id=new_project.id))
-    elif request.method == 'GET':
-        pass
-        # TODO render template of the form.
+        return redirect(url_for('projects.show', project_id=new_project.id))
+
+    return render_template("project/new.html", form=form)
 
 
 @project.route('/edit/<int:project_id>', methods=['GET', 'POST'])
@@ -51,14 +51,14 @@ def edit():
 
     Param:
         name
-        slug
     """
-    if request.method == 'POST':
+    form = edit_project_form()
+
+    if form.validate_on_submit() and request.method == 'POST':
         edited_project = g.project
-        edited_project.name = request.form['project_name']
+        edited_project.name = request.form['name']
         db.session.add(edited_project)
         db.session.commit()
         return redirect(url_for('projects.show', project_id=g.project.id))
-    elif request.method == 'GET':
-            pass
-            # TODO render template of the form.
+
+    return render_template("project/edit.html", form=form)
