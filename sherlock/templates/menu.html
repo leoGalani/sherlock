@@ -1,32 +1,35 @@
 <nav class="navbar navbar-dark bg-inverse">
 
-
-
   <ul class="nav navbar-nav">
-    <li class="nav-item"> <a class="nav-link nav-logo" href="#">[LOGO]</a>
-    <li class="nav-item">
-       <select class="navbar-nav-select">
-         {% if g.project %}
-            <option>{{g.project.name}}</option>
-          {% else %}
-            <option>Select your project</option>
-         {% endif %}
-        <option>-----</option>
-       {% if g.projects %}
-         {% for project in g.projects %}
-           <option>{{ project.name}}</option>
-         {% endfor %}
-       {% endif %}
-
-       <option>Create New Project</option>
-     </select>
-    </li>
-
-    <li class="nav-item"> <a class="nav-link" href="#">Dashboard</a>
-    {% if g.project %}
+  <li class="nav-item"> <a class="nav-link nav-logo" href="#">[LOGO]</a>
+  <li class="nav-item"> <a class="nav-link" href="{{ url_for('dashboard.home')}}">Dashboard</a>
+  <li class="nav-item dropdown">
+     <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"
+     aria-haspopup="true" role="button"  aria-expanded="false">
+      {{ _('Projects')}} </a>
+      <div class="dropdown-menu" aria-labelledby="project_conf_dropdown">
+        {% if g.projects %}
+          {% for project in g.projects %}
+          <a class="dropdown-item"
+            href="{{ url_for('projects.show', project_id=project.id )}}">
+            {{ project.name }}
+              {% if g.project %}
+                {% if project.id == g.project.id %}
+                  <i class="fa fa-check-circle" aria-hidden="true"></i>
+                {% endif %}
+              {% endif %}
+          </a>
+          {% endfor %}
+        {% endif %}
+        <div role="separator" class="divider"></div>
+        <a class="dropdown-item" href="{{ url_for('projects.new')}}">Create a new Project</a>
+      </div>
+    </div>
+  </li>
+  {% if g.project %}
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"
-       aria-haspopup="true" role="button"  aria-expanded="false">{{ _('Project Configuration') }} </a>
+       aria-haspopup="true" role="button"  aria-expanded="false">{{ g.project.name }} {{ _('Configuration') }} </a>
         <div class="dropdown-menu" aria-labelledby="project_conf_dropdown">
           <a class="dropdown-item" href={{ url_for('projects.edit', project_id=g.project.id)}}>
             {{ _('Edit Project') }}</a>
@@ -36,6 +39,5 @@
       </div>
     </li>
     {% endif %}
-
   </ul>
 </nav>

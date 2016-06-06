@@ -95,3 +95,9 @@ input {
 .nav-logo{
   margin-right: 100px;
 }
+
+.a-button, .a-button:hover, .a-button:visited, .a-button:focus {
+  padding: 10px 20px;
+  color: white;
+  font-weight: 200;
+}

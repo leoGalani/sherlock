@@ -3,7 +3,7 @@ from flask import Blueprint, request, url_for, redirect, g, render_template
 from flask_login import login_required
 
 from sherlock import db
-from sherlock.data.model import Project
+from sherlock.data.model import Project, Scenario
 from sherlock.forms.project import new_project_form, edit_project_form
 
 
@@ -22,6 +22,8 @@ def get_project(endpoint, values):
 @login_required
 def show():
     """Show Project Details."""
+    scenarios = Scenario.query.filter_by(project_id=g.project.id).one_or_none()
+    g.project.no_scenarios = True if not scenarios else False
     return render_template("project/show.html")
 
 
