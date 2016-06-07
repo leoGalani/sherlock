@@ -1,7 +1,7 @@
 /*  Bootstrap override and extend */
 
 .alert{
-  font-size: 1.9vh;
+  font-size: 3vh;
   margin-top: 10px;
 }
 
@@ -54,7 +54,7 @@
   overflow: hidden;
 }
 
-.fa{
+.dropdown-item{
   padding-left: 5px;
 }
 
