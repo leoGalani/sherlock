@@ -11,3 +11,14 @@ def slugify(text, delim=u'-'):
     for word in _punct_re.split(text.lower()):
         result.extend(unidecode(word).split())
     return str(delim.join(result))
+
+
+def is_empty(dict):
+    return True if dict.__len__() == 0 else False
+
+
+def empty_items_in_dict(dict):
+    for item in dict:
+        if is_empty(dict[item]):
+            return True
+    return False

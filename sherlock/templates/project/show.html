@@ -7,10 +7,10 @@
       {% if g.project.no_scenarios %}
         <p>{{ _('Seems like you dont have any Scenario and Test Cases yet.')}} <br>
         {{ _('You could create them using the buttom below.')}}</p>
-        <a class="button a-button"> {{ _('Create Project') }} </a>
+        <a class="button a-button" href="{{ url_for('scenarios.new', project_id=g.project.id )}}">
+           {{ _('Create Test Scenario and Cases') }} </a>
       {% endif %}
     </div>
-  </form>
   <div class="clearfix hidden-sm-up"></div>
   <div class="col-xs-4 col-sm-2"></div>
 </div>
