@@ -22,8 +22,8 @@ def get_project(endpoint, values):
 @login_required
 def show():
     """Show Project Details."""
-    scenarios = Scenario.query.filter_by(project_id=g.project.id).one_or_none()
-    g.project.no_scenarios = True if not scenarios else False
+    scenarios = Scenario.query.filter_by(project_id=g.project.id)
+    g.project.no_scenarios = True if scenarios.count() == 0 else False
     return render_template("project/show.html")
 
 
