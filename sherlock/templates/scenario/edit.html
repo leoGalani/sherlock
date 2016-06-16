@@ -1,0 +1,46 @@
+{% extends "dashboard.html" %}
+{% block content %}
+<div class="row">
+  <div class="col-xs-12 col-sm-12">
+      <div class="white-box">
+        <h1> {{ _('Edit Scenarios and Cases for project:')}} {{( g.project.name )}} </h1>
+        <div class="row">
+          <div class="col-md-6 scenarios_col">
+            {% if g.scenarios %}
+                {% for scenario in g.scenarios %}
+                <div class="row display_item_box">
+                <div class="col-md-10">
+                 {{ scenario.name}}
+              </div>
+              <div class="col-md-2 edit_icons">
+                <a id="load_test_case" class="show" href="">
+                  <i id="load_test_case" class="fa fa-angle-double-right fa-2x" aria-hidden="true"></i>
+                </a>
+                <a id="current_test_scenario" class="hidden" href="">
+                  <i  class="fa fa-chevron-circle-right fa-2x" aria-hidden="true"></i>
+                </a>
+                <a id="edit_current_scenario" class="hidden" href="">
+                  <i class="fa fa-chevron-circle-right fa-2x" aria-hidden="true"></i>
+                </a>
+
+            </div>
+            </div>
+              {% endfor %}
+            {% endif %}
+
+            <center> <a href="{{url_for('scenarios.new', project_id=g.project.id)}}"> <i class="fa fa-plus"></i>
+            Add more cases </a> </center>
+          </div>
+
+          <div class="col-md-6">
+          <div id="edit_case_tip" class="display_item_box">
+            Utilize o botão "<i class="fa fa-angle-double-right" aria-hidden="true"></i>" para carregar os casos de teste referentes ao cenário :)
+          </div>
+          </div>
+          <hr>
+        </div>
+      </div>
+    </div>
+  <div class="clearfix hidden-sm-up"></div>
+</div>
+{% endblock %}
