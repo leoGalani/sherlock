@@ -11,7 +11,7 @@ from flask_babel import gettext
 from sherlock import db
 from sherlock.data.model import Scenario, Project, Test_Case
 from sherlock.forms.scenario import new_scenario_form
-from sherlock.helpers.string_operations import is_empty, empty_items_in_dict
+from sherlock.helpers.string_operations import empty_items_in_dict
 
 
 scenario = Blueprint('scenarios', __name__)
@@ -34,7 +34,7 @@ def get_scenario(endpoint, values):
 @login_required
 def show():
     """Docstring."""
-    return g.scenario
+    return g.scenario  # This route doesnt return anything.. should fix
 
 
 @scenario.route('/new', methods=['GET', 'POST'])
@@ -58,19 +58,21 @@ def new():
         if empty_items_in_dict(dict):
                 flash(gettext('Test Cases cannot be blank'), 'danger')
         else:
-            new_scenario = Scenario(name=scenario_name, state_id=1,
+            new_scenario = Scenario(name=scenario_name,
+                                    state_id=1,
                                     project_id=g.project.id)
             db.session.add(new_scenario)
             db.session.commit()
 
             for tst_case in dict:
                 new_case = Test_Case(name=dict[tst_case],
-                                     scenario_id=new_scenario.id)
+                                     scenario_id=new_scenario.id,
+                                     state_id=1)
+
                 db.session.add(new_case)
                 db.session.commit()
 
-            return redirect(url_for('show', project_id=g.scenario.project_id,
-                                    scenario_id=new_scenario.id))
+            return redirect(url_for('projects.show', project_id=g.project.id))
 
     return render_template("scenario/new.html", form=form)
 
@@ -82,7 +84,6 @@ def edit():
 
     Param:
         name
-        name
     """
     if request.method == 'POST':
         scenario = g.scenario
@@ -92,5 +93,17 @@ def edit():
         db.session.commit()
         return redirect(url_for('scenarios.show', scenario_id=g.scenario.id))
     elif request.method == 'GET':
-            pass
-            # TODO render template of the form.
+        pass
+
+
+@login_required
+@scenario.route('/edit/', methods=['GET'])
+def edit_all():
+    scenarios = Scenario.query.filter_by(project_id=g.project.id)
+
+    if scenarios.count() == 0:
+        redirect(url_for('projects.show'), project_id=g.project.id)
+    else:
+        g.scenarios = scenarios
+
+    return render_template("scenario/edit.html")
