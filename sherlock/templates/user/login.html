@@ -4,9 +4,10 @@
   {{ form.hidden_tag() }}
   <div class="login-form white-box">
     <div class="login-inside-box">
-      <img scr=""> <br>
+      <img class="logo_login" src={{ url_for('static', filename = 'img/sherlock.png') }}>
+ <br><br>
       {{ _('Welcome to Sherlock') }},<br>
-      {{ _('sign in to continue') }}
+      {{ _('sign in to continue') }}<br>
       {% include 'flash.html' %}
         {{ form.email(placeholder= _('Enter your Email') ) }}
         {% for error in form.email.errors %}

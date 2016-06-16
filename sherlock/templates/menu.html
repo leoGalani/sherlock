@@ -1,7 +1,9 @@
 <nav class="navbar navbar-dark bg-inverse">
 
   <ul class="nav navbar-nav">
-  <li class="nav-item"> <a class="nav-link nav-logo" href="#">[LOGO]</a>
+  <li class="nav-item"> <a class="nav-link nav-logo" href="{{url_for('dashboard.home')}}">
+    <img class="logo_menu" src={{ url_for('static', filename = 'img/sherlock_name.png') }}>
+  </a></li>
   <li class="nav-item"> <a class="nav-link" href="{{ url_for('dashboard.home')}}">Dashboard</a>
   <li class="nav-item dropdown">
      <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"
@@ -20,8 +22,10 @@
               {% endif %}
           </a>
           {% endfor %}
+          {% else %}
+            <a class="dropdown-item" href="#"> {{ _('No projects yet')}} </a>
         {% endif %}
-        <div role="separator" class="divider"></div>
+        <hr>
         <a class="dropdown-item" href="{{ url_for('projects.new')}}">Create a new Project</a>
       </div>
     </div>
@@ -31,10 +35,10 @@
       <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"
        aria-haspopup="true" role="button"  aria-expanded="false">{{ g.project.name }} {{ _('Configuration') }} </a>
         <div class="dropdown-menu" aria-labelledby="project_conf_dropdown">
-          <a class="dropdown-item" href={{ url_for('projects.edit', project_id=g.project.id)}}>
+          <a class="dropdown-item" href="{{ url_for('projects.edit', project_id=g.project.id)}}">
             {{ _('Edit Project') }}</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
+          <a class="dropdown-item" href="{{ url_for('scenarios.new', project_id=g.project.id)}}">{{ _('Create Test Scenarios') }}</a>
+          <a class="dropdown-item" href="{{ url_for('scenarios.edit_all', project_id=g.project.id)}}">{{ _('Edit Test Scenarios and Test Cases') }}</a>
         </div>
       </div>
     </li>

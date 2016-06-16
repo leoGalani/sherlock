@@ -8,12 +8,27 @@ a, a:hover, a:visited{
   font-weight: 400;
 }
 
+html,body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+
 body{
   background-color: #96A7BB;
   font-family: Lato, sans-serif;
   font-weight: 300;
-  font-size: 3.8vh;
-}
+  font-size: 17px;
+  background: -webkit-linear-gradient(left top, #96A7BB, #336799);
+  background: -o-linear-gradient(bottom right, #96A7BB, #336799);
+  background: -moz-linear-gradient(bottom right, #66cdcc, #96A7BB);
+  background: linear-gradient(to bottom right, #96A7BB, #336799);
+  }
+
+  .logo_login{
+    width: 220px;
+  }
 
 .white-box{
   background: white;
@@ -28,6 +43,7 @@ body{
   padding-top: 10px;
   padding-bottom: 10px;
   font-size: 3.0vh;
+  text-align: center;
 }
 
 .button{
@@ -52,11 +68,12 @@ input[type="reset"]{
 .login-form{
   width: 360px;
   height: auto;
-  margin-top: 70px;
+  margin-top: 29px;
 }
 
 .login-inside-box{
   margin: 0;
+  text-align: center;
 }
 
 input {
@@ -110,10 +127,44 @@ textarea{
 
 .nav-logo{
   margin-right: 100px;
+  margin-left: 7px;
+  padding-top: 3px !important;
+  padding-bottom: 0px !important;
+
 }
+
+.logo_menu{
+  width: 150px;
+}
+
+
 
 .a-button, .a-button:hover, .a-button:visited, .a-button:focus {
   padding: 10px 20px;
   color: white;
   font-weight: 200;
+}
+
+.scenarios_col{
+  border-right: 1px solid;
+  padding-right: 30px;
+}
+
+.display_item_box{
+    background-color: #FAFAFA;
+    border: 1px solid #949596;
+    padding: 10px;
+    margin-top: -1px;
+}
+
+.edit_icons{
+  text-align: center;
+}
+
+.show{
+  display: block;
+}
+
+.hidden{
+  display: none;
 }

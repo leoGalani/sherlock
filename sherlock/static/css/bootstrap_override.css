@@ -47,7 +47,7 @@
 }
 
 .dropdown-menu{
-  margin-top: 8px;
+  margin-top: 10px;
   border-radius: 0;
   width: 250px;
   border: 1px solid #7E9BBD;
@@ -60,4 +60,14 @@
 
 .row{
   margin-top: 25px;
+}
+
+.navbar{
+  padding: 0px;
+}
+
+.navbar-nav .nav-link {
+    display: block;
+    padding-top: 0.6rem;
+    padding-bottom: .425rem;
 }
