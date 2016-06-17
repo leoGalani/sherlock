@@ -1,5 +1,7 @@
 """Setup for SHERLOCK database."""
 import bcrypt
+from marshmallow import Schema, fields
+
 
 from sherlock import db
 from sherlock.helpers.string_operations import slugify
@@ -113,3 +115,12 @@ class User(db.Model):
     def __repr__(self):
         """Representative Object Return."""
         return '<User %r>' % self.username
+
+
+#  SCHEMAS #####
+
+class TestCaseSchema(Schema):
+    id = fields.Int(dump_only=True)
+    scenario_id = fields.Int()
+    name = fields.Str()
+    state_id = fields.Int()
