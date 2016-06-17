@@ -4,12 +4,12 @@ Sherlock Scenario Controllers and Routes.
 For new Test Scenarios, it also create Test Cases
 """
 from flask import Blueprint, request, url_for, redirect, g, render_template
-from flask import flash
+from flask import flash, jsonify
 from flask_login import login_required
 from flask_babel import gettext
 
 from sherlock import db
-from sherlock.data.model import Scenario, Project, Test_Case
+from sherlock.data.model import Scenario, Project, Test_Case, TestCaseSchema
 from sherlock.forms.scenario import new_scenario_form
 from sherlock.helpers.string_operations import empty_items_in_dict
 
@@ -27,14 +27,17 @@ def get_scenario(endpoint, values):
             s_query = Scenario.query.filter_by(
                 id=values.pop('scenario_id'))
             g.scenario = s_query.first_or_404()
-            # Find a way to persist project_id o G
 
 
-@scenario.route('/show/<int:scenario_id>', methods=['GET'])
+
+@scenario.route('/get_cases_for_scenario/<int:scenario_id>', methods=['GET'])
 @login_required
-def show():
+def get_tst_cases():
     """Docstring."""
-    return g.scenario  # This route doesnt return anything.. should fix
+    tst_cases = Test_Case.query.filter_by(scenario_id=g.scenario.id).all()
+    tst_schema = TestCaseSchema(many=True)
+    result = tst_schema.dump(tst_cases)
+    return jsonify(result)
 
 
 @scenario.route('/new', methods=['GET', 'POST'])
@@ -100,7 +103,6 @@ def edit():
 @scenario.route('/edit/', methods=['GET'])
 def edit_all():
     scenarios = Scenario.query.filter_by(project_id=g.project.id)
-
     if scenarios.count() == 0:
         redirect(url_for('projects.show'), project_id=g.project.id)
     else:
