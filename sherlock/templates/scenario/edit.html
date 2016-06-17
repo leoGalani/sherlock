@@ -8,21 +8,22 @@
           <div class="col-md-6 scenarios_col">
             {% if g.scenarios %}
                 {% for scenario in g.scenarios %}
-                <div class="row display_item_box">
-                <div class="col-md-10">
-                 {{ scenario.name}}
+              <div id="tst_scenario_{{scenario.id}}" class="row display_item_box">
+              <div class="col-md-10">
+                 {{ scenario.name }}
               </div>
               <div class="col-md-2 edit_icons">
-                <a id="load_test_case" class="show" href="">
-                  <i id="load_test_case" class="fa fa-angle-double-right fa-2x" aria-hidden="true"></i>
-                </a>
-                <a id="current_test_scenario" class="hidden" href="">
-                  <i  class="fa fa-chevron-circle-right fa-2x" aria-hidden="true"></i>
-                </a>
-                <a id="edit_current_scenario" class="hidden" href="">
-                  <i class="fa fa-chevron-circle-right fa-2x" aria-hidden="true"></i>
+
+                <a id="current_test_scenario_{{scenario.id}}" class="hidden"
+                   data-toggle="modal" data-target="#editScenario"
+                   data-scenario-id="{{scenario.id}}" data-scenario-name="{{scenario.name}}">
+                  <i id="current_icon_{{scenario.id}}" class="fa fa-pencil-square-o  fa-2x" aria-hidden="true"></i>
                 </a>
 
+
+                <a id="show_cases_for_scenario_{{scenario.id}}" onclick="show_tst_case({{scenario.id}})">
+                  <i id="show_icon_{{scenario.id}}"class="fa fa-arrow-circle-right fa-2x" aria-hidden="true"></i>
+                </a>
             </div>
             </div>
               {% endfor %}
@@ -32,10 +33,10 @@
             Add more cases </a> </center>
           </div>
 
-          <div class="col-md-6">
-          <div id="edit_case_tip" class="display_item_box">
-            Utilize o botão "<i class="fa fa-angle-double-right" aria-hidden="true"></i>" para carregar os casos de teste referentes ao cenário :)
-          </div>
+          <div class="col-md-6 cases_col">
+            <div id="edit_case_tip" class="display_item_box">
+              Utilize o botão "<i class="fa fa-angle-double-right" aria-hidden="true"></i>" para carregar os casos de teste referentes ao cenário :)
+            </div>
           </div>
           <hr>
         </div>
@@ -43,4 +44,31 @@
     </div>
   <div class="clearfix hidden-sm-up"></div>
 </div>
+
+
+<!-- modals -->
+
+<div class="modal fade" id="editScenario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">{{ _('Edit Scenario')}}</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+          <input type="text" id="input_edit_scenario_name">
+          <p>
+            <input type="submit" class="button" value="{{ _('Edit Scenario') }}">
+          </p>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{{_('Close')}}</button>
+        <button type="button" class="btn btn-primary">{{_('Save changes') }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

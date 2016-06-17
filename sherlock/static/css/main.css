@@ -6,12 +6,12 @@ a, a:hover, a:visited{
   color: #11252f;
   bottom: 10vh;
   font-weight: 400;
+  cursor: pointer;
 }
 
 html,body {
     margin: 0;
     padding: 0;
-    overflow: hidden;
 }
 
 
@@ -19,7 +19,7 @@ body{
   background-color: #96A7BB;
   font-family: Lato, sans-serif;
   font-weight: 300;
-  font-size: 17px;
+  font-size: 20px;
   background: -webkit-linear-gradient(left top, #96A7BB, #336799);
   background: -o-linear-gradient(bottom right, #96A7BB, #336799);
   background: -moz-linear-gradient(bottom right, #66cdcc, #96A7BB);
@@ -42,12 +42,12 @@ body{
 .form-buttons{
   padding-top: 10px;
   padding-bottom: 10px;
-  font-size: 3.0vh;
+  font-size: 22px;
   text-align: center;
 }
 
 .button{
-  font-size: 3.0vh;
+  font-size: 22px;
   font-family: Lato, sans-serif;
   border: none;
   color: white;
@@ -77,10 +77,10 @@ input[type="reset"]{
 }
 
 input {
-  font-size: 3.0vh;
-  width: calc(100% - 13vh);
-  height: 7.5vh;
-  margin-bottom: 2vh;
+  font-size: 20px;
+  width: 90%;
+  height: 50px;
+  margin-bottom: 20px;
   background: transparent;
   border: none;
   box-shadow: inset 0 -0.5vh rgba(150, 167, 187, 0.62);
@@ -89,8 +89,8 @@ input {
 }
 
 textarea{
-  font-size: 3.0vh;
-    width: calc(100% - 13vh);
+  font-size: 30px;
+    width: 90%;
     height: 115px;
     margin-bottom: 13.0469px;
     border: none;
@@ -153,18 +153,27 @@ textarea{
 .display_item_box{
     background-color: #FAFAFA;
     border: 1px solid #949596;
-    padding: 10px;
+    padding: 10px 0px 10px 5px;
     margin-top: -1px;
 }
 
 .edit_icons{
-  text-align: center;
+  text-align: right;
 }
 
 .show{
-  display: block;
+  display: inline-block !important;
 }
 
 .hidden{
   display: none;
+}
+
+.current{
+  background-color: rgb(95, 130, 166);
+  color: white !important;
+}
+
+.fa-angle-double-right .current{
+  padding-right: 6px;
 }
