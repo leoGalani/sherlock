@@ -35,6 +35,9 @@ app.register_blueprint(user, url_prefix='/user')
 app.register_blueprint(project, url_prefix='/project')
 app.register_blueprint(scenario,
                        url_prefix='/project_id/<int:project_id>/scenario')
+app.register_blueprint(scenario,
+                       url_prefix='/project_id/<int:project_id>/scenario'
+                       '/tst_case/')
 
 
 @app.before_request
