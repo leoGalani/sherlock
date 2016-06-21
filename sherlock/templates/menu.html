@@ -8,7 +8,12 @@
   <li class="nav-item dropdown">
      <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"
      aria-haspopup="true" role="button"  aria-expanded="false">
-      {{ _('Projects')}} </a>
+     {% if g.project %}
+      {{ _('Change Project')}}
+    {% else %}
+      {{ _('Projects')}}
+    {% endif %}
+     </a>
       <div class="dropdown-menu" aria-labelledby="project_conf_dropdown">
         {% if g.projects %}
           {% for project in g.projects %}
