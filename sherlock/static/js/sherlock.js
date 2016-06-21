@@ -1,14 +1,13 @@
-function show_tst_case(scenario_id){
+function show_tst_case(scenario_id, url_){
   show_tst_case_icons(scenario_id);
-  var url_ = '../get_cases_for_scenario/'.concat(scenario_id)
   $.ajax({
           url: url_,
           type: 'GET',
           success: function(response) {
               $( ".cases_col" ).empty();
-              cases = response[0].reverse();
+              var cases = response[0].reverse();
               cases.forEach( function (arrayItem){
-                $(".cases_col").append(mount_item_box(arrayItem.name));
+                mount_tst_box(arrayItem)
               });
           },
           error: function(error) {
@@ -26,7 +25,17 @@ $('#editScenario').on('show.bs.modal', function(e) {
     //populate the textbox
     $(e.currentTarget).find('input[id="input_edit_scenario_name"]').val(scenario_name);
     $(e.currentTarget).find('input[id="edited_scenario_id"]').val(scenario_id);
+});
 
+$('#editTstcase').on('show.bs.modal', function(e) {
+    var case_id = $(e.relatedTarget).data('case-id');
+    var case_name = $(e.relatedTarget).data('case-name');
+    var scenario_case_id = $(e.relatedTarget).data('scenario-case-id');
+
+    //populate the textbox
+    $(e.currentTarget).find('input[id="input_edit_case_name"]').val(case_name);
+    $(e.currentTarget).find('input[id="edited_case_id"]').val(case_id);
+    $(e.currentTarget).find('input[id="edited_case_scenario_id"]').val(scenario_case_id);
 });
 
 function edit_scenario() {
@@ -34,10 +43,9 @@ function edit_scenario() {
   var edited_scenario_id = $('#edited_scenario_id').val();
   var csrftoken = $('meta[name=csrf-token]').attr('content')
   var scenario_name = $('#input_edit_scenario_name').val();
-
-  var url_ = '../edit/'.concat(edited_scenario_id)
   var scenario_id = $('#edited_scenario_id').val();
-          $.ajaxSetup({
+  var url_ = '../edit/'.concat(edited_scenario_id)
+        $.ajaxSetup({
             beforeSend: function(xhr, settings) {
               if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
               xhr.setRequestHeader("X-CSRFToken", csrftoken)
@@ -61,14 +69,54 @@ function edit_scenario() {
                 console.log(error);
             },
         });
+}
 
+function edit_case() {
+
+  var edited_case_id = $('#edited_case_id').val();
+  var csrftoken = $('meta[name=csrf-token]').attr('content')
+  var case_name = $('#input_edit_case_name').val();
+  var scenario_id = $('#edited_case_scenario_id').val();
+  var url_ = '/scenario/'.concat(scenario_id,'/tst_case/edit/', edited_case_id)
+
+  var scenario_id = $('#edited_scenario_id').val();
+          $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+              if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken)
+          }
+        }
+        })
+        $.ajax({
+            url: url_,
+            data: JSON.stringify({case_name: case_name, csrftoken: csrftoken}),
+            type: 'POST',
+            contentType:"application/json",
+            dataType:"json",
+            success: function(response) {
+              if (response.status === "ok"){
+                $('#editTstcase').modal('hide');
+                $('#tst_case_'+response.case_id+'_value').empty();
+                $('#tst_case_'+response.case_id+'_value').html(response.case_name);
+              }
+            },
+            error: function(error) {
+                console.log(error);
+            },
+        });
 }
 
 /* COMMOM OPERATIONS */
 
 
-function mount_item_box(text){
-  return $("<div/>",{"text":text,"class":"display_item_box"});
+function mount_tst_box(arrayItem){
+  $(".cases_col").append($("<div/>",{"id": "tst_case_row_"+arrayItem.id, "class":"row display_item_box"}));
+  $("#tst_case_row_"+arrayItem.id).append($("<div/>",{"id": "tst_case_"+arrayItem.id+"_value", "class":"col-md-11"}));
+  $("#tst_case_row_"+arrayItem.id).append($("<div/>",{"id": "tst_case_"+arrayItem.id+"_edit", "class":"col-md-1"}));
+  $("#tst_case_"+arrayItem.id+"_value").html(arrayItem.name);
+  $("#tst_case_"+arrayItem.id+"_edit").html("<a data-toggle='modal' data-target='#editTstcase'" +
+        "data-case-id='"+ arrayItem.id+"' data-case-name='"+ arrayItem.name+"', data-scenario-case-id='"+arrayItem.scenario_id+"'>" +
+        "<i class='fa fa-pencil-square-o fa-2x' aria-hidden='true'></i> </a>");
 }
 
 function concat_name(hash, item_name, id){

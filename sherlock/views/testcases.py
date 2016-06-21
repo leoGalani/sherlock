@@ -1,5 +1,5 @@
 """Sherlock Scenario Controllers and Routes."""
-from flask import Blueprint, request, url_for, redirect, g
+from flask import Blueprint, request, url_for, redirect, g, jsonify
 from flask_login import login_required
 
 from sherlock import db
@@ -13,9 +13,8 @@ test_case = Blueprint('test_cases', __name__)
 @login_required
 def get_test_case(endpoint, values):
     """Blueprint Object Query."""
-    project = Project.query.filter_by(id=values.pop('project_id'))
     scenario = Scenario.query.filter_by(id=values.pop('scenario_id'))
-    if project and scenario:
+    if scenario:
         if 'test_case_id' in values:
             query = Test_Case.query.filter_by(id=values.pop('test_case_id'))
             g.test_case = query.first_or_404()
@@ -49,7 +48,7 @@ def new():
         # TODO return JSON.
 
 
-@test_case.route('/edit', methods=['GET', 'POST'])
+@test_case.route('/edit/<int:test_case_id>', methods=['GET', 'POST'])
 @login_required
 def edit():
     """POST endpoint for editing existing scenarios.
@@ -60,11 +59,12 @@ def edit():
     """
     if request.method == 'POST':
         edited_tc = g.test_case
-        edited_tc.name = request.form['scenario_name']
+        edited_tc.name = request.get_json().get('case_name')
 
         db.session.add(edited_tc)
         db.session.commit()
-        return redirect(url_for('test_cases.show', scenario_id=g.scenario.id))
+        return jsonify({"status": "ok",
+                        "case_id": edited_tc.id,
+                        "case_name": edited_tc.name})
     elif request.method == 'GET':
-            pass
-            # TODO render template of the form.
+        redirect(url_for('projects.show'), project_id=g.project.id)
