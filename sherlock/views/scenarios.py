@@ -80,7 +80,7 @@ def new():
     return render_template("scenario/new.html", form=form)
 
 
-@scenario.route('/edit/<int:scenario_id>', methods=['GET', 'POST'])
+@scenario.route('/edit/<int:scenario_id>', methods=['POST'])
 @login_required
 def edit():
     """POST endpoint for editing existing scenarios.
@@ -90,13 +90,14 @@ def edit():
     """
     if request.method == 'POST':
         scenario = g.scenario
-        scenario.name = request.form['scenario_name']
-
+        scenario.name = request.get_json().get('scenario_name')
         db.session.add(scenario)
         db.session.commit()
-        return redirect(url_for('scenarios.show', scenario_id=g.scenario.id))
+        return jsonify({"status": "ok",
+                        "scenario_id": scenario.id,
+                        "scenario_name": scenario.name})
     elif request.method == 'GET':
-        pass
+        redirect(url_for('projects.show'), project_id=g.project.id)
 
 
 @login_required

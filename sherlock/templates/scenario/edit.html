@@ -8,8 +8,8 @@
           <div class="col-md-6 scenarios_col">
             {% if g.scenarios %}
                 {% for scenario in g.scenarios %}
-              <div id="tst_scenario_{{scenario.id}}" class="row display_item_box">
-              <div class="col-md-10">
+              <div class="row display_item_box" id="tst_scenario_{{scenario.id}}">
+              <div class="col-md-10" id="tst_scenario_{{scenario.id}}_value">
                  {{ scenario.name }}
               </div>
               <div class="col-md-2 edit_icons">
@@ -47,7 +47,7 @@
 
 
 <!-- modals -->
-
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="modal fade" id="editScenario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -56,16 +56,17 @@
         <h4 class="modal-title" id="myModalLabel">{{ _('Edit Scenario')}}</h4>
       </div>
       <div class="modal-body">
-        <form>
+        <form >
           <input type="text" id="input_edit_scenario_name">
           <p>
-            <input type="submit" class="button" value="{{ _('Edit Scenario') }}">
+            <input type="hidden" id="edited_scenario_id">
+
           </p>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">{{_('Close')}}</button>
-        <button type="button" class="btn btn-primary">{{_('Save changes') }}</button>
+        <button type="button" class="btn btn-primary" onclick="edit_scenario()">{{_('Save changes') }}</button>
       </div>
     </div>
   </div>
