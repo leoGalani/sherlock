@@ -4,12 +4,14 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_babel import Babel, lazy_gettext
 from flask_cache import Cache
+from flask_wtf.csrf import CsrfProtect
 
 
 app = Flask(__name__, instance_relative_config=True, static_url_path="")
 db_relative_path = '/data/sherlock.db'
 app.config.from_object('config')
 db = SQLAlchemy(app)
+CsrfProtect(app)
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 
