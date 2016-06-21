@@ -75,3 +75,8 @@
 .fa-2x {
     font-size: 30px;
 }
+
+.btn-primary, .btn-primary:hover, .btn-primary:focus, .btn-primary:visited{
+  background-color: #96A7BB;
+  border-color: #96A7BB;
+}
