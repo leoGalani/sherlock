@@ -9,7 +9,7 @@ from flask_login import login_required
 from flask_babel import gettext
 
 from sherlock import db
-from sherlock.data.model import Scenario, Project, Test_Case, TestCaseSchema
+from sherlock.data.model import Scenario, Project, Case, TestCaseSchema
 from sherlock.forms.scenario import new_scenario_form
 from sherlock.helpers.string_operations import empty_items_in_dict
 
@@ -34,7 +34,7 @@ def get_scenario(endpoint, values):
 @login_required
 def get_tst_cases():
     """Docstring."""
-    tst_cases = Test_Case.query.filter_by(scenario_id=g.scenario.id).all()
+    tst_cases = Case.query.filter_by(scenario_id=g.scenario.id).all()
     tst_schema = TestCaseSchema(many=True)
     result = tst_schema.dump(tst_cases)
     return jsonify(result)
@@ -68,9 +68,9 @@ def new():
             db.session.commit()
 
             for tst_case in dict:
-                new_case = Test_Case(name=dict[tst_case],
-                                     scenario_id=new_scenario.id,
-                                     state_id=1)
+                new_case = Case(name=dict[tst_case],
+                                scenario_id=new_scenario.id,
+                                state_id=1)
 
                 db.session.add(new_case)
                 db.session.commit()

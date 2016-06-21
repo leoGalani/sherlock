@@ -3,7 +3,7 @@ from flask import Blueprint, request, url_for, redirect, g, jsonify
 from flask_login import login_required
 
 from sherlock import db
-from sherlock.data.model import Scenario, Project, Test_Case
+from sherlock.data.model import Scenario, Case
 
 
 test_case = Blueprint('test_cases', __name__)
@@ -16,7 +16,7 @@ def get_test_case(endpoint, values):
     scenario = Scenario.query.filter_by(id=values.pop('scenario_id'))
     if scenario:
         if 'test_case_id' in values:
-            query = Test_Case.query.filter_by(id=values.pop('test_case_id'))
+            query = Case.query.filter_by(id=values.pop('test_case_id'))
             g.test_case = query.first_or_404()
 
 
@@ -37,9 +37,9 @@ def new():
         scenario_name(required).
     """
     if request.method == 'POST':
-        new_test_case = Test_Case(name=request.form['name'],
-                                  scenario_id=request.form['scenario_id'],
-                                  state_id=1)
+        new_test_case = Case(name=request.form['name'],
+                             scenario_id=request.form['scenario_id'],
+                             state_id=1)
         db.session.add(new_test_case)
         db.session.commit()
         return redirect(url_for('show', scenario_id=g.test_case.scenario_id))
@@ -51,12 +51,7 @@ def new():
 @test_case.route('/edit/<int:test_case_id>', methods=['GET', 'POST'])
 @login_required
 def edit():
-    """POST endpoint for editing existing scenarios.
-
-    Param:
-        name
-        name
-    """
+    """POST endpoint for editing existing scenarios."""
     if request.method == 'POST':
         edited_tc = g.test_case
         edited_tc.name = request.get_json().get('case_name')

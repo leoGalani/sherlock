@@ -29,6 +29,8 @@ class Project(db.Model):
     slug = db.Column(db.String(50), unique=True)
     name = db.Column(db.String(50), nullable=False)
 
+    scenario = db.relationship('Scenario')
+
     def __init__(self, name):
         """Setting params to the object."""
         self.name = name
@@ -48,6 +50,7 @@ class Scenario(db.Model):
     state_id = db.Column(db.Integer, db.ForeignKey('state.id'))
     state = db.relationship('State')
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
+    testcase = db.relationship('Case')
 
     def __init__(self, name, state_id, project_id):
         """Setting params to the object."""
@@ -60,12 +63,11 @@ class Scenario(db.Model):
         return '<Scenario %r>' % self.name
 
 
-class Test_Case(db.Model):
+class Case(db.Model):
     """TestCase Schema."""
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500), nullable=False)
-    scenario = db.relationship(Scenario)
     scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
     state_id = db.Column(db.Integer, db.ForeignKey('state.id'))
     state = db.relationship('State')
@@ -115,6 +117,50 @@ class User(db.Model):
     def __repr__(self):
         """Representative Object Return."""
         return '<User %r>' % self.username
+
+
+class Cycle(db.Model):
+    """Cycle Schema."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(500), nullable=False)
+    project = db.relationship('Project')
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
+    state = db.relationship('State')
+    state_id = db.Column(db.Integer, db.ForeignKey('state.id'))
+    cycle_history = db.relationship('CycleHistory')
+
+    def __init__(self, name, scenario_id, state_id):
+        """Setting params to the object."""
+        self.name = name
+        self.project_id = scenario_id
+        self.state_id = state_id
+
+    def __repr__(self):
+        """Representative Object Return."""
+        return '<Cycle %r>' % self.name
+
+
+class CycleHistory(db.Model):
+    """Cycle History Schema."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
+    state_id = db.Column(db.Integer, db.ForeignKey('state.id'))
+    state = db.relationship('State')
+    case_id = db.Column(db.Integer, db.ForeignKey('case.id'))
+    scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
+
+    def __init__(self, cycle_id, scenario_id, testcase_id, state_id):
+        """Setting params to the object."""
+        self.cycle_id = cycle_id
+        self.testcase_id = testcase_id
+        self.scenario_id = scenario_id
+        self.state_id = state_id
+
+    def __repr__(self):
+        """Representative Object Return."""
+        return '<Cycle %r>' % self.name
 
 
 #  SCHEMAS #####
