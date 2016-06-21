@@ -12,7 +12,7 @@ function show_tst_case(scenario_id){
               });
           },
           error: function(error) {
-              $(".cases_col").append(mount_item_box(error));
+              console.log(error);
           }
         });
 }
