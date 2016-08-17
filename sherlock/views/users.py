@@ -8,7 +8,7 @@ import bcrypt
 
 from sherlock import db, login_manager
 from sherlock.data.model import User
-from sherlock.forms.user import login_form
+from sherlock.forms.user import login_form, signup_form, edit_user_form
 
 
 user = Blueprint('users', __name__)
@@ -31,49 +31,38 @@ def show():
 
 
 @user.route('/new/', methods=['GET', 'POST'])
-@login_required
 def new():
-    """POST endpoint for new users.
+    form = signup_form()
+    if form.validate_on_submit() and request.method == 'POST':
+        user = User.query.filter_by(username=form.email.data).one_or_none()
+        if user:
+            flash(gettext('Email already in use'), 'danger')
+        else:
+            new_user = User(name=request.form['name'],
+                            username=request.form['email'],
+                            password=request.form['password'])
+            db.session.add(new_user)
+            db.session.commit()
+            return redirect(url_for('users.login'))
 
-    Param:
-        name(required)
-        user_name(required).
-    """
-    if request.method == 'POST':
-        new_user = User(name=request.form['name'],
-                        user_name=request.form['username'],
-                        password=request.form['password'])
-        db.session.add(new_user)
-        db.session.commit()
-        return redirect(url_for('users.show', user_id=new_user.id))
-    elif request.method == 'GET':
-        pass
-        # TODO render template of the form.
+    return render_template("user/signup.html", form=form)
 
 
 @user.route('/edit/<int:user_id>', methods=['GET', 'POST'])
 @login_required
 def edit():
-    """POST endpoint for editing existing users.
-
-    Param:
-        user_id
-        user_name
-        name
-        password
-    """
+    form = edit_user_form()
     if request.method == 'POST':
         edited_user = g.user
         edited_user.name = request.form['name']
-        edited_user.username = request.form['username']
+        edited_user.username = request.form['email']
         edited_user.password = bcrypt.hashpw(
             request.form['password'].encode('utf-8'), bcrypt.gensalt())
         db.session.add(edited_user)
         db.session.commit()
-        return redirect(url_for('users.show', user_id=g.user.id))
-    elif request.method == 'GET':
-            pass
-            # TODO render template of the form.
+        return redirect(url_for('dashboard.home'))
+
+    return render_template("user/login.html", form=form)
 
 
 @login_manager.user_loader
