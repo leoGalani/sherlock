@@ -62,15 +62,13 @@ def new():
                 flash(gettext('Test Cases cannot be blank'), 'danger')
         else:
             new_scenario = Scenario(name=scenario_name,
-                                    state_id=1,
                                     project_id=g.project.id)
             db.session.add(new_scenario)
             db.session.commit()
 
             for tst_case in dict:
                 new_case = Case(name=dict[tst_case],
-                                scenario_id=new_scenario.id,
-                                state_id=1)
+                                scenario_id=new_scenario.id)
 
                 db.session.add(new_case)
                 db.session.commit()

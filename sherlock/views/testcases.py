@@ -38,8 +38,7 @@ def new():
     """
     if request.method == 'POST':
         new_test_case = Case(name=request.form['name'],
-                             scenario_id=request.form['scenario_id'],
-                             state_id=1)
+                             scenario_id=request.form['scenario_id'])
         db.session.add(new_test_case)
         db.session.commit()
         return redirect(url_for('show', scenario_id=g.test_case.scenario_id))
