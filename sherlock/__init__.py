@@ -1,8 +1,8 @@
 """Flask Main Project File."""
-from flask import Flask
+from flask import Flask, redirect, url_for, request, flash
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
-from flask_babel import Babel, lazy_gettext
+from flask_babel import Babel, lazy_gettext, gettext
 from flask_cache import Cache
 from flask_wtf.csrf import CsrfProtect
 
@@ -37,11 +37,19 @@ app.register_blueprint(dashboard, url_prefix='/dashboard')
 app.register_blueprint(user, url_prefix='/user')
 app.register_blueprint(project, url_prefix='/project')
 app.register_blueprint(scenario,
-                       url_prefix='/project_id/<int:project_id>/scenario')
+                       url_prefix='/project/<int:project_id>/scenario')
 app.register_blueprint(cycle,
-                       url_prefix='/project_id/<int:project_id>/cycle')
+                       url_prefix='/project/<int:project_id>/cycle')
 app.register_blueprint(test_case,
                        url_prefix='/scenario/<int:scenario_id>/tst_case')
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    app.logger.error('Route not found: %s', )
+    flash(gettext('Route not found: {}'.format(request.path)), 'danger')
+
+    return redirect(url_for('dashboard.home'))
 
 
 @app.before_request
