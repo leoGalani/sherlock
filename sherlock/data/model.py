@@ -1,7 +1,7 @@
 """Setup for SHERLOCK database."""
 import bcrypt
 from marshmallow import Schema, fields
-
+from datetime import datetime
 
 from sherlock import db
 from sherlock.helpers.string_operations import slugify
@@ -47,15 +47,14 @@ class Scenario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False)
 
-    state_id = db.Column(db.Integer, db.ForeignKey('state.id'))
+    state_id = db.Column(db.Integer, db.ForeignKey('state.id'), default=1)
     state = db.relationship('State')
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
     testcase = db.relationship('Case')
 
-    def __init__(self, name, state_id, project_id):
+    def __init__(self, name, project_id):
         """Setting params to the object."""
         self.name = name
-        self.state_id = state_id
         self.project_id = project_id
 
     def __repr__(self):
@@ -69,14 +68,13 @@ class Case(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500), nullable=False)
     scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
-    state_id = db.Column(db.Integer, db.ForeignKey('state.id'))
+    state_id = db.Column(db.Integer, db.ForeignKey('state.id'), default=1)
     state = db.relationship('State')
 
-    def __init__(self, name, scenario_id, state_id):
+    def __init__(self, name, scenario_id):
         """Setting params to the object."""
         self.name = name
         self.scenario_id = scenario_id
-        self.state_id = state_id
 
     def __repr__(self):
         """Representative Object Return."""
@@ -123,18 +121,19 @@ class Cycle(db.Model):
     """Cycle Schema."""
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(500), nullable=False)
+    number = db.Column(db.String(500), nullable=False)
     project = db.relationship('Project')
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
     state = db.relationship('State')
-    state_id = db.Column(db.Integer, db.ForeignKey('state.id'))
+    state_id = db.Column(db.Integer, db.ForeignKey('state.id'), default=1)
     cycle_history = db.relationship('CycleHistory')
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    closed_at = db.Column(db.DateTime)
 
-    def __init__(self, name, scenario_id, state_id):
+    def __init__(self, number, project_id):
         """Setting params to the object."""
-        self.name = name
-        self.project_id = scenario_id
-        self.state_id = state_id
+        self. number = number
+        self.project_id = project_id
 
     def __repr__(self):
         """Representative Object Return."""
@@ -148,15 +147,14 @@ class CycleHistory(db.Model):
     cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
     state_id = db.Column(db.Integer, db.ForeignKey('state.id'))
     state = db.relationship('State')
-    case_id = db.Column(db.Integer, db.ForeignKey('case.id'))
+    case_id = db.Column(db.Integer, db.ForeignKey('case.id'), default=1)
     scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
 
-    def __init__(self, cycle_id, scenario_id, testcase_id, state_id):
+    def __init__(self, cycle_id, scenario_id, testcase_id):
         """Setting params to the object."""
         self.cycle_id = cycle_id
         self.testcase_id = testcase_id
         self.scenario_id = scenario_id
-        self.state_id = state_id
 
     def __repr__(self):
         """Representative Object Return."""
