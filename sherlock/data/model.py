@@ -12,10 +12,12 @@ class State(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), unique=True)
+    code = db.Column(db.String(20), unique=True)
 
-    def __init__(self, name):
+    def __init__(self, name, code):
         """Setting params to the object."""
         self.name = name
+        self.code = code
 
     def __repr__(self):
         """Representative Object Return."""
@@ -137,7 +139,7 @@ class Cycle(db.Model):
 
     def __repr__(self):
         """Representative Object Return."""
-        return '<Cycle %r>' % self.name
+        return '<Cycle %r>' % self.id
 
 
 class CycleHistory(db.Model):
@@ -145,20 +147,20 @@ class CycleHistory(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
-    state_id = db.Column(db.Integer, db.ForeignKey('state.id'))
+    state_id = db.Column(db.Integer, db.ForeignKey('state.id'), default=1)
     state = db.relationship('State')
-    case_id = db.Column(db.Integer, db.ForeignKey('case.id'), default=1)
+    case_id = db.Column(db.Integer, db.ForeignKey('case.id'))
     scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
 
-    def __init__(self, cycle_id, scenario_id, testcase_id):
+    def __init__(self, cycle_id, scenario_id, case_id):
         """Setting params to the object."""
         self.cycle_id = cycle_id
-        self.testcase_id = testcase_id
+        self.case_id = case_id
         self.scenario_id = scenario_id
 
     def __repr__(self):
         """Representative Object Return."""
-        return '<Cycle %r>' % self.name
+        return '<Cycle %r>' % self.cycle_id
 
 
 #  SCHEMAS #####
