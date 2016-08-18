@@ -1,17 +1,31 @@
 {% extends "dashboard.html" %}
 {% block content %}
 <div class="row">
-  <div class="col-xs-4 col-sm-2"></div>
-    <div class="col-xs-10 col-sm-8 white-box">
+  <div class="col-xs-2 col-sm-1"> </div>
+    <div class="col-xs-10 col-sm-6 white-box">
       <h1>{{ g.project.name }} </h1>
       {% if g.project.no_scenarios %}
         <p>{{ _('Seems like you dont have any Scenario and Test Cases yet.')}} <br>
         {{ _('You could create them using the buttom below.')}}</p>
         <a class="button a-button" href="{{ url_for('scenarios.new', project_id=g.project.id )}}">
            {{ _('Create Test Scenario and Cases') }} </a>
+           <br><br>
       {% endif %}
+      <form action="{{ url_for('cycle.create', project_id=g.project.id) }}" method="post" name="create">
+        <input type="submit" class="button" value="{{ _('Create Cycle') }}">
+        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+      </form>
     </div>
   <div class="clearfix hidden-sm-up"></div>
-  <div class="col-xs-4 col-sm-2"></div>
+  <div class="col-xs-6 col-sm-1 "> </div>
+  <div class="col-xs-6 col-sm-3 white-box">
+    <h3> {{ _('Current Cycle Stats') }}  </h3>
+     <h4>{{ _('Cycle Number') }}</h4>
+    <div class="project_current_cycle_stats"> {{ _('Not Executed') }} : </div>
+    <div class="project_current_cycle_stats"> {{ _('Passed') }} : </div>
+    <div class="project_current_cycle_stats"> {{ _('Not Passed') }} : </div>
+    <div class="project_current_cycle_stats"> {{ _('Blocked') }} : </div>
+  </div>
+  <div class="col-xs-6 col-sm-1 "></div>
 </div>
 {% endblock %}

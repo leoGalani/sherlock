@@ -58,6 +58,7 @@ body{
   cursor: pointer;
   background-color: #96A7BB;
   font-weight: 200;
+  width: 60%;
 }
 
 input[type="reset"]{
@@ -155,6 +156,7 @@ textarea{
     border: 1px solid #949596;
     padding: 10px 0px 10px 5px;
     margin-top: -1px;
+    margin-left: 1px;
 }
 
 .edit_icons{
