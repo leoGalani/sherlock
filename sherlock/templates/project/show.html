@@ -18,14 +18,9 @@
     </div>
   <div class="clearfix hidden-sm-up"></div>
   <div class="col-xs-6 col-sm-1 "> </div>
-  <div class="col-xs-6 col-sm-3 white-box">
-    <h3> {{ _('Current Cycle Stats') }}  </h3>
-     <h4>{{ _('Cycle Number') }}</h4>
-    <div class="project_current_cycle_stats"> {{ _('Not Executed') }} : </div>
-    <div class="project_current_cycle_stats"> {{ _('Passed') }} : </div>
-    <div class="project_current_cycle_stats"> {{ _('Not Passed') }} : </div>
-    <div class="project_current_cycle_stats"> {{ _('Blocked') }} : </div>
-  </div>
+  {% if g.project.has_cycle %}
+    {% include 'cycle/stat_widget.html' %}
+  {% endif %}
   <div class="col-xs-6 col-sm-1 "></div>
 </div>
 {% endblock %}

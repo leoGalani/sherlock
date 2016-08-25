@@ -3,9 +3,9 @@ from flask import Blueprint, request, url_for, redirect, g, render_template
 from flask_login import login_required
 
 from sherlock import db
-from sherlock.data.model import Project, Scenario
+from sherlock.data.model import Project, Scenario, Cycle, CycleHistory
 from sherlock.forms.project import new_project_form, edit_project_form
-
+from sherlock.helpers.object_loader import load_cycles
 
 project = Blueprint('projects', __name__)
 
@@ -16,6 +16,7 @@ def get_project(endpoint, values):
     if 'project_id' in values:
         query = Project.query.filter_by(id=values.pop('project_id'))
         g.project = query.first_or_404()
+        load_cycles(g.project, Cycle, CycleHistory)
 
 
 @project.route('/show/<int:project_id>', methods=['GET'])
