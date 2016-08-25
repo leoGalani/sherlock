@@ -49,7 +49,8 @@ class Scenario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False)
 
-    state_id = db.Column(db.Integer, db.ForeignKey('state.id'), default=1)
+    state_code = db.Column(db.Integer, db.ForeignKey('state.code'),
+                         default="ACTIVE")
     state = db.relationship('State')
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
     testcase = db.relationship('Case')
@@ -70,7 +71,8 @@ class Case(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500), nullable=False)
     scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
-    state_id = db.Column(db.Integer, db.ForeignKey('state.id'), default=1)
+    state_code = db.Column(db.Integer, db.ForeignKey('state.code'),
+                         default="ACTIVE")
     state = db.relationship('State')
 
     def __init__(self, name, scenario_id):
@@ -127,7 +129,8 @@ class Cycle(db.Model):
     project = db.relationship('Project')
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
     state = db.relationship('State')
-    state_id = db.Column(db.Integer, db.ForeignKey('state.id'), default=1)
+    state_code = db.Column(db.Integer, db.ForeignKey('state.code'),
+                         default="ACTIVE")
     cycle_history = db.relationship('CycleHistory')
     created_at = db.Column(db.DateTime, default=datetime.now)
     closed_at = db.Column(db.DateTime)
@@ -147,7 +150,8 @@ class CycleHistory(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
-    state_id = db.Column(db.Integer, db.ForeignKey('state.id'), default=1)
+    state_code = db.Column(db.Integer, db.ForeignKey('state.code'),
+                         default="NOT_EXECUTED")
     state = db.relationship('State')
     case_id = db.Column(db.Integer, db.ForeignKey('case.id'))
     scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
@@ -169,4 +173,4 @@ class TestCaseSchema(Schema):
     id = fields.Int(dump_only=True)
     scenario_id = fields.Int()
     name = fields.Str()
-    state_id = fields.Int()
+    state_code = fields.Int()
