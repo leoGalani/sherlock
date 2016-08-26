@@ -5,7 +5,7 @@ from flask_login import login_required
 from sherlock import db
 from sherlock.data.model import Project, Scenario, Cycle, CycleHistory
 from sherlock.forms.project import new_project_form, edit_project_form
-from sherlock.helpers.object_loader import load_cycles
+from sherlock.helpers.object_loader import load_cycle_history
 
 project = Blueprint('projects', __name__)
 
@@ -14,9 +14,11 @@ project = Blueprint('projects', __name__)
 def get_project(endpoint, values):
     """Blueprint Object Query."""
     if 'project_id' in values:
-        query = Project.query.filter_by(id=values.pop('project_id'))
-        g.project = query.first_or_404()
-        load_cycles(g.project, Cycle, CycleHistory)
+        g.project = Project.query.filter_by(
+            id=values.pop('project_id')).first()
+        g.current_cycle = Cycle.query.order_by(
+            '-id').filter_by(project_id=g.project.id).first()
+        load_cycle_history(g.project, g.current_cycle, CycleHistory)
 
 
 @project.route('/show/<int:project_id>', methods=['GET'])

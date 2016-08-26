@@ -7,7 +7,7 @@ from flask_babel import gettext
 
 from sherlock import db
 from sherlock.data.model import Scenario, Project, Case, Cycle, CycleHistory
-from sherlock.helpers.string_operations import is_empty
+from sherlock.helpers.string_operations import load_cycle_history
 
 
 cycle = Blueprint('cycle', __name__)
@@ -22,16 +22,18 @@ def get_cycles(endpoint, values):
 
     if 'cycle_id' in values:
         g.cycle = Cycle.query.filter_by(
-            project_id=values['cycle_id']).first_or_404()
+            id=values['cycle_id']).first_or_404()
 
-        g.current_cycle = Cycle.query.filter_by(
+        g.project_cycle = Cycle.query.filter_by(
             id=g.cycle.id).first()
+
+        load_cycle_history(g.project_cycle, CycleHistory)
     else:
         g.current_cycle = Cycle.query.order_by(
             '-id').filter_by(project_id=values.pop('project_id')).first()
 
     if g.current_cycle and g.current_cycle.state_code == "CLOSED":
-            g.current_cycle_status_open = False
+        g.current_cycle_status_open = False
     else:
         g.current_cycle_status_open = True
 

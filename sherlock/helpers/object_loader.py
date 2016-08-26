@@ -9,13 +9,9 @@ def project_loader(Project):
     g.projects = Project.query.all()
 
 
-def load_cycles(Project, Cycle, CycleHistory):
-
-    g.project_current_cycle = Cycle.query.order_by(
-        '-id').filter_by(project_id=Project.id).first()
-
-    if g.project_current_cycle:
-        g.current_cycle_history = CycleHistory.query.filter_by(
+def load_cycle_history(current_cycle, CycleHistory):
+    if current_cycle:
+        g.project_cycle_history = CycleHistory.query.filter_by(
             cycle_id=g.current_cycle.id).all()
         g.current_cycle_history = count_cycle_stats(g.current_cycle_history)
         g.project.has_cycle = True
