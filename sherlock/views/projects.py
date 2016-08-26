@@ -18,7 +18,7 @@ def get_project(endpoint, values):
             id=values.pop('project_id')).first()
         g.current_cycle = Cycle.query.order_by(
             '-id').filter_by(project_id=g.project.id).first()
-        load_cycle_history(g.project, g.current_cycle, CycleHistory)
+        load_cycle_history(g.current_cycle, CycleHistory)
 
 
 @project.route('/show/<int:project_id>', methods=['GET'])

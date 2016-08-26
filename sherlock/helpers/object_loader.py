@@ -11,9 +11,11 @@ def project_loader(Project):
 
 def load_cycle_history(current_cycle, CycleHistory):
     if current_cycle:
-        g.project_cycle_history = CycleHistory.query.filter_by(
-            cycle_id=g.current_cycle.id).all()
-        g.current_cycle_history = count_cycle_stats(g.current_cycle_history)
+        g.current_cycle = current_cycle
+        g.current_cycle_history = CycleHistory.query.filter_by(
+            cycle_id=current_cycle.id).all()
+        g.current_cycle_history
+        g.current_cycle_stats = count_cycle_stats(g.current_cycle_history)
         g.project.has_cycle = True
     else:
         g.project.has_cycle = False
@@ -22,18 +24,20 @@ def load_cycle_history(current_cycle, CycleHistory):
 def count_cycle_stats(current_cycle_history):
     NOT_EXECUTED, ERROR, BLOCKED, PASSED = 0, 0, 0, 0
     for item in current_cycle_history:
-        if item.status_code == "NOT_EXECUTED":
+        if item.state_code == "NOT_EXECUTED":
             NOT_EXECUTED += 1
-        elif item.status_code == "ERROR":
+        elif item.state_code == "ERROR":
             ERROR += 1
-        elif item.status_code == "BLOCKED":
+        elif item.state_code == "BLOCKED":
             BLOCKED += 1
-        elif item.status_code == "PASSED":
+        elif item.state_code == "PASSED":
             PASSED += 1
 
-    current_cycle_history.total_not_executed = NOT_EXECUTED
-    current_cycle_history.total_error = ERROR
-    current_cycle_history.total_blocked = BLOCKED
-    current_cycle_history.total_passed = PASSED
+    current_cycles_stats = dict()
 
-    return current_cycle_history
+    current_cycles_stats['total_not_executed'] = NOT_EXECUTED
+    current_cycles_stats['total_error'] = ERROR
+    current_cycles_stats['total_blocked'] = BLOCKED
+    current_cycles_stats['total_passed'] = PASSED
+
+    return current_cycles_stats

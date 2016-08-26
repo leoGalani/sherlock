@@ -7,7 +7,7 @@ from flask_babel import gettext
 
 from sherlock import db
 from sherlock.data.model import Scenario, Project, Case, Cycle, CycleHistory
-from sherlock.helpers.string_operations import load_cycle_history
+from sherlock.helpers.object_loader import load_cycle_history
 
 
 cycle = Blueprint('cycle', __name__)
@@ -17,12 +17,12 @@ cycle = Blueprint('cycle', __name__)
 @login_required
 def get_cycles(endpoint, values):
     """Blueprint Object Query."""
-    project = Project.query.filter_by(id=values['project_id']).one()
+    project = Project.query.filter_by(id=values.pop('project_id')).one()
     g.project = project
 
     if 'cycle_id' in values:
         g.cycle = Cycle.query.filter_by(
-            id=values['cycle_id']).first_or_404()
+            id=values.pop('cycle_id')).first_or_404()
 
         g.project_cycle = Cycle.query.filter_by(
             id=g.cycle.id).first()
@@ -30,12 +30,15 @@ def get_cycles(endpoint, values):
         load_cycle_history(g.project_cycle, CycleHistory)
     else:
         g.current_cycle = Cycle.query.order_by(
-            '-id').filter_by(project_id=values.pop('project_id')).first()
+            '-id').filter_by(project_id=g.project.id).first()
 
-    if g.current_cycle and g.current_cycle.state_code == "CLOSED":
-        g.current_cycle_status_open = False
+    if g.current_cycle:
+        if g.current_cycle.state_code == "CLOSED":
+            g.current_cycle_status_open = False
+        else:
+            g.current_cycle_status_open = True
     else:
-        g.current_cycle_status_open = True
+        g.current_cycle_status_open = False
 
 
 @cycle.route('/create', methods=['POST'])
@@ -49,7 +52,8 @@ def create():
 
         cases = Case.query.join(
             Scenario, Case.scenario_id == Scenario.id).filter(
-                Scenario.project_id == g.project.id).filter(Case.state_id == 1)
+                Scenario.project_id == g.project.id).filter(
+                    Case.state_code == "ACTIVE")
 
         if cases.count() == 0:
             flash(gettext('You dont have any Test Cases or Scenarios '
@@ -71,6 +75,9 @@ def create():
                                 scenario_id=case.scenario_id)
             db.session.add(item)
             db.session.commit()
+        return redirect(url_for('cycles.show', project_id=g.project.id,
+                        cycle_id=new_cycle.id))
+    return redirect(url_for('projects.show', project_id=g.project.id))
 
 
 @cycle.route('/show/<int:cycle_id>', methods=['GET'])
