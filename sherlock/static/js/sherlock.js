@@ -140,3 +140,73 @@ function show_tst_case_icons(scenario_id){
   add_class_current(tst_scenario,show_icon, edit_icon);
   $(edit_icon).addClass("show");
 }
+
+
+
+/* CYCLES */
+
+function change_case_status_for_cycle_history(case_id, state_code, cycle_id) {
+
+  var csrftoken = $('meta[name=csrf-token]').attr('content')
+  var url_ = '../edit/' + cycle_id
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+              if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken)
+          }
+        }
+        })
+        $.ajax({
+            url: url_,
+            data: JSON.stringify({case_id: case_id, state_code: state_code, csrftoken: csrftoken}),
+            type: 'POST',
+            contentType:"application/json",
+            dataType:"json",
+            success: function(response) {
+              if (response.status === "ok"){
+                $('#PASSED_case_id_'+response.case_id).removeClass( "PASSED" )
+                $('#ERROR_case_id_'+response.case_id).removeClass( "ERROR" )
+                $('#BLOCKED_case_id_'+response.case_id).removeClass( "BLOCKED" )
+
+                if(response.state_code === "PASSED"){
+                  $('#PASSED_case_id_'+case_id).addClass( "PASSED" )
+                }
+                if(response.state_code === "ERROR"){
+                  $('#ERROR_case_id_'+case_id).addClass( "ERROR" )
+                }
+                if(response.state_code === "BLOCKED"){
+                  $('#BLOCKED_case_id_'+case_id).addClass( "BLOCKED" )
+                }
+                
+                reload_cycle_total_count(cycle_id)
+
+              }
+            },
+            error: function(error) {
+                console.log(error);
+            },
+        });
+}
+
+function reload_cycle_total_count(cycle_id){
+  _url = '../get_states/' + cycle_id
+  $.ajax({
+          url: _url,
+          type: 'GET',
+          success: function(response) {
+              $( "#show_total_not_executed" ).empty();
+              $( "#show_total_passed" ).empty();
+              $( "#show_total_notpassed" ).empty();
+              $( "#show_total_blocekd" ).empty();
+
+              $('#show_total_not_executed').html(response.total_not_executed);
+              $('#show_total_passed').html(response.total_passed);
+              $('#show_total_error').html(response.total_error);
+              $('#show_total_blocked').html(response.total_blocked);
+          },
+          error: function(error) {
+              console.log(error);
+          }
+        });
+
+}

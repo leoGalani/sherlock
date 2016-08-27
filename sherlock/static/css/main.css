@@ -196,12 +196,35 @@ textarea{
 
 .cycle_icons_status{
   float: right;
+  font-size: 20px !important;
 }
 
+.cycle_icons_status > i{
+    padding: 4px;
+}
 
+.cycle_cases{
+  font-size: 15px;
+}
+
+ .fa-check-square, .fa-times-circle, .fa-exclamation-triangle{
+   cursor: pointer;
+ }
+
+ .PASSED{
+   color: green;
+ }
+
+.ERROR{
+  color: red;
+}
+
+.BLOCKED{
+  color: darkorange;
+}
 
 /*  workaround for bootstrap  */
-.panel-default>.panel-heading {
+.panel-default > a >.panel-heading {
     color: #333;
     background-color: #f5f5f5;
     border-color: #ddd;
@@ -212,6 +235,4 @@ textarea{
 .panel-heading {
     padding: 10px 15px;
     border-bottom: 1px solid transparent;
-    /* border-top-left-radius: 3px; */
-    /* border-top-right-radius: 3px; */
-}
+    margin-bottom: 3px;}
