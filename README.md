@@ -1,4 +1,4 @@
-![alt tag](http://raw.githubusercontent.com/leoGalani/sherlock/master/sherlock/static/img/sherlock.png)
+![alt tag](https://raw.githubusercontent.com/leoGalani/sherlock/master/sherlock/static/img/sherlock.png)
 
 #Sherlock QA
 
@@ -43,6 +43,6 @@ To talk about Sherlock, give your opinion and or critics, please use the agilete
 http://agiletesters.com.br/category/10/sherlock-qa
 
 ---
-This is a open-source made with love in ![France](http://raw.githubusercontent.com/leoGalani/sherlock/master/sherlock/static/img/flag_france.png) and ![France](http://raw.githubusercontent.com/leoGalani/sherlock/master/sherlock/static/img/flag_brazil.png)
+This is a open-source made with love in ![France](https://raw.githubusercontent.com/leoGalani/sherlock/master/sherlock/static/img/flag_france.png) and ![France](https://raw.githubusercontent.com/leoGalani/sherlock/master/sherlock/static/img/flag_brazil.png)
 
 If you have good ideas and code skills, create a branch and push request ;)
