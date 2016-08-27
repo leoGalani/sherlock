@@ -16,7 +16,7 @@ you project.
 # Setting  your environment
 
 You will need:
-> python 3.5++
+> python 3.5++ -> http://docs.python-guide.org/en/latest/starting/installation/
 
 > virtualenv (virtualenvwrapper* optional) -> http://docs.python-guide.org/en/latest/dev/virtualenvs/
 
@@ -43,6 +43,6 @@ To talk about Sherlock, give your opinion and or critics, please use the agilete
 http://agiletesters.com.br/category/10/sherlock-qa
 
 ---
-This is a open-source made with love in ![France](https://raw.githubusercontent.com/leoGalani/sherlock/master/sherlock/static/img/flag_france.png) and ![France](https://raw.githubusercontent.com/leoGalani/sherlock/master/sherlock/static/img/flag_brazil.png)
+This is a open-source project made with love in ![France](https://raw.githubusercontent.com/leoGalani/sherlock/master/sherlock/static/img/flag_france.png) and ![France](https://raw.githubusercontent.com/leoGalani/sherlock/master/sherlock/static/img/flag_brazil.png)
 
 If you have good ideas and code skills, create a branch and push request ;)
