@@ -4,27 +4,36 @@
     <div class="col-md-8 white-box box_margin_dashboards fixed_height">
       <h2>{{ g.project.name }} </h2>
 
-      {% for scenario_id, scenario_name in g.cycle_scenarios | dictsort %}
+      {% for scenario in g.cycle_history_formated %}
       <div class="panel-group" role="tablist">
          <div class="panel panel-default">
+           <a href="#collapseListGroup1_st_{{scenario_id}}" class="collapsed" role="button"
+             data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1_st_{{scenario_id}}">
             <div class="panel-heading" role="tab" id="collapseListGroupHeading_st_{{scenario_id}}">
-              <h4 class="panel-title">
-              <a href="#collapseListGroup1_st_{{scenario_id}}" class="collapsed" role="button"
-                data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1_st_{{scenario_id}}">
-                 {{_('Scenario name')}} : {{ scenario_name}}
-                </a>
-               </h4>
+              <h5 class="panel-title">
+
+                 {{_('Scenario name')}} : {{ scenario['name']}}
+
+               </h5>
             </div>
-            <div class="panel-collapse collapse" role="tabpanel"
+            </a>
+            <div class="panel-collapse collapse cycle_cases" role="tabpanel"
               id="collapseListGroup1_st_{{scenario_id}}" aria-labelledby="collapseListGroupHeading_st_{{scenario_id}}"
                aria-expanded="false" style="height: 0px;">
                <ul class="list-group">
-                 {% for case_id, case_name in g.cycle_cases | dictsort %}
-                 <li class="list-group-item">{{case_name}}
+                 <meta name="csrf-token" content="{{ csrf_token() }}">
+                 {% for case in scenario['cases'] %}
+                 <li class="list-group-item">{{case['name']}}
                     <span class="cycle_icons_status">
-                     <i class="fa fa-check-square-o" aria-hidden="true"></i>
-                     <i class="fa fa-times" aria-hidden="true"></i>
-                     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                     <i id="PASSED_case_id_{{case['id']}}"
+                      class="fa fa-check-square {% if case['state_code'] == 'PASSED'%} {{case['state_code']}}{% endif %}" aria-hidden="true"
+                     onclick="change_case_status_for_cycle_history({{case['id']}},'PASSED', {{g.current_cycle.id}})"></i>
+                     <i id="ERROR_case_id_{{case['id']}}"
+                     class="fa fa-times-circle {% if case['state_code'] == 'ERROR'%} {{case['state_code']}}{% endif %}" aria-hidden="true"
+                     onclick="change_case_status_for_cycle_history({{case['id']}},'ERROR', {{g.current_cycle.id}})"></i>
+                     <i id="BLOCKED_case_id_{{case['id']}}"
+                      class="fa fa-exclamation-triangle {% if case['state_code'] == 'BLOCKED'%} {{case['state_code']}}{% endif %}" aria-hidden="true"
+                     onclick="change_case_status_for_cycle_history({{case['id']}},'BLOCKED', {{g.current_cycle.id}})"></i>
                    </span>
                  </li>
                  {% endfor %}
@@ -36,8 +45,12 @@
 
     </div>
   <div class="clearfix hidden-sm-up"></div>
-  {% if g.project.has_cycle %}
-    {% include 'cycle/stat_widget.html' %}
-  {% endif %}
+  <div class="col-md-3 box_margin_dashboards">
+    {% if g.project.has_cycle %}
+      {% include 'cycle/cases_status_widget.html' %}
+      {% include 'cycle/status_inside_widget.html' %}
+    {% endif %}
+  </div>
 </div>
+
 {% endblock %}

@@ -28,6 +28,7 @@ def get_cycles(endpoint, values):
 
         load_cycle_history(g.project_cycle, CycleHistory)
 
+        g.project_cycle = g.current_cycle
         g.cycle_history_formated = load_cases_names_for_cycle(Scenario, Case,
                                                               CycleHistory,
                                                               g.project_cycle)
@@ -43,6 +44,22 @@ def get_cycles(endpoint, values):
             g.current_cycle_status_open = True
     else:
         g.current_cycle_status_open = False
+
+
+@cycle.route('/close/<int:cycle_id>', methods=['POST'])
+@login_required
+def close():
+    if request.method == 'POST':
+        if g.current_cycle.state_code == "CLOSED":
+            flash(gettext('Cycle already closed!'), 'danger')
+        else:
+            g.current_cycle.state_code = "CLOSED"
+            db.session.add(g.current_cycle)
+            db.session.commit()
+            flash(gettext('Cycle closed with sucess!'), 'success')
+
+    return redirect(url_for('projects.show', project_id=g.project.id))
+
 
 
 @cycle.route('/create', methods=['POST'])
@@ -79,7 +96,9 @@ def create():
                                 scenario_id=case.scenario_id)
             db.session.add(item)
             db.session.commit()
-        return redirect(url_for('cycles.show', project_id=g.project.id,
+        flash(gettext('Cycle Created!'), 'Success')
+
+        return redirect(url_for('cycle.show', project_id=g.project.id,
                         cycle_id=new_cycle.id))
     return redirect(url_for('projects.show', project_id=g.project.id))
 
