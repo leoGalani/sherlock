@@ -42,4 +42,7 @@ For now, the first user and pass is hardcoded (srry for that!) admin:admin
 To talk about Sherlock, give your opinion and or critics, please use the agiletesters forum:
 http://agiletesters.com.br/category/10/sherlock-qa
 
+---
+This is a open-source made with love in ![France](http://raw.githubusercontent.com/leoGalani/sherlock/master/sherlock/static/img/flag_france.png) and ![France](http://raw.githubusercontent.com/leoGalani/sherlock/master/sherlock/static/img/flag_brazil.png)
 
+If you have good ideas and code skills, create a branch and push request ;)
