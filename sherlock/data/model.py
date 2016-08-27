@@ -151,7 +151,7 @@ class CycleHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
     state_code = db.Column(db.Integer, db.ForeignKey('state.code'),
-                         default="NOT_EXECUTED")
+                           default="NOT_EXECUTED")
     state = db.relationship('State')
     case_id = db.Column(db.Integer, db.ForeignKey('case.id'))
     scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
