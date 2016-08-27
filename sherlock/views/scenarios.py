@@ -95,7 +95,7 @@ def edit():
                         "scenario_id": scenario.id,
                         "scenario_name": scenario.name})
     elif request.method == 'GET':
-        redirect(url_for('projects.show'), project_id=g.project.id)
+        return redirect(url_for('projects.show', project_id=g.project.id))
 
 
 @login_required
@@ -103,7 +103,9 @@ def edit():
 def edit_all():
     scenarios = Scenario.query.filter_by(project_id=g.project.id)
     if scenarios.count() == 0:
-        redirect(url_for('projects.show'), project_id=g.project.id)
+        flash(gettext('You dont have any test scenario and case to edit'),
+                      'info')
+        return redirect(url_for('projects.show', project_id=g.project.id))
     else:
         g.scenarios = scenarios
 
