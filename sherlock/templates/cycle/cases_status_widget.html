@@ -1,0 +1,9 @@
+<div class="white-box">
+  <h3> {{ _('Current Cycle Stats') }}  </h3>
+   <h5>{{ _('Cycle Number') }} : {{g.current_cycle.number}}</h5>
+   <h5>{{ _('Current State') }} : {{g.current_cycle.state_code}}</h5>
+  <div class="project_current_cycle_stats"> {{ _('Not Executed') }} : <span id="show_total_not_executed"> {{g.current_cycle_stats['total_not_executed']}}</span></div>
+  <div class="project_current_cycle_stats"> {{ _('Passed') }} : <span id="show_total_passed"> {{g.current_cycle_stats['total_passed']}}</span></div>
+  <div class="project_current_cycle_stats"> {{ _('Not Passed') }} : <span id="show_total_error"> {{g.current_cycle_stats['total_error']}}</span></div>
+  <div class="project_current_cycle_stats"> {{ _('Blocked') }} : <span id="show_total_blocked"> {{g.current_cycle_stats['total_blocked']}}</span></div>
+</div>
