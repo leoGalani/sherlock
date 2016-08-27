@@ -1,8 +1,7 @@
 {% extends "dashboard.html" %}
 {% block content %}
 <div class="row">
-  <div class="col-xs-2 col-sm-1"> </div>
-    <div class="col-xs-10 col-sm-6 white-box">
+  <div class="col-md-8 white-box box_margin_dashboards fixed_height">
       <h1>{{ g.project.name }} </h1>
       {% if g.project.no_scenarios %}
         <p>{{ _('Seems like you dont have any Scenario and Test Cases yet.')}} <br>
@@ -14,18 +13,23 @@
         {% if not g.project.has_cycle %}
         <p>{{ _('Seems like you dont have any cycle.')}} <br>
         {{ _('You could create it using the buttom below.')}}</p>
+
+        <form action="{{ url_for('cycle.create', project_id=g.project.id) }}" method="post" name="create">
+          <input type="submit" class="button" value="{{ _('Create Cycle') }}">
+          <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+        </form>
+
+        <p>{{ _('After that, your can use the side bar link to create more.')}} </p>
+
         {% endif %}
       {% endif %}
-      <form action="{{ url_for('cycle.create', project_id=g.project.id) }}" method="post" name="create">
-        <input type="submit" class="button" value="{{ _('Create Cycle') }}">
-        <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
-      </form>
     </div>
   <div class="clearfix hidden-sm-up"></div>
-  <div class="col-xs-6 col-sm-1 "> </div>
-  {% if g.project.has_cycle %}
-    {% include 'cycle/stat_widget.html' %}
-  {% endif %}
-  <div class="col-xs-6 col-sm-1 "></div>
+  <div class="col-md-3 box_margin_dashboards">
+    {% if g.project.has_cycle %}
+      {% include 'cycle/cases_status_widget.html' %}
+      {% include 'cycle/status_outside_widget.html' %}
+    {% endif %}
+  </div>
 </div>
 {% endblock %}
