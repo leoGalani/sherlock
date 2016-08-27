@@ -48,7 +48,7 @@ body{
 }
 
 .fixed_height{
-   height: 85%;
+   height: 80%;
    overflow: auto;
 }
 
@@ -153,7 +153,7 @@ textarea{
 
 
 
-.a-button, .a-button:hover, .a-button:visited, .a-button:focus {
+.a-button, .a-button:hover, .a-button:visited, .a-button:focus, .a-button:link {
   padding: 10px 20px;
   color: white;
   font-weight: 200;
@@ -223,6 +223,14 @@ textarea{
   color: darkorange;
 }
 
+.text-align-center{
+  text-align: center !important;
+}
+
+.width-100{
+  width: 100% !important;
+}
+
 /*  workaround for bootstrap  */
 .panel-default > a >.panel-heading {
     color: #333;
@@ -235,4 +243,5 @@ textarea{
 .panel-heading {
     padding: 10px 15px;
     border-bottom: 1px solid transparent;
-    margin-bottom: 3px;}
+    margin-bottom: 3px;
+  }
