@@ -46,7 +46,6 @@ app.register_blueprint(test_case,
 
 @app.errorhandler(404)
 def page_not_found(error):
-    app.logger.error('Route not found: %s', )
     flash(gettext('Route not found: {}'.format(request.path)), 'danger')
 
     return redirect(url_for('dashboard.home'))
