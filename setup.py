@@ -5,7 +5,7 @@ from sherlock.data.model import User, State
 db.create_all()
 
 # DONT CHANGE THE CODE BELOW.
-initial_user = User(name="Leonardo", username="leo", password="let")
+initial_user = User(name="Administrador", username="admin", password="admin")
 available_state = State(name="active", code="ACTIVE")
 db.session.add(available_state)
 db.session.add(initial_user)
