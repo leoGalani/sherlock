@@ -20,11 +20,22 @@ You will need:
 
 > virtualenv (virtualenvwrapper* optional) -> http://docs.python-guide.org/en/latest/dev/virtualenvs/
 
-After creating your virtual enviroment, please install all the requirements
+if you are using linux, you may run into some troubles to install bcrpyt
+
+> sudo apt-get install build-essential libssl-dev libffi-dev python-dev
+
+If you are on mac, use brew to install using brew
+
+> brew install bcrypt
+
+After creating your virtual enviroment, please install all the requirements:
 
 > pip install -r requirements.txt
 
 For testing purpose, this is all you need!
+
+
+
 
 
 # Running Sherlock
