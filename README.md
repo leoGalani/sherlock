@@ -2,8 +2,8 @@
 
 #Sherlock QA
 
-Sherlock QA is a attempt to simplify the live of testers, product owners and
-people that do regressions tests.
+Sherlock QA is a attempt to simplify the life of testers, product owners and
+people that do regression tests.
 
 You should automate most your regressions tests, but sometimes you don't have the
 means, time or you need to mix hardware and ask for people outside technology to test
@@ -35,10 +35,7 @@ After creating your virtual enviroment, please install all the requirements:
 For testing purpose, this is all you need!
 
 
-
-
-
-# Running Sherlock
+# Running Sherlock - development mode
 
 Before running the server, you should run the setup file (on the project root):
 
@@ -48,7 +45,11 @@ after that you can run:
 
 > python run_server.py
 
-For now, the first user and pass is hardcoded (srry for that!) admin:admin
+For now, the first user and pass is hardcoded (sorry for that!) admin:admin
+
+
+~~use it on production at your own risk using uwsgi http://flask.pocoo.org/docs/0.10/deploying/uwsgi/~~
+~~(remove debug from the run_server)~~
 
 To talk about Sherlock, give your opinion and or critics, please use the agiletesters forum:
 http://agiletesters.com.br/category/10/sherlock-qa
