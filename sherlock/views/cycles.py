@@ -1,5 +1,5 @@
 """Sherlock Cycles Controllers and Routes."""
-from flask import Blueprint, request, url_for, redirect, g, flash
+from flask import Blueprint, request, url_for, redirect, g, flash, jsonify
 from flask import render_template
 from flask_login import login_required
 from flask_babel import gettext
@@ -7,7 +7,8 @@ from flask_babel import gettext
 
 from sherlock import db
 from sherlock.data.model import Scenario, Project, Case, Cycle, CycleHistory
-from sherlock.helpers.object_loader import load_cycle_history
+from sherlock.data.model import State
+from sherlock.helpers.object_loader import load_cycle_history, count_cycle_stats
 from sherlock.helpers.object_loader import load_cases_names_for_cycle
 
 
@@ -22,15 +23,15 @@ def get_cycles(endpoint, values):
     g.project = project
 
     if 'cycle_id' in values:
-        g.cycle = Cycle.query.filter_by(
+        g.project_cycle = Cycle.query.filter_by(
             id=values.pop('cycle_id')).first_or_404()
 
-        g.project_cycle = Cycle.query.filter_by(
-            id=g.cycle.id).first()
-
         load_cycle_history(g.project_cycle, CycleHistory)
-        g.current_cycle_history = load_cases_names_for_cycle(
-            Scenario, Case, g.current_cycle_history)
+
+        g.cycle_history_formated = load_cases_names_for_cycle(Scenario, Case,
+                                                              CycleHistory,
+                                                              g.project_cycle)
+
     else:
         g.current_cycle = Cycle.query.order_by(
             '-id').filter_by(project_id=g.project.id).first()
@@ -87,3 +88,33 @@ def create():
 @login_required
 def show():
     return render_template("cycle/show.html")
+
+
+@cycle.route('/get_states/<int:cycle_id>', methods=['GET'])
+@login_required
+def get_cycle_cases_states_count():
+    cycle_history = CycleHistory.query.filter_by(
+        cycle_id=g.project_cycle.id)
+    count = count_cycle_stats(cycle_history)
+    return jsonify({"total_error": count['total_error'],
+                    "total_passed": count['total_passed'],
+                    "total_blocked": count['total_blocked'],
+                    "total_not_executed": count['total_not_executed']})
+
+
+@cycle.route('/edit/<int:cycle_id>', methods=['POST'])
+@login_required
+def change_case_status_for_cycle_history():
+    if request.method == 'POST':
+        state_code = request.get_json().get('state_code')
+        case_id = request.get_json().get('case_id')
+        State.query.filter_by(code=state_code).first_or_404()
+        edited_cycle_case = CycleHistory.query.filter_by(
+            cycle_id=g.project_cycle.id).filter_by(case_id=case_id).first()
+        edited_cycle_case.state_code = state_code
+        db.session.add(edited_cycle_case)
+        db.session.commit()
+
+        return jsonify({"status": "ok",
+                        "case_id": case_id,
+                        "state_code": state_code})

@@ -1,6 +1,7 @@
 """Load Objects to be displayed on the sherlock application."""
 from flask import g
 from sherlock import cache
+from collections import defaultdict
 
 
 @cache.memoize(50)
@@ -9,26 +10,38 @@ def project_loader(Project):
     g.projects = Project.query.all()
 
 
-def load_cases_names_for_cycle(Scenario, Case, cycle_history):
+def load_cases_names_for_cycle(Scenario, Case, CycleHistory, c_cycle):
     cases = Case.query.join(
-        Scenario, Case.scenario_id == Scenario.id).filter(
-            Scenario.project_id == cycle_history[0].scenario_id).all()
+         Scenario, Case.scenario_id == Scenario.id).filter(
+            Scenario.project_id == c_cycle.project_id).all()
+
+    history = CycleHistory.query.filter_by(cycle_id=c_cycle.id).all()
+
     scenarios = Scenario.query.filter_by(
-        id=cycle_history[0].scenario_id).all()
+        project_id=c_cycle.project_id).all()
 
-    g.cycle_scenarios = dict()
-    g.cycle_cases = dict()
+    cycle_history_formated = []
 
-    for cycle_item in cycle_history:
-        for case in cases:
-            if cycle_item.case_id == case.id:
-                cycle_item.case_name = case.name
-                g.cycle_cases[case.id] = case.name
-        for scenario in scenarios:
-            if cycle_item.scenario_id == scenario.id:
-                g.cycle_scenarios[scenario.id] = scenario.name
+    for scenario in scenarios:
+        cycle_scenarios = dict()
+        for item in history:
+            if item.scenario_id == scenario.id:
+                cycle_scenarios['name'] = scenario.name
+                cycle_scenarios['id'] = scenario.id
+                cycle_scenarios['cases'] = []
+        cycle_history_formated.append(cycle_scenarios)
 
-    return cycle_history
+    for scenario in cycle_history_formated:
+        for item in history:
+            cycle_cases = dict()
+            for case in cases:
+                if item.case_id == case.id:
+                    cycle_cases['name'] = case.name
+                    cycle_cases['state_code'] = item.state_code
+                    cycle_cases['id'] = case.id
+                    scenario['cases'].append(cycle_cases)
+    return cycle_history_formated
+
 
 def load_cycle_history(current_cycle, CycleHistory):
     if current_cycle:
