@@ -1,4 +1,7 @@
-"""Update translation files for new strings."""
+"""Update translation files for new strings.
+
+To run this pybabel compiler, you must be on the current directory
+"""
 import os
 
 pybabel = 'pybabel'
