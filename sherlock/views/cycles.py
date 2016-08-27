@@ -8,6 +8,7 @@ from flask_babel import gettext
 from sherlock import db
 from sherlock.data.model import Scenario, Project, Case, Cycle, CycleHistory
 from sherlock.helpers.object_loader import load_cycle_history
+from sherlock.helpers.object_loader import load_cases_names_for_cycle
 
 
 cycle = Blueprint('cycle', __name__)
@@ -28,6 +29,8 @@ def get_cycles(endpoint, values):
             id=g.cycle.id).first()
 
         load_cycle_history(g.project_cycle, CycleHistory)
+        g.current_cycle_history = load_cases_names_for_cycle(
+            Scenario, Case, g.current_cycle_history)
     else:
         g.current_cycle = Cycle.query.order_by(
             '-id').filter_by(project_id=g.project.id).first()

@@ -9,6 +9,27 @@ def project_loader(Project):
     g.projects = Project.query.all()
 
 
+def load_cases_names_for_cycle(Scenario, Case, cycle_history):
+    cases = Case.query.join(
+        Scenario, Case.scenario_id == Scenario.id).filter(
+            Scenario.project_id == cycle_history[0].scenario_id).all()
+    scenarios = Scenario.query.filter_by(
+        id=cycle_history[0].scenario_id).all()
+
+    g.cycle_scenarios = dict()
+    g.cycle_cases = dict()
+
+    for cycle_item in cycle_history:
+        for case in cases:
+            if cycle_item.case_id == case.id:
+                cycle_item.case_name = case.name
+                g.cycle_cases[case.id] = case.name
+        for scenario in scenarios:
+            if cycle_item.scenario_id == scenario.id:
+                g.cycle_scenarios[scenario.id] = scenario.name
+
+    return cycle_history
+
 def load_cycle_history(current_cycle, CycleHistory):
     if current_cycle:
         g.current_cycle = current_cycle
