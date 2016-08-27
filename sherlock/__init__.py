@@ -30,12 +30,10 @@ from sherlock.views.users import user
 from sherlock.views.projects import project
 from sherlock.views.scenarios import scenario
 from sherlock.views.dashboard import dashboard
-from sherlock.views.dashboard import home
 from sherlock.views.testcases import test_case
 from sherlock.views.cycles import cycle
 
 
-app.register_blueprint(home, url_prefix='/')
 app.register_blueprint(dashboard, url_prefix='/dashboard')
 app.register_blueprint(user, url_prefix='/user')
 app.register_blueprint(project, url_prefix='/project')
@@ -44,7 +42,12 @@ app.register_blueprint(scenario,
 app.register_blueprint(cycle,
                        url_prefix='/project/<int:project_id>/cycle')
 app.register_blueprint(test_case,
+
                        url_prefix='/scenario/<int:scenario_id>/tst_case')
+
+@app.route('/', methods=['GET'])
+def home():
+    return redirect(url_for('users.login'))
 
 
 @app.errorhandler(404)
