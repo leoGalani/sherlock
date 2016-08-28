@@ -1,6 +1,9 @@
 """Sherlock Project Controllers and Routes."""
 from flask import Blueprint, request, url_for, redirect, g, render_template
+from flask import flash
 from flask_login import login_required
+from flask_babel import gettext
+
 
 from sherlock import db
 from sherlock.data.model import Project, Scenario, Cycle, CycleHistory
@@ -48,6 +51,7 @@ def new():
         new_project = Project(name=request.form['name'])
         db.session.add(new_project)
         db.session.commit()
+        flash(gettext('Project Created!'), 'Success')
         return redirect(url_for('projects.show', project_id=new_project.id))
 
     return render_template("project/new.html", form=form)
@@ -68,6 +72,7 @@ def edit():
         edited_project.name = request.form['name']
         db.session.add(edited_project)
         db.session.commit()
+        flash(gettext('Sucessufly Edited!'), 'Success')
         return redirect(url_for('projects.show', project_id=g.project.id))
 
     return render_template("project/edit.html", form=form)
