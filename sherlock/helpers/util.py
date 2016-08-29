@@ -34,7 +34,7 @@ def load_cases_names_for_cycle(Scenario, Case, CycleHistory, c_cycle):
         for item in history:
             cycle_cases = dict()
             for case in cases:
-                if item.case_id == case.id:
+                if item.case_id == case.id and scenario['id'] == case.scenario_id:
                     cycle_cases['name'] = case.name
                     cycle_cases['state_code'] = item.state_code
                     cycle_cases['id'] = case.id
