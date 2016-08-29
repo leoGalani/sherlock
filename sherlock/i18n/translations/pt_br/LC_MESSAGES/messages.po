@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-08-27 21:48+0200\n"
+"POT-Creation-Date: 2016-08-29 19:18+0200\n"
 "PO-Revision-Date: 2016-08-27 21:46+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "Access deny. Please Login"
 msgstr ""
 
-#: ../__init__.py:49
+#: ../__init__.py:55
 msgid "Route not found: {}"
 msgstr ""
 
@@ -130,7 +130,7 @@ msgid "Projects in sherlock are like containers for your test cenarios and cases
 msgstr ""
 
 #: ../templates/project/new.html:12
-msgid "You can also define execution cyles for each project later."
+msgid "You can also define execution cycles for each project later."
 msgstr ""
 
 #: ../templates/project/new.html:15
@@ -241,24 +241,32 @@ msgstr ""
 msgid "Sign Up!"
 msgstr ""
 
-#: ../views/cycles.py:54
+#: ../views/cycles.py:47
 msgid "Cycle already closed!"
 msgstr ""
 
-#: ../views/cycles.py:59
+#: ../views/cycles.py:52
 msgid "Cycle closed with sucess!"
 msgstr ""
 
-#: ../views/cycles.py:71
+#: ../views/cycles.py:64
 msgid "Close the current cycle first"
 msgstr ""
 
-#: ../views/cycles.py:80
+#: ../views/cycles.py:73
 msgid "You dont have any Test Cases or Scenarios to create a cycle"
 msgstr ""
 
-#: ../views/cycles.py:99
+#: ../views/cycles.py:92
 msgid "Cycle Created!"
+msgstr ""
+
+#: ../views/projects.py:58
+msgid "Project Created!"
+msgstr ""
+
+#: ../views/projects.py:79
+msgid "Sucessufly Edited!"
 msgstr ""
 
 #: ../views/scenarios.py:62
@@ -276,4 +284,7 @@ msgstr ""
 #: ../views/users.py:89
 msgid "Wrong credentials"
 msgstr ""
+
+#~ msgid "You can also define execution cyles for each project later."
+#~ msgstr ""
 
