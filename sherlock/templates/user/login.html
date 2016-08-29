@@ -17,7 +17,7 @@
             <div class="error_msg">[{{ error }}]</div>
         {% endfor %}<br>
         <div class="form-buttons">
-          <p><input type="submit" class="button" value="{{ _('Sign In') }}"></p>
+          <p><input id="sign_in" type="submit" class="button" value="{{ _('Sign In') }}"></p>
           {{ _('Dont have an account?') }} <a href=
           {{ url_for('users.new') }}>{{ _('Sign Up') }}</a>
         </div>
