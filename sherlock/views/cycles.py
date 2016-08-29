@@ -24,7 +24,8 @@ def get_cycles(endpoint, values):
 
     if 'cycle_id' in values:
         g.project_cycle = Cycle.query.filter_by(
-            id=values.pop('cycle_id')).first_or_404()
+            id=values.pop('cycle_id')).filter_by(
+                project_id=g.project.id).first_or_404()
 
         load_cycle_history(g.project_cycle, CycleHistory)
 
