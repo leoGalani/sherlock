@@ -24,7 +24,7 @@ babel = Babel(app)
 
 from sherlock.data import model
 
-from sherlock.helpers.object_loader import project_loader
+from sherlock.helpers.util import project_loader
 
 from sherlock.views.users import user
 from sherlock.views.projects import project
