@@ -27,7 +27,9 @@ def load_cases_names_for_cycle(Scenario, Case, CycleHistory, c_cycle):
                 cycle_scenarios['name'] = scenario.name
                 cycle_scenarios['id'] = scenario.id
                 cycle_scenarios['cases'] = []
-                cycle_history_formated.append(cycle_scenarios)
+                break
+        cycle_history_formated.append(cycle_scenarios)
+
 
     for scenario in cycle_history_formated:
         for item in history:
