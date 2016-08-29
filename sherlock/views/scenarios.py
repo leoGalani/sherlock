@@ -72,7 +72,7 @@ def new():
 
                 db.session.add(new_case)
                 db.session.commit()
-
+            flash(gettext('Scenarios and Cases created!'), 'Success')
             return redirect(url_for('projects.show', project_id=g.project.id))
 
     return render_template("scenario/new.html", form=form)
@@ -91,6 +91,8 @@ def edit():
         scenario.name = request.get_json().get('scenario_name')
         db.session.add(scenario)
         db.session.commit()
+        flash(gettext('Scenario edited!'), 'Success')
+
         return jsonify({"status": "ok",
                         "scenario_id": scenario.id,
                         "scenario_name": scenario.name})

@@ -57,6 +57,8 @@ def edit():
 
         db.session.add(edited_tc)
         db.session.commit()
+        flash(gettext('Case Edited!'), 'Success')
+
         return jsonify({"status": "ok",
                         "case_id": edited_tc.id,
                         "case_name": edited_tc.name})
