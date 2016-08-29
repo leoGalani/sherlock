@@ -231,6 +231,44 @@ textarea{
   width: 100% !important;
 }
 
+.ACTIVE{
+  color: #5DBA9D;
+}
+
+.CLOSED{
+  color: #9e9e9e;
+}
+
+.dashboard_box_header_active{
+  background-color: #5DBA9D;
+  color: white;
+}
+
+.dashboard_box_header_closed{
+  background-color: #9e9e9e;
+}
+
+.dashboard_box_header{
+  padding: 5px;
+  font-weight: 400;
+}
+
+.dashboard_box{
+  float: left;
+    width: 250px;
+    height: 300px;
+    margin: 0 10px 10px 0;
+}
+
+.dashboard_box_container_active{
+  border: solid #5DBA9D;
+  padding: 5px
+}
+
+.dashboard_box_container_close{
+  border: solid #9e9e9e;
+  padding: 5px
+}
 /*  workaround for bootstrap  */
 .panel-default > a >.panel-heading {
     color: #333;

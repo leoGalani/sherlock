@@ -4,24 +4,56 @@
 {% block content %}
 
 <div class="row">
-  <div class="col-md-8 white-box box_margin_dashboards">
-    <h2> Bem vindo ao SherlockQA :) </h2> <br>
+  <div class="col-md-11 white-box box_margin_dashboards">
 
-      Esta é uma versão alpha funcional da idéia inicial do Sherlock <br>
+    {% if g.projects %}
 
-      Como não é uma versão final, não use em produção ainda! <br>
+    <h3> {{ _('Current Cycle Status for active projects')}} </h3> <br>
 
-      Para usar o sherlock é simples:<br>
-      <br>
-      1 - Crie um projeto<br>
-      2 - Crie Cenários e Casos de Teste para este projeto<br>
-      3 - Crie um Ciclo para poder executar seus testes.<br>
-      <br>
-      :)<br>
+    {% for project in g.last_project_cycles %}
+      <div class="dashboard_box">
+        <a href="{{ url_for('cycle.show', project_id=project['project_id'], cycle_id=project['cycle_id'])}}">
+          <header class="
+            {% if project['cycle_status_code'] == 'ACTIVE' %}
+              dashboard_box_header_active
+            {%else%}
+              dashboard_box_header_closed
+            {%endif%} dashboard_box_header">
+              {{ project['project_name'] }}
+            </header> </a>
+      <div class="
+      {% if project['cycle_status_code'] == 'ACTIVE' %}
+        dashboard_box_container_active
+      {%else%}
+        dashboard_box_container_close
+      {%endif%}">
+         <div>{{ _('Current Cycle Number') }} : {{project['cycle_number']}}</div>
+         <div>{{ _('Current State') }} : <span class="{{project['cycle_status_code']}}">{{project['cycle_status_code']}}</span> </div>
+        <div class="project_current_cycle_stats"> {{ _('Not Executed') }} : <span id="show_total_not_executed"> {{project['total_not_executed']}}</span></div>
+        <div class="project_current_cycle_stats"> {{ _('Passed') }} : <span id="show_total_passed"> {{project['total_passed']}}</span></div>
+        <div class="project_current_cycle_stats"> {{ _('Not Passed') }} : <span id="show_total_error"> {{project['total_error']}}</span></div>
+        <div class="project_current_cycle_stats"> {{ _('Blocked') }} : <span id="show_total_blocked"> {{project['total_blocked']}}</span></div>
+      </div>
+    </div>
 
-      Para maiores informações:
-      <a href="http://agiletesters.com.br"> agiletesters.com.br</a>
 
+    {% endfor %}
+    {% else %}
+
+    <h2>{{ _('Welcome to Sherlock!')}}</h2>
+
+    <p> {{_('This seems to be a fresh instalation of the SherlockQA!')}} </p>
+
+    <p> {{_('To start using Sherlock is very simple!')}} </p>
+
+    <p> {{_('First, you can create a project using the menu above or the link bellow:')}} </p>
+
+    <br>
+    <p> {{_('After that you need to create your test scenarios and cases')}} </p>
+
+    <p> {{_('After creating the scenarios and cases, you can start a new cycle and start testing your application!')}} </p>
+
+    {% endif %}
 
   </div>
 
