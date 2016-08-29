@@ -8,7 +8,8 @@ from flask_babel import gettext
 from sherlock import db
 from sherlock.data.model import Project, Scenario, Cycle, CycleHistory
 from sherlock.forms.project import new_project_form, edit_project_form
-from sherlock.helpers.object_loader import load_cycle_history
+from sherlock.helpers.util import load_cycle_history, get_last_cycle
+from sherlock.helpers.util import count_cycle_stats
 
 project = Blueprint('projects', __name__)
 
@@ -19,9 +20,12 @@ def get_project(endpoint, values):
     if 'project_id' in values:
         g.project = Project.query.filter_by(
             id=values.pop('project_id')).first()
-        g.current_cycle = Cycle.query.order_by(
-            '-id').filter_by(project_id=g.project.id).first()
-        load_cycle_history(g.current_cycle, CycleHistory)
+        g.project_cycle = get_last_cycle(Cycle, g.project.id)
+
+        if g.project_cycle:
+            g.current_cycle_history = load_cycle_history(
+                g.project_cycle, CycleHistory)
+            g.current_cycle_stats = count_cycle_stats(g.current_cycle_history)
 
 
 @project.route('/show/<int:project_id>', methods=['GET'])

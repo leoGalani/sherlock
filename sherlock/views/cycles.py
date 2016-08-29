@@ -8,8 +8,9 @@ from flask_babel import gettext
 from sherlock import db
 from sherlock.data.model import Scenario, Project, Case, Cycle, CycleHistory
 from sherlock.data.model import State
-from sherlock.helpers.object_loader import load_cycle_history, count_cycle_stats
-from sherlock.helpers.object_loader import load_cases_names_for_cycle
+from sherlock.helpers.util import load_cycle_history, count_cycle_stats
+from sherlock.helpers.util import load_cases_names_for_cycle
+from sherlock.helpers.util import get_last_cycle
 
 
 cycle = Blueprint('cycle', __name__)
@@ -27,35 +28,26 @@ def get_cycles(endpoint, values):
             id=values.pop('cycle_id')).filter_by(
                 project_id=g.project.id).first_or_404()
 
-        load_cycle_history(g.project_cycle, CycleHistory)
+        g.current_cycle_history = load_cycle_history(
+            g.project_cycle, CycleHistory)
+        g.current_cycle_stats = count_cycle_stats(g.current_cycle_history)
 
-        g.project_cycle = g.current_cycle
-        g.cycle_history_formated = load_cases_names_for_cycle(Scenario, Case,
-                                                              CycleHistory,
-                                                              g.project_cycle)
+        g.cycle_history_formated = load_cases_names_for_cycle(
+            Scenario, Case, CycleHistory, g.project_cycle)
 
     else:
-        g.current_cycle = Cycle.query.order_by(
-            '-id').filter_by(project_id=g.project.id).first()
-
-    if g.current_cycle:
-        if g.current_cycle.state_code == "CLOSED":
-            g.current_cycle_status_open = False
-        else:
-            g.current_cycle_status_open = True
-    else:
-        g.current_cycle_status_open = False
+        g.project_cycle = get_last_cycle(Cycle, g.project.id)
 
 
 @cycle.route('/close/<int:cycle_id>', methods=['POST'])
 @login_required
 def close():
     if request.method == 'POST':
-        if g.current_cycle.state_code == "CLOSED":
+        if g.project_cycle.state_code == "CLOSED":
             flash(gettext('Cycle already closed!'), 'danger')
         else:
-            g.current_cycle.state_code = "CLOSED"
-            db.session.add(g.current_cycle)
+            g.project_cycle.state_code = "CLOSED"
+            db.session.add(g.project_cycle)
             db.session.commit()
             flash(gettext('Cycle closed with sucess!'), 'success')
 
@@ -68,7 +60,7 @@ def close():
 def create():
     if request.method == 'POST':
 
-        if g.current_cycle_status_open:
+        if g.project_cycle.state_code == "ACTIVE":
             flash(gettext('Close the current cycle first'), 'danger')
             return redirect(url_for('projects.show', project_id=g.project.id))
 
@@ -82,8 +74,8 @@ def create():
                           'to create a cycle'), 'danger')
             return redirect(url_for('projects.show', project_id=g.project.id))
 
-        if g.current_cycle:
-            cycle_number = int(g.current_cycle.number) + 1
+        if g.project_cycle:
+            cycle_number = int(g.project_cycle.number) + 1
         else:
             cycle_number = 1
 
