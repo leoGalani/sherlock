@@ -59,10 +59,10 @@ def close():
 @login_required
 def create():
     if request.method == 'POST':
-
-        if g.project_cycle.state_code == "ACTIVE":
-            flash(gettext('Close the current cycle first'), 'danger')
-            return redirect(url_for('projects.show', project_id=g.project.id))
+        if g.project_cycle:
+            if g.project_cycle.state_code == "ACTIVE":
+                flash(gettext('Close the current cycle first'), 'danger')
+                return redirect(url_for('projects.show', project_id=g.project.id))
 
         cases = Case.query.join(
             Scenario, Case.scenario_id == Scenario.id).filter(
