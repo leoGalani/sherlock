@@ -18,15 +18,7 @@ def load_cases_names_for_cycle(Scenario, Case, CycleHistory, c_cycle):
 
     scenarios = Scenario.query.filter_by(project_id=c_cycle.project_id).all()
 
-
-    scenarios_in_history = []
     cycle_history_formated = []
-
-
-    for item in history:
-        scenarios_in_history.append(item.scenario_id)
-
-    scenarios_in_history = set(scenarios_in_history)
 
     for scenario in scenarios:
         cycle_scenarios = dict()
@@ -37,7 +29,6 @@ def load_cases_names_for_cycle(Scenario, Case, CycleHistory, c_cycle):
                 cycle_scenarios['cases'] = []
         if cycle_scenarios:
             cycle_history_formated.append(cycle_scenarios)
-
 
     for scenario in cycle_history_formated:
         for item in history:
