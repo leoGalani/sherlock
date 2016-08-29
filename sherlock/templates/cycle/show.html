@@ -27,13 +27,13 @@
                     <span class="cycle_icons_status">
                      <i id="PASSED_case_id_{{case['id']}}"
                       class="fa fa-check-square {% if case['state_code'] == 'PASSED'%} {{case['state_code']}}{% endif %}" aria-hidden="true"
-                     onclick="change_case_status_for_cycle_history({{case['id']}},'PASSED', {{g.current_cycle.id}})"></i>
+                     onclick="change_case_status_for_cycle_history({{case['id']}},'PASSED', {{g.project_cycle.id}})"></i>
                      <i id="ERROR_case_id_{{case['id']}}"
                      class="fa fa-times-circle {% if case['state_code'] == 'ERROR'%} {{case['state_code']}}{% endif %}" aria-hidden="true"
-                     onclick="change_case_status_for_cycle_history({{case['id']}},'ERROR', {{g.current_cycle.id}})"></i>
+                     onclick="change_case_status_for_cycle_history({{case['id']}},'ERROR', {{g.project_cycle.id}})"></i>
                      <i id="BLOCKED_case_id_{{case['id']}}"
                       class="fa fa-exclamation-triangle {% if case['state_code'] == 'BLOCKED'%} {{case['state_code']}}{% endif %}" aria-hidden="true"
-                     onclick="change_case_status_for_cycle_history({{case['id']}},'BLOCKED', {{g.current_cycle.id}})"></i>
+                     onclick="change_case_status_for_cycle_history({{case['id']}},'BLOCKED', {{g.project_cycle.id}})"></i>
                    </span>
                  </li>
                  {% endfor %}
@@ -46,7 +46,7 @@
     </div>
   <div class="clearfix hidden-sm-up"></div>
   <div class="col-md-3 box_margin_dashboards">
-    {% if g.project.has_cycle %}
+    {% if g.project_cycle %}
       {% include 'cycle/cases_status_widget.html' %}
       {% include 'cycle/status_inside_widget.html' %}
     {% endif %}
