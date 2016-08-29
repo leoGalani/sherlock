@@ -67,9 +67,10 @@ def create():
         cases = Case.query.join(
             Scenario, Case.scenario_id == Scenario.id).filter(
                 Scenario.project_id == g.project.id).filter(
-                    Case.state_code == "ACTIVE")
+                    Case.state_code == "ACTIVE").all()
 
-        if cases.count() == 0:
+
+        if cases.__len__ == 0:
             flash(gettext('You dont have any Test Cases or Scenarios '
                           'to create a cycle'), 'danger')
             return redirect(url_for('projects.show', project_id=g.project.id))
