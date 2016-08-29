@@ -54,11 +54,21 @@ def load_cycle_history(current_cycle, CycleHistory):
     return CycleHistory.query.filter_by(cycle_id=current_cycle.id).all()
 
 
-def load_all_projects_and_cycles(Cycle, Projects):
+def load_last_cyle_status_of_projects(Cycle, CycleHistory, projects):
+    cyclo_stats = []
+    for project in projects:
+        last_cycle = get_last_cycle(Cycle, project.id)
+        if last_cycle:
+            cyclo_history = load_cycle_history(last_cycle, CycleHistory)
+            cycle_stat = count_cycle_stats(cyclo_history)
+            cycle_stat['project_id'] = project.id
+            cycle_stat['project_name'] = project.name
+            cycle_stat['cycle_id'] = last_cycle.id
+            cycle_stat['cycle_number'] = last_cycle.number
+            cycle_stat['cycle_status_code'] = last_cycle.state_code
 
-    for project in g.projects:
-        last_project_cycles = get_last_cycle(Cycle, project.id)
-
+            cyclo_stats.append(cycle_stat)
+    return cyclo_stats
 
 
 def count_cycle_stats(current_cycle_history):
@@ -79,5 +89,4 @@ def count_cycle_stats(current_cycle_history):
     current_cycles_stats['total_error'] = ERROR
     current_cycles_stats['total_blocked'] = BLOCKED
     current_cycles_stats['total_passed'] = PASSED
-
     return current_cycles_stats
