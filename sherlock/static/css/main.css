@@ -48,8 +48,7 @@ body{
 }
 
 .fixed_height{
-   height: 80%;
-   overflow: auto;
+   min-width: : 80%;
 }
 
 .form-buttons{
@@ -283,3 +282,8 @@ textarea{
     border-bottom: 1px solid transparent;
     margin-bottom: 3px;
   }
+
+.menu_dropown_fixed_max_heigth{
+  max-height: 350px;
+  overflow: scroll;
+}

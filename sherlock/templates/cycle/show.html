@@ -7,9 +7,9 @@
       {% for scenario in g.cycle_history_formated %}
       <div class="panel-group" role="tablist">
          <div class="panel panel-default">
-           <a href="#collapseListGroup1_st_{{scenario_id}}" class="collapsed" role="button"
-             data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1_st_{{scenario_id}}">
-            <div class="panel-heading" role="tab" id="collapseListGroupHeading_st_{{scenario_id}}">
+           <a href="#collapseListGroup1_st_{{scenario['id']}}" class="collapsed" role="button"
+             data-toggle="collapse" aria-expanded="false" aria-controls="collapseListGroup1_st_{{scenario['id']}}">
+            <div class="panel-heading" role="tab" id="collapseListGroupHeading_st_{{scenario['id']}}">
               <h5 class="panel-title">
 
                  {{_('Scenario name')}} : {{ scenario['name']}}
@@ -18,7 +18,7 @@
             </div>
             </a>
             <div class="panel-collapse collapse cycle_cases" role="tabpanel"
-              id="collapseListGroup1_st_{{scenario_id}}" aria-labelledby="collapseListGroupHeading_st_{{scenario_id}}"
+              id="collapseListGroup1_st_{{scenario['id']}}" aria-labelledby="collapseListGroupHeading_st_{{scenario['id']}}"
                aria-expanded="false" style="height: 0px;">
                <ul class="list-group">
                  <meta name="csrf-token" content="{{ csrf_token() }}">
