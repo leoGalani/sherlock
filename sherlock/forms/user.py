@@ -1,9 +1,8 @@
 """Form generator for Users."""
+from flask_babel import gettext
 from flask_wtf import Form
 from wtforms import StringField, BooleanField
 from wtforms.validators import DataRequired, EqualTo
-from flask_babel import gettext
-
 
 
 class login_form(Form):

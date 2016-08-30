@@ -5,14 +5,13 @@ For new Test Scenarios, it also create Test Cases
 """
 from flask import Blueprint, request, url_for, redirect, g, render_template
 from flask import flash, jsonify
-from flask_login import login_required
 from flask_babel import gettext
+from flask_login import login_required
 
 from sherlock import db
 from sherlock.data.model import Scenario, Project, Case, TestCaseSchema
 from sherlock.forms.scenario import new_scenario_form
 from sherlock.helpers.string_operations import empty_items_in_dict
-
 
 scenario = Blueprint('scenarios', __name__)
 

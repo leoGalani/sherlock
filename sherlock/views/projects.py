@@ -1,15 +1,14 @@
 """Sherlock Project Controllers and Routes."""
 from flask import Blueprint, request, url_for, redirect, g, render_template
 from flask import flash
-from flask_login import login_required
 from flask_babel import gettext
-
+from flask_login import login_required
 
 from sherlock import db
 from sherlock.data.model import Project, Scenario, Cycle, CycleHistory
 from sherlock.forms.project import new_project_form, edit_project_form
-from sherlock.helpers.util import load_cycle_history, get_last_cycle
 from sherlock.helpers.util import count_cycle_stats
+from sherlock.helpers.util import load_cycle_history, get_last_cycle
 
 project = Blueprint('projects', __name__)
 

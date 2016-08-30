@@ -1,7 +1,8 @@
 """Setup for SHERLOCK database."""
+from datetime import datetime
+
 import bcrypt
 from marshmallow import Schema, fields
-from datetime import datetime
 
 from sherlock import db
 from sherlock.helpers.string_operations import slugify
