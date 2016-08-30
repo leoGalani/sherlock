@@ -14,21 +14,26 @@ html,body {
     padding: 0;
 }
 
+
+html{
+  min-height: 100%;
+  background: -webkit-linear-gradient(left top, #4E4E4E, #2A79C6);
+  background: -o-linear-gradient(bottom right, #4E4E4E, #2A79C6);
+  background: -moz-linear-gradient(bottom right, #4E4E4E, #2A79C6);
+  background: linear-gradient(to bottom right, #4E4E4E, #2A79C6);
+}
+
 h2 {
   margin-bottom: 20px;
 }
 
 
 body{
-  background-color: #336799;
   font-family: Lato, sans-serif;
   font-weight: 300;
   font-size: 20px;
-  background: -webkit-linear-gradient(left top, #96A7BB, #336799);
-  background: -o-linear-gradient(bottom right, #96A7BB, #336799);
-  background: -moz-linear-gradient(bottom right, #66cdcc, #96A7BB);
-  background: linear-gradient(to bottom right, #96A7BB, #336799);
-  }
+  background-color: transparent;
+}
 
   .logo_login{
     width: 220px;
