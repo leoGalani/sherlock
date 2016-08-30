@@ -5,7 +5,6 @@ from flask_login import login_required
 from sherlock import db
 from sherlock.data.model import Scenario, Case
 
-
 test_case = Blueprint('test_cases', __name__)
 
 

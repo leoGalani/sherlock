@@ -14,7 +14,7 @@ def slugify(text, delim=u'-'):
 
 
 def is_empty(obj):
-    return True if obj.__len__() == 0 else False
+    return len(obj) == 0
 
 
 def empty_items_in_dict(dict):

@@ -1,17 +1,15 @@
 """Sherlock Cycles Controllers and Routes."""
 from flask import Blueprint, request, url_for, redirect, g, flash, jsonify
 from flask import render_template
-from flask_login import login_required
 from flask_babel import gettext
-
+from flask_login import login_required
 
 from sherlock import db
 from sherlock.data.model import Scenario, Project, Case, Cycle, CycleHistory
 from sherlock.data.model import State
-from sherlock.helpers.util import load_cycle_history, count_cycle_stats
-from sherlock.helpers.util import load_cases_names_for_cycle
 from sherlock.helpers.util import get_last_cycle
-
+from sherlock.helpers.util import load_cases_names_for_cycle
+from sherlock.helpers.util import load_cycle_history, count_cycle_stats
 
 cycle = Blueprint('cycle', __name__)
 

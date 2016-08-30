@@ -1,15 +1,13 @@
 """Sherlock User Controllers and Routes."""
+import bcrypt
 from flask import Blueprint, request, url_for, redirect, g, render_template
 from flask import flash
-from flask_login import login_required, login_user
 from flask_babel import gettext
-
-import bcrypt
+from flask_login import login_required, login_user
 
 from sherlock import db, login_manager
 from sherlock.data.model import User
 from sherlock.forms.user import login_form, signup_form, edit_user_form
-
 
 user = Blueprint('users', __name__)
 

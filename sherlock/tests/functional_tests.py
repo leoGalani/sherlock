@@ -1,5 +1,7 @@
-from selenium import webdriver
 import unittest
+
+from selenium import webdriver
+
 
 class SherlockFunctionalTests(unittest.TestCase):
     def setUp(self):
