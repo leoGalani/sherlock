@@ -81,21 +81,13 @@ def load_last_cyle_status_of_projects(Cycle, CycleHistory, projects):
 
 
 def count_cycle_stats(current_cycle_history):
-    NOT_EXECUTED, ERROR, BLOCKED, PASSED = 0, 0, 0, 0
-    for item in current_cycle_history:
-        if item.state_code == "NOT_EXECUTED":
-            NOT_EXECUTED += 1
-        elif item.state_code == "ERROR":
-            ERROR += 1
-        elif item.state_code == "BLOCKED":
-            BLOCKED += 1
-        elif item.state_code == "PASSED":
-            PASSED += 1
-
     current_cycles_stats = dict()
+    current_cycles_stats['total_not_executed'] = 0
+    current_cycles_stats['total_error'] = 0
+    current_cycles_stats['total_blocked'] = 0
+    current_cycles_stats['total_passed'] = 0
 
-    current_cycles_stats['total_not_executed'] = NOT_EXECUTED
-    current_cycles_stats['total_error'] = ERROR
-    current_cycles_stats['total_blocked'] = BLOCKED
-    current_cycles_stats['total_passed'] = PASSED
+    for item in current_cycle_history:
+        current_cycles_stats['total_{}'.format(item.state_code.lower())] += 1
+
     return current_cycles_stats
