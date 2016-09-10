@@ -100,6 +100,7 @@
 		function after_add(container, new_row) {
 			var row_count = $(container).attr('data-rf-row-count');
 
+			$("input:text:visible:last").focus();
 			row_count++;
 
 			$('*', new_row).each(function() {
