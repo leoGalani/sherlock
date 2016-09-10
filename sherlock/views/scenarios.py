@@ -5,14 +5,13 @@ For new Test Scenarios, it also create Test Cases
 """
 from flask import Blueprint, request, url_for, redirect, g, render_template
 from flask import flash, jsonify
-from flask_login import login_required
 from flask_babel import gettext
+from flask_login import login_required
 
 from sherlock import db
 from sherlock.data.model import Scenario, Project, Case, TestCaseSchema
 from sherlock.forms.scenario import new_scenario_form
 from sherlock.helpers.string_operations import empty_items_in_dict
-
 
 scenario = Blueprint('scenarios', __name__)
 
@@ -52,11 +51,9 @@ def new():
     form = new_scenario_form()
 
     if form.validate_on_submit() and request.method == 'POST':
-        scenario_name = request.form['tst_scenario']
-
         dict = request.form.to_dict()
         dict.pop('csrf_token')
-        dict.pop('tst_scenario')
+        scenario_name = dict.pop('tst_scenario')
 
         if empty_items_in_dict(dict):
                 flash(gettext('Test Cases cannot be blank'), 'danger')
@@ -66,12 +63,18 @@ def new():
             db.session.add(new_scenario)
             db.session.commit()
 
-            for tst_case in dict:
-                new_case = Case(name=dict[tst_case],
-                                scenario_id=new_scenario.id)
+            first_tst_case = Case(name=dict['tst_case'],
+                                  scenario_id=new_scenario.id)
+            db.session.add(first_tst_case)
 
-                db.session.add(new_case)
-                db.session.commit()
+            for i in range(0, dict.__len__()):
+                if 'tst_case[{}]'.format(i) in dict:
+                    new_case = Case(name=dict['tst_case[{}]'.format(i)],
+                                    scenario_id=new_scenario.id)
+                    db.session.add(new_case)
+                else:
+                    break
+            db.session.commit()
             flash(gettext('Scenarios and Cases created!'), 'Success')
             return redirect(url_for('projects.show', project_id=g.project.id))
 

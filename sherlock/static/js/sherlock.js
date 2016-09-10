@@ -5,7 +5,7 @@ function show_tst_case(scenario_id, url_){
           type: 'GET',
           success: function(response) {
               $( ".cases_col" ).empty();
-              var cases = response[0].reverse();
+              var cases = response[0];
               cases.forEach( function (arrayItem){
                 mount_tst_box(arrayItem)
               });
@@ -177,7 +177,7 @@ function change_case_status_for_cycle_history(case_id, state_code, cycle_id) {
                 if(response.state_code === "BLOCKED"){
                   $('#BLOCKED_case_id_'+case_id).addClass( "BLOCKED" )
                 }
-                
+
                 reload_cycle_total_count(cycle_id)
 
               }
