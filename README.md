@@ -21,29 +21,29 @@ You will need:
 > virtualenv (virtualenvwrapper* optional) -> http://docs.python-guide.org/en/latest/dev/virtualenvs/
 
 If you are using Linux, you may run into some troubles to install bcrpyt
-
-> sudo apt-get install build-essential libssl-dev libffi-dev python-dev
-
+```
+$ sudo apt-get install build-essential libssl-dev libffi-dev python-dev
+```
 If you are on Mac, use brew to install using brew
-
-> brew install bcrypt
-
+```
+$ brew install bcrypt
+```
 After creating your virtual environment, please install all the requirements:
-
-> pip install -r requirements.txt
-
+```
+$ pip install -r requirements.txt
+```
 For testing purposes, this is all you need!
 
 # Running Sherlock - development mode
 
 Before running the server, you should run the setup file (on the project root):
-
-> python setup.py
-
+```
+$ python setup.py
+```
 After that you can run:
-
-> python runserver.py
-
+```
+$ python runserver.py
+```
 For now, the first user and password are hardcoded (sorry for that!): `admin:admin`
 
 ~~use it on production at your own risk using uwsgi http://flask.pocoo.org/docs/0.10/deploying/uwsgi/~~
@@ -57,9 +57,9 @@ http://agiletesters.com.br/category/10/sherlock-qa
 ### Functional Tests
 
 Functional Tests are written in Selenium WebDriver, running against Firefox for now. To run them:
-
-> python sherlock/tests/functional_tests.py 
-
+```
+$ python sherlock/tests/functional_tests.py 
+```
 ---
 This is a open-source project made with love in ![France](https://raw.githubusercontent.com/leoGalani/sherlock/master/sherlock/static/img/flag_france.png) and ![France](https://raw.githubusercontent.com/leoGalani/sherlock/master/sherlock/static/img/flag_brazil.png)
 
