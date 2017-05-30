@@ -1,65 +1,71 @@
 """Sherlock Scenario Controllers and Routes."""
-from flask import Blueprint, request, url_for, redirect, g, jsonify
-from flask_login import login_required
+from flask import Blueprint, request, g, jsonify, abort, make_response
 
-from sherlock import db
-from sherlock.data.model import Scenario, Case
+from sherlock import db, auth
+from sherlock.data.model import Scenario, Case, TestCaseSchema
 
 test_case = Blueprint('test_cases', __name__)
 
 
 @test_case.url_value_preprocessor
-@login_required
-def get_test_case(endpoint, values):
+@auth.login_required
+def pre_process_tstcases(endpoint, values):
     """Blueprint Object Query."""
-    scenario = Scenario.query.filter_by(id=values.pop('scenario_id'))
-    if scenario:
-        if 'test_case_id' in values:
-            query = Case.query.filter_by(id=values.pop('test_case_id'))
-            g.test_case = query.first_or_404()
+    g.scenario = Scenario.query.filter_by(id=values.pop('scenario_id'))
+    if not scenario:
+        abort(make_response(jsonify(message="SCENARIO_NOT_FOUND"), 400))
+
+    if 'test_case_id' in values:
+        g.test_case = Case.query.filter_by(
+            id=values.pop('test_case_id')).first()
+        if not g.test_case:
+            abort(make_response(jsonify(message="CASE_NOT_FOUND"), 400))
 
 
-@test_case.route('/', methods=['GET'])
-@login_required
-def show():
-    """Docstring."""
-    return g.test_case
+@test_case.route('/<int:test_case_id>', methods=['GET'])
+@auth.login_required
+def get_tstcase():
+    """Return Testcase Info."""
+    tstcase_schema = TestCaseSchema(many=False)
+    tstcase = tstcase_schema.dump(g.test_case)
+    return make_response(jsonify(tstcase=tstcase))
 
 
-@test_case.route('/new', methods=['GET', 'POST'])
-@login_required
+@test_case.route('/new', methods=['POST'])
+@auth.login_required
 def new():
     """POST endpoint for new scenarios.
 
     Param:
         name(required)
-        scenario_name(required).
     """
-    if request.method == 'POST':
-        new_test_case = Case(name=request.form['name'],
-                             scenario_id=request.form['scenario_id'])
-        db.session.add(new_test_case)
-        db.session.commit()
-        return redirect(url_for('show', scenario_id=g.test_case.scenario_id))
-    elif request.method == 'GET':
-        pass
-        # TODO return JSON.
+    case_name = request.json.get('name')
+    if not case_name:
+        abort(make_response(jsonify(message="MISSING_CASE_NAME"), 400))
+
+    new_test_case = Case(name=case_name,
+                         scenario_id=g.scenario.id)
+    db.session.add(new_test_case)
+    db.session.commit()
+    return make_response(jsonify(status="CASE_CREATED"))
 
 
 @test_case.route('/edit/<int:test_case_id>', methods=['GET', 'POST'])
-@login_required
+@auth.login_required
 def edit():
-    """POST endpoint for editing existing scenarios."""
-    if request.method == 'POST':
-        edited_tc = g.test_case
-        edited_tc.name = request.get_json().get('case_name')
+    """POST endpoint for new scenarios.
 
-        db.session.add(edited_tc)
-        db.session.commit()
-        flash(gettext('Case Edited!'), 'Success')
+    Param:
+        test_case_id(required)
+    """
+    edited_tc = g.test_case
+    new_case_name = request.get_json().get('case_name')
 
-        return jsonify({"status": "ok",
-                        "case_id": edited_tc.id,
-                        "case_name": edited_tc.name})
-    elif request.method == 'GET':
-        redirect(url_for('projects.show'), project_id=g.project.id)
+    if new_case_name == '':
+        abort(make_response(jsonify(message="CASE_NAME_BLANK"), 400))
+
+    edited_tc.name = new_case_name
+    db.session.add(edited_tc)
+    db.session.commit()
+
+    return make_response(jsonify(status="CASE_EDITED"))
