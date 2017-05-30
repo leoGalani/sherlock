@@ -14,8 +14,7 @@ def get_user(endpoint, values):
         g.user = User.query.filter_by(
             id=values.pop('user_id')).first()
         if not g.user:
-            return jsonify({'status': 'nok',
-                            'msg': 'USER_NOT_FOUND'})
+            abort(make_response(jsonify(message="USER_NOT_FOUND"), 400))
 
 
 @auth.login_required
@@ -24,7 +23,7 @@ def show():
     '''Return a user.'''
     user_schema = UsersSchema(many=False)
     user = user_schema.dump(g.user)
-    return jsonify({'status': 'ok', 'user': user})
+    return make_response(jsonify(user=user))
 
 
 @user.route('/new/', methods=['POST'])
