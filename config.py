@@ -3,7 +3,7 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-CSRF_ENABLED = True
+TOKEN_TIMEOUT = 9999
 SECRET_KEY = 'something-i-hope-you-will-never-figure-out'
 
 SQLALCHEMY_DATABASE_URI = 'sqlite:///{}'.format(os.path.join(
@@ -11,6 +11,8 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///{}'.format(os.path.join(
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 
 SQLALCHEMY_TRACK_MODIFICATIONS = True
+
+
 
 # available languages
 LANGUAGES = {
