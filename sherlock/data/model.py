@@ -3,9 +3,12 @@ from datetime import datetime
 
 import bcrypt
 from marshmallow import Schema, fields
+from itsdangerous import (TimedJSONWebSignatureSerializer
+                          as Serializer, BadSignature, SignatureExpired)
 
-from sherlock import db
+from sherlock import db, secretkey
 from sherlock.helpers.string_operations import slugify
+
 
 
 class State(db.Model):
@@ -105,37 +108,41 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
-    email = db.Column(db.String(50), nullable=False)
-    username = db.Column(db.String(50), nullable=False, unique=True)
+    email = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(50), nullable=False)
 
-    def __init__(self, name, email, username, password):
+    def __init__(self, name, email, password):
         """Setting params to the object."""
         self.name = name
         self.email = email
-        self.username = username
         self.password = bcrypt.hashpw(
             password.encode('utf-8'), bcrypt.gensalt())
 
-    def is_active(self):
-        """True, as all users are active."""
-        return True
-
-    def get_id(self):
-        """Return the email address to satisfy Flask-Login's requirements."""
-        return self.username
-
-    def is_authenticated(self):
-        """Return True if the user is authenticated."""
-        return self.authenticated
-
-    def is_anonymous(self):
-        """False, as anonymous users aren't supported."""
+    def verify_password(self, password):
+        password = pwd.encode('utf-8')
+        if bcrypt.hashpw(password, self.password) == self.password:
+            return True
         return False
 
-    def __repr__(self):
-        """Representative Object Return."""
-        return '<User %r>' % self.username
+    @staticmethod
+    def generate_hash_password(password):
+        return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+    def generate_auth_token(self, expiration=600):
+        s = Serializer(secretkey, expires_in=expiration)
+        return s.dumps({'id': self.id})
+
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(secretkey)
+        try:
+            data = s.loads(token)
+        except SignatureExpired:
+            return None
+        except BadSignature:
+            return None
+        user = User.query.get(data['id'])
+        return user
 
 
 class Cycle(db.Model):
@@ -152,7 +159,7 @@ class Cycle(db.Model):
     cycle_history = db.relationship('CycleHistory')
     created_at = db.Column(db.DateTime, default=datetime.now)
     closed_at = db.Column(db.DateTime)
-    last_edited = db.Column(db.DateTime, default=datetime.now)
+    last_change = db.Column(db.DateTime, default=datetime.now)
 
     def __init__(self, cycle, project_id):
         """Setting params to the object."""
@@ -175,8 +182,8 @@ class CycleHistory(db.Model):
     case_id = db.Column(db.Integer, db.ForeignKey('case.id'))
     scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
     notes = db.Column(db.Text())
-    created_at = db.Column(db.DateTime, default=datetime.now)
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    created_at = db.Column(db.DateTime)
 
     def __init__(self, cycle_id, scenario_id, case_id, notes, created_by):
         """Setting params to the object."""
@@ -185,6 +192,7 @@ class CycleHistory(db.Model):
         self.scenario_id = scenario_id
         self.notes = notes
         self.created_by = created_by
+        self.created_at = datetime.now
 
     def __repr__(self):
         """Representative Object Return."""
@@ -198,3 +206,9 @@ class TestCaseSchema(Schema):
     scenario_id = fields.Int()
     name = fields.Str()
     state_code = fields.Int()
+
+
+class UsersSchema(Schema):
+    id = fields.Int(dump_only=True)
+    name = fields.Str()
+    email = fields.Str()
