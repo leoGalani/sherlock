@@ -200,13 +200,17 @@ class CycleHistory(db.Model):
 
 
 #  SCHEMAS #####
-
 class TestCaseSchema(Schema):
     id = fields.Int(dump_only=True)
     scenario_id = fields.Int()
     name = fields.Str()
-    state_code = fields.Int()
+    state_code = fields.Str()
 
+class ScenariosSchema(Schema):
+    id = fields.Int(dump_only=True)
+    name = fields.Str()
+    state_code = fields.Str()
+    project_id = fields.Int()
 
 class UsersSchema(Schema):
     id = fields.Int(dump_only=True)
