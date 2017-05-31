@@ -3,7 +3,6 @@ from flask import Blueprint, request, g, jsonify, abort, make_response
 from sherlock import db, auth
 from sherlock.data.model import Scenario, Project, Case, TestCaseSchema
 from sherlock.data.model import ScenariosSchema
-from sherlock.forms.scenario import new_scenario_form
 from sherlock.helpers.string_operations import check_none_and_blank
 
 
@@ -43,7 +42,7 @@ def get_scenario():
 
 @scenario.route('/new_scenario_n_cases', methods=['POST'])
 @auth.login_required
-def new():
+def new_scenario_n_cases():
     """POST endpoint for new scenario and test cases.
 
     Params:

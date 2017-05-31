@@ -49,7 +49,7 @@ class Project(db.Model):
         return '<Project %r>' % self.name
 
 
-class Tags(db.model):
+class Tags(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
@@ -149,7 +149,7 @@ class Cycle(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     cycle = db.Column(db.Integer, nullable=False)
-    name = db.Column(db.Stringer(250))
+    name = db.Column(db.String(250))
     project = db.relationship('Project')
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
     state = db.relationship('State')

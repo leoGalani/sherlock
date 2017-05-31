@@ -49,7 +49,7 @@ def new():
 
     new_user = User(name=request.get_json().get('name'),
                     email=request.get_json().get('email'),
-                    password=request.get_json().get('password'),
+                    password=request.get_json().get('password'))
     db.session.add(new_user)
     db.session.commit()
     return make_response(jsonify(message='USER_CREATED'))

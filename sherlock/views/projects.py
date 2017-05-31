@@ -4,9 +4,9 @@ from flask import Blueprint, request, g, jsonify, abort, make_response
 from sherlock import db, auth
 from sherlock.data.model import Project, Scenario, Cycle, CycleHistory
 from sherlock.data.model import ProjectSchema
-from sherlock.forms.project import new_project_form, edit_project_form
-from sherlock.helpers.util import count_cycle_stats, check_none_and_blank
+from sherlock.helpers.util import count_cycle_stats
 from sherlock.helpers.util import load_cycle_history, get_last_cycle
+from sherlock.helpers.string_operations import check_none_and_blank
 
 project = Blueprint('projects', __name__)
 
@@ -74,7 +74,7 @@ def new():
 
 
 @project.route('/edit/<int:project_id>', methods=[ 'POST'])
-@login_required
+@auth.login_required
 def edit():
     """POST endpoint for editing existing users.
 

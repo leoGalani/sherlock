@@ -16,7 +16,7 @@ def get_cycles(endpoint, values):
     """Blueprint Object Query."""
     g.project = Project.query.filter_by(id=values.pop('project_id')).first()
 
-    id g.project is None:
+    if g.project is None:
         abort(make_response(jsonify(message='PROJECT_NOT_FOUND'), 400))
 
     if 'cycle_id' in values:
@@ -104,7 +104,7 @@ def get_cycle_cases_states_count():
 
 
 @cycle.route('/edit/<int:cycle_id>', methods=['POST'])
-@login_required
+@auth.login_required
 def change_case_status_for_cycle_history():
 
     state_code = request.get_json().get('state_code')
