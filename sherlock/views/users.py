@@ -2,7 +2,7 @@
 from flask import Blueprint, request, g, jsonify, abort, make_response
 
 from sherlock import db, auth
-from sherlock.helpers.string_operations import check_str_none_and_blank
+from sherlock.helpers.string_operations import check_none_and_blank
 from sherlock.data.model import User, UsersSchema
 
 user = Blueprint('users', __name__)
@@ -40,9 +40,9 @@ def new():
     email = request.json.get('email')
     password = request.json.get('password')
 
-    check_str_none_and_blank(name, 'name')
-    check_str_none_and_blank(email, 'email')
-    check_str_none_and_blank(password, 'password')
+    check_none_and_blank(name, 'name')
+    check_none_and_blank(email, 'email')
+    check_none_and_blank(password, 'password')
 
     if User.query.filter_by(email = email).first() is not None:
         abort(make_response(jsonify(message='EMAIL_IN_USE'), 400))
@@ -52,7 +52,7 @@ def new():
                     password=request.get_json().get('password'),
     db.session.add(new_user)
     db.session.commit()
-    return make_response(jsonify(status='USER_CREATED'))
+    return make_response(jsonify(message='USER_CREATED'))
 
 
 @auth.login_required
@@ -72,20 +72,20 @@ def edit():
     password = request.get_json().get('password')
 
     if name:
-        check_str_none_and_blank(name, 'name')
+        check_none_and_blank(name, 'name')
         edited_user.name = name
 
     if email:
-        check_str_none_and_blank(email, 'email')
+        check_none_and_blank(email, 'email')
         if not User.query.filter_by(username=email).first():
             edited_user.username = email
         else:
             abort(make_response(jsonify(message='EMAIL_IN_USE'), 400))
 
     if password:
-        check_str_none_and_blank(password, 'password')
+        check_none_and_blank(password, 'password')
         edited_user.password = g.user.generate_hash_password(password)
 
     db.session.add(edited_user)
     db.session.commit()
-    return make_response(jsonify(status='USER_EDITED'))
+    return make_response(jsonify(message='USER_EDITED'))
