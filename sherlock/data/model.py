@@ -10,7 +10,6 @@ from sherlock import db, secretkey
 from sherlock.helpers.string_operations import slugify
 
 
-
 class State(db.Model):
     """Static State Table to avoid Enum."""
 
@@ -216,3 +215,10 @@ class UsersSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str()
     email = fields.Str()
+
+class ProjectSchema(Schema):
+    slug = fields.Str()
+    name = fields.Str()
+    owner = fields.Str()
+    type_of_project = fields.Str()
+    is_private = fields.Bool() #Does it work?
