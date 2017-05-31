@@ -10,36 +10,29 @@ def project_loader(Project):
 
 
 def load_cases_names_for_cycle(Scenario, Case, CycleHistory, c_cycle):
+    """Helper method so the interface can retrive the test scenarios and
+    test names """
+
     cases = Case.query.join(
          Scenario, Case.scenario_id == Scenario.id).filter(
             Scenario.project_id == c_cycle.project_id).all()
 
     history = CycleHistory.query.filter_by(cycle_id=c_cycle.id).all()
-
     scenarios = Scenario.query.filter_by(project_id=c_cycle.project_id).all()
 
-    cycle_history_formated = []
+    for history_item in history:
+        for scenario in scenarios:
+            if history_item.scenario_id == scenario.id:
+                history_item.scenario_name = scenario.name
+                break
 
-    for scenario in scenarios:
-        cycle_scenarios = dict()
-        for item in history:
-            if item.scenario_id == scenario.id:
-                cycle_scenarios['name'] = scenario.name
-                cycle_scenarios['id'] = scenario.id
-                cycle_scenarios['cases'] = []
-        if cycle_scenarios:
-            cycle_history_formated.append(cycle_scenarios)
+    for item in history:
+        for case in cases:
+            if history_item.case_id == case.id:
+                history_item.case_name = case.name
+                break
 
-    for scenario in cycle_history_formated:
-        for item in history:
-            cycle_cases = dict()
-            for case in cases:
-                if item.case_id == case.id and scenario['id'] == case.scenario_id:
-                    cycle_cases['name'] = case.name
-                    cycle_cases['state_code'] = item.state_code
-                    cycle_cases['id'] = case.id
-                    scenario['cases'].append(cycle_cases)
-    return cycle_history_formated
+    return history
 
 def get_last_cycle(Cycle, project_id):
     cycle = Cycle.query.order_by('-id').filter_by(
@@ -66,7 +59,6 @@ def load_last_cyle_status_of_projects(Cycle, CycleHistory, projects):
             cycle_stat['cycle_id'] = last_cycle.id
             cycle_stat['cycle_number'] = last_cycle.number
             cycle_stat['cycle_status_code'] = last_cycle.state_code
-
             cyclo_stats.append(cycle_stat)
     return cyclo_stats
 
