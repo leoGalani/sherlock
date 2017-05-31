@@ -181,17 +181,14 @@ class CycleHistory(db.Model):
     case_id = db.Column(db.Integer, db.ForeignKey('case.id'))
     scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
     notes = db.Column(db.Text())
-    created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    created_at = db.Column(db.DateTime)
+    last_executed_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    last_executed_at = db.Column(db.DateTime)
 
     def __init__(self, cycle_id, scenario_id, case_id, notes, created_by):
         """Setting params to the object."""
         self.cycle_id = cycle_id
         self.case_id = case_id
         self.scenario_id = scenario_id
-        self.notes = notes
-        self.created_by = created_by
-        self.created_at = datetime.now
 
     def __repr__(self):
         """Representative Object Return."""
@@ -199,6 +196,29 @@ class CycleHistory(db.Model):
 
 
 #  SCHEMAS #####
+
+class CycleSchema(Schema):
+    id = fields.Int(dump_only=True)
+    cycle = fields.Int()
+    project_id = fields.Int()
+    name = fields.Str()
+    state_code = fields.Str()
+    created_at = fields.Str()
+    closed_at = fields.Str()
+    last_change = fields.Str()
+
+class CycleHistorySchema(Schema):
+    id = fields.Int(dump_only=True)
+    cycle_id = fields.Int()
+    state_code = fields.Str()
+    case_id = fields.Int()
+    case_name = fields.Str()
+    scenario_id = fields.Int()
+    scenario_name = fields.Str()
+    notes = fields.Str()
+    last_executed_by = fields.Str()
+    last_executed_at = fields.Str()
+
 class TestCaseSchema(Schema):
     id = fields.Int(dump_only=True)
     scenario_id = fields.Int()
