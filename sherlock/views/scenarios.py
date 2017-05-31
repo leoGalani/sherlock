@@ -32,7 +32,7 @@ def get_scenario_n_tst_cases():
                                  cases=tst_cases))
 
 
-@scenario.route('/scenario/<int:scenario_id>', methods=['GET'])
+@scenario.route('/show/<int:scenario_id>', methods=['GET'])
 @auth.login_required
 def get_scenario():
     """Return Testcase Info."""
@@ -56,7 +56,7 @@ def new():
     cases = request.json.get('cases')
 
     for case in cases:
-        if case.strip() != "" :
+        if case.strip() != '' :
             db.session.add(Case(name=case, scenario_id=scenario.id))
     db.session.commit()
     return make_response(jsonify(message='SCENARIO_N_CASES_CREATED'))
@@ -102,7 +102,7 @@ def ___create_scenario(request):
     check_none_and_blank(project_id, 'project_id')
 
     if not Project.query.filter_by(id=project_id).first():
-        abort(make_response(jsonify(message="PROJECT_NOTFOUND"), 400))
+        abort(make_response(jsonify(message='PROJECT_NOTFOUND'), 400))
 
     new_scenario = Scenario(name=scenario_name, project_id=project_id)
     db.session.add(new_scenario)

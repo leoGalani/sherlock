@@ -22,7 +22,7 @@ def pre_process_tstcases(endpoint, values):
             abort(make_response(jsonify(message='CASE_NOT_FOUND'), 400))
 
 
-@test_case.route('/<int:test_case_id>', methods=['GET'])
+@test_case.route('/show/<int:test_case_id>', methods=['GET'])
 @auth.login_required
 def get_tstcase():
     """Return Testcase Info."""
