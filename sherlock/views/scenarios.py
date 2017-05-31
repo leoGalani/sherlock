@@ -1,117 +1,110 @@
-"""
-Sherlock Scenario Controllers and Routes.
+from flask import Blueprint, request, g, jsonify, abort, make_response
 
-For new Test Scenarios, it also create Test Cases
-"""
-from flask import Blueprint, request, url_for, redirect, g, render_template
-from flask import flash, jsonify
-from flask_babel import gettext
-from flask_login import login_required
-
-from sherlock import db
+from sherlock import db, auth
 from sherlock.data.model import Scenario, Project, Case, TestCaseSchema
+from sherlock.data.model import ScenariosSchema
 from sherlock.forms.scenario import new_scenario_form
-from sherlock.helpers.string_operations import empty_items_in_dict
+from sherlock.helpers.string_operations import check_none_and_blank
+
 
 scenario = Blueprint('scenarios', __name__)
 
 
 @scenario.url_value_preprocessor
-def get_scenario(endpoint, values):
+@auth.login_required
+def pre_process_scenario(endpoint, values):
     """Blueprint Object Query."""
-    if 'project_id' in values:
-        p_query = Project.query.filter_by(id=values.pop('project_id'))
-        g.project = p_query.first_or_404()
-        if 'scenario_id' in values:
-            s_query = Scenario.query.filter_by(
-                id=values.pop('scenario_id'))
-            g.scenario = s_query.first_or_404()
+    if 'scenario_id' in values:
+        scenario_id = values.pop('scenario_id')
+        g.scenario = Scenario.query.filter_by(id=scenario_id).first()
+        if g.scenario is None:
+            abort(make_response(jsonify(message='SCENARIO_NOT_FOUND'), 400))
 
 
+@scenario.route('/scenario_n_cases/<int:scenario_id>', methods=['GET'])
+@auth.login_required
+def get_scenario_n_tst_cases():
+    """Return Scenario and Cases."""
+    schema = TestCaseSchema(many=True)
+    tst_cases = schema.dump(g.scenario)
+    return make_response(jsonify(scenario_id=g.scenario.id,
+                                 scenario_name=g.scenario.name,
+                                 cases=tst_cases))
 
-@scenario.route('/get_cases_for_scenario/<int:scenario_id>', methods=['GET'])
-@login_required
-def get_tst_cases():
-    """Docstring."""
-    tst_cases = Case.query.filter_by(scenario_id=g.scenario.id).all()
-    tst_schema = TestCaseSchema(many=True)
-    result = tst_schema.dump(tst_cases)
-    return jsonify(result)
+
+@scenario.route('/scenario/<int:scenario_id>', methods=['GET'])
+@auth.login_required
+def get_scenario():
+    """Return Testcase Info."""
+    scenario_schema = ScenariosSchema(many=False)
+    scenario = scenario_schema.dump(g.scenario)
+    return make_response(jsonify(scenario=scenario))
 
 
-@scenario.route('/new', methods=['GET', 'POST'])
-@login_required
+@scenario.route('/new_scenario_n_cases', methods=['POST'])
+@auth.login_required
 def new():
-    """POST endpoint for new scenarios.
+    """POST endpoint for new scenario and test cases.
 
-    Param:
-        name(required)
-        scenario_name(required).
+    Params:
+         { scenario_name: required,
+           project_id: required,
+           case: [cases_array required]
+         }
     """
-    form = new_scenario_form()
+    scenario = ___create_scenario(request)
+    cases = request.json.get('cases')
 
-    if form.validate_on_submit() and request.method == 'POST':
-        dict = request.form.to_dict()
-        dict.pop('csrf_token')
-        scenario_name = dict.pop('tst_scenario')
+    for case in cases:
+        if case.strip() != "" :
+            db.session.add(Case(name=case, scenario_id=scenario.id))
+    db.session.commit()
+    return make_response(jsonify(message='SCENARIO_N_CASES_CREATED'))
 
-        if empty_items_in_dict(dict):
-                flash(gettext('Test Cases cannot be blank'), 'danger')
-        else:
-            new_scenario = Scenario(name=scenario_name,
-                                    project_id=g.project.id)
-            db.session.add(new_scenario)
-            db.session.commit()
 
-            first_tst_case = Case(name=dict['tst_case'],
-                                  scenario_id=new_scenario.id)
-            db.session.add(first_tst_case)
+@scenario.route('/new', methods=['POST'])
+@auth.login_required
+def new():
+    """POST endpoint for new scenario.
 
-            for i in range(0, dict.__len__()):
-                if 'tst_case[{}]'.format(i) in dict:
-                    new_case = Case(name=dict['tst_case[{}]'.format(i)],
-                                    scenario_id=new_scenario.id)
-                    db.session.add(new_case)
-                else:
-                    break
-            db.session.commit()
-            flash(gettext('Scenarios and Cases created!'), 'Success')
-            return redirect(url_for('projects.show', project_id=g.project.id))
-
-    return render_template("scenario/new.html", form=form)
+    Params:
+         { scenario_name: required,
+           project_id: required,
+         }
+    """
+    scenario = ___create_scenario(request)
+    return make_response(jsonify(message='SCENARIO_CREATED'))
 
 
 @scenario.route('/edit/<int:scenario_id>', methods=['POST'])
-@login_required
+@auth.login_required
 def edit():
     """POST endpoint for editing existing scenarios.
 
     Param:
-        name
+         { "scenario_name": required }
     """
-    if request.method == 'POST':
-        scenario = g.scenario
-        scenario.name = request.get_json().get('scenario_name')
-        db.session.add(scenario)
-        db.session.commit()
-        flash(gettext('Scenario edited!'), 'Success')
+    scenario = g.scenario
+    scenario_name = request.get_json().get('scenario_name')
+    check_none_and_blank(scenario_name, 'scenario_name')
+    scenario.name = scenario_name
+    db.session.add(scenario)
+    db.session.commit()
 
-        return jsonify({"status": "ok",
-                        "scenario_id": scenario.id,
-                        "scenario_name": scenario.name})
-    elif request.method == 'GET':
-        return redirect(url_for('projects.show', project_id=g.project.id))
+    return make_response(jsonify(message='SCENARIO_EDITED'))
 
 
-@login_required
-@scenario.route('/edit/', methods=['GET'])
-def edit_all():
-    scenarios = Scenario.query.filter_by(project_id=g.project.id)
-    if scenarios.count() == 0:
-        flash(gettext('You dont have any test scenario and case to edit'),
-                      'info')
-        return redirect(url_for('projects.show', project_id=g.project.id))
-    else:
-        g.scenarios = scenarios
+def ___create_scenario(request):
+    scenario_name = request.json.get('scenario_name')
+    project_id = request.json.get('project_id')
 
-    return render_template("scenario/edit.html")
+    check_none_and_blank(scenario_name, 'scenario_name')
+    check_none_and_blank(project_id, 'project_id')
+
+    if not Project.query.filter_by(id=project_id).first():
+        abort(make_response(jsonify(message="PROJECT_NOTFOUND"), 400))
+
+    new_scenario = Scenario(name=scenario_name, project_id=project_id)
+    db.session.add(new_scenario)
+    db.session.commit()
+    return new_scenario

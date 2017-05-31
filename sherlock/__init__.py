@@ -28,9 +28,10 @@ from sherlock.views.cycles import cycle
 app.register_blueprint(dashboard, url_prefix='/dashboard')
 app.register_blueprint(user, url_prefix='/user')
 app.register_blueprint(project, url_prefix='/project')
-app.register_blueprint(scenario, url_prefix='/project/<int:project_id>/scenario')
 app.register_blueprint(cycle, url_prefix='/project/<int:project_id>/cycle')
+app.register_blueprint(scenario, url_prefix='/scenario')
 app.register_blueprint(test_case, url_prefix='/scenario/<int:scenario_id>/tst_case')
+
 
 
 @app.errorhandler(404)
