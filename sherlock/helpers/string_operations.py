@@ -18,6 +18,7 @@ def is_empty(obj):
 
 
 def check_str_none_and_blank(string, name):
+    name = name.upper()
     if string is None:
         abort(make_response(jsonify(message='MISSING_{}'.format(name)), 400))
     if string.strip() == '':
