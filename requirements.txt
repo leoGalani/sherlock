@@ -1,16 +1,11 @@
-Babel==2.3.4
 bcrypt==2.0.0
 cffi==1.6.0
 click==6.6
 flake8==2.5.4
 flake8-docstrings==0.2.6
 Flask==0.11
-Flask-Babel==0.11.1
 Flask-Cache==0.13.1
-Flask-Login==0.3.2
-Flask-Restless==0.17.0
 Flask-SQLAlchemy==2.1
-Flask-WTF==0.12
 itsdangerous==0.24
 Jinja2==2.8
 MarkupSafe==0.23
@@ -28,5 +23,5 @@ six==1.10.0
 SQLAlchemy==1.0.12
 Unidecode==0.4.19
 Werkzeug==0.11.10
-WTForms==2.1
+Flask-HTTPAuth==3.2.2
 selenium==2.53.6
