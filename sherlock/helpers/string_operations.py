@@ -17,8 +17,8 @@ def is_empty(obj):
     return len(obj) == 0
 
 
-def empty_items_in_dict(dict):
-    for item in dict:
-        if is_empty(dict[item]):
-            return True
-    return False
+def check_str_none_and_blank(string, name):
+    if string is None:
+        abort(make_response(jsonify(message='MISSING_{}'.format(name)), 400))
+    if string.strip() == '':
+        abort(make_response(jsonify(message='BLANK_{}'.format(name)), 400))
