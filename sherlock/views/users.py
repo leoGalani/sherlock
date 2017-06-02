@@ -10,7 +10,7 @@ user = Blueprint('users', __name__)
 
 @user.url_value_preprocessor
 def get_user(endpoint, values):
-    """Blueprint Object Query."""
+    """ Blueprint Object Query."""
     if 'user_id' in values:
         g.user = User.query.filter_by(
             id=values.pop('user_id')).first()
@@ -18,13 +18,21 @@ def get_user(endpoint, values):
             abort(make_response(jsonify(message='USER_NOT_FOUND'), 400))
 
 
-@auth.login_required
+
 @user.route('/show/<int:user_id>', methods=['GET'])
+@auth.login_required
 def show():
-    """Return a user."""
+    """ Return a user.
+        ex:
+        {
+            "email": "email@email.com",
+            "id": 1,
+            "name": "Name"
+        }
+    """
     user_schema = UsersSchema(many=False)
-    user = user_schema.dump(g.user)
-    return make_response(jsonify(user=user))
+    user = user_schema.dump(g.user).data
+    return make_response(jsonify(user))
 
 
 @user.route('/new/', methods=['POST'])
@@ -55,8 +63,8 @@ def new():
     return make_response(jsonify(message='USER_CREATED'))
 
 
-@auth.login_required
 @user.route('/edit/<int:user_id>', methods=['POST'])
+@auth.login_required
 def edit():
     """POST endpoint for edit user.
 
