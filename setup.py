@@ -5,14 +5,9 @@ from sherlock.data.model import User, State
 db.create_all()
 
 # DONT CHANGE THE CODE BELOW.
-initial_user = User(name="Administrador", email="admin@admin.xpto", password="admin")
-available_state = State(name="active", code="ACTIVE")
-db.session.add(available_state)
-db.session.add(initial_user)
-db.session.commit()
-# DONT CHANGE THE CODE ABOVE.
 
 # general states
+available_state = State(name="active", code="ACTIVE")
 disable_state = State(name="disable", code="DISABLE")
 
 # test_case_states
@@ -24,10 +19,17 @@ blocked_state = State(name="blocked", code="BLOCKED")
 # cycle states
 closed_cycle = State(name="closed", code="CLOSED")
 
+db.session.add(available_state)
 db.session.add(disable_state)
 db.session.add(not_executed_state)
 db.session.add(passed_state)
 db.session.add(error_state)
 db.session.add(blocked_state)
 db.session.add(closed_cycle)
+db.session.commit()
+
+
+
+initial_user = User(name="Administrador", email="admin@admin.xpto", password="admin")
+db.session.add(initial_user)
 db.session.commit()
