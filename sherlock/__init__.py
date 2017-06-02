@@ -1,5 +1,5 @@
 """Flask Main Project File."""
-from flask import Flask, request, abort, jsonify, abort, make_response
+from flask import Flask, request, abort, jsonify, abort, make_response, g
 from flask_httpauth import HTTPBasicAuth
 from flask_sqlalchemy import SQLAlchemy
 from flask_cache import Cache
@@ -33,7 +33,6 @@ app.register_blueprint(scenario, url_prefix='/scenario')
 app.register_blueprint(test_case, url_prefix='/scenario/<int:scenario_id>/tst_case')
 
 
-
 @app.errorhandler(404)
 def page_not_found(error):
     abort(make_response(jsonify(message="ENDPOINT_NOTFOUND"), 404))
@@ -43,18 +42,18 @@ def page_not_found(error):
 def before_request():
     project_loader(model.Project)
 
+
 @auth.verify_password
 def verify_password(username_or_token, password):
     if not model.User.verify_auth_token(username_or_token):
-        user = User.query.filter_by(username=username_or_token).first()
+        user = model.User.query.filter_by(email=username_or_token).first()
         if not user or not user.verify_password(password):
             return False
     g.user = user
     return True
 
-@app.route('/auth_token')
+@app.route('/auth_token', methods=['POST'])
 @auth.login_required
 def get_auth_token():
-
     token = g.user.generate_auth_token(600)
     return jsonify({'token': token.decode('ascii'), 'duration': 600})
