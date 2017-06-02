@@ -118,7 +118,7 @@ class User(db.Model):
             password.encode('utf-8'), bcrypt.gensalt())
 
     def verify_password(self, password):
-        password = pwd.encode('utf-8')
+        password = password.encode('utf-8')
         if bcrypt.hashpw(password, self.password) == self.password:
             return True
         return False
