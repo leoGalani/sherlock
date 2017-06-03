@@ -84,10 +84,10 @@ def show():
         Scenario, Case, CycleHistory, g.project_cycle)
 
     cycle_schema = CycleSchema(many=False)
-    cycle_history_schema = CycleHistorySchema(many=False)
+    cycle_history_schema = CycleHistorySchema(many=Trye)
 
-    cycle = cycle_schema.dump(g.project_cycle)
-    cycle_history = cycle_history_schema.dump(chistory)
+    cycle = cycle_schema.dump(g.project_cycle).data
+    cycle_history = cycle_history_schema.dump(chistory).data
     return make_response(jsonify(cycle_info=cycle, cycle_history=cycle_history))
 
 

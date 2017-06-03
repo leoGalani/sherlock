@@ -25,7 +25,7 @@ def pre_process_scenario(endpoint, values):
 def get_scenario_n_tst_cases():
     """Return Scenario and Cases."""
     schema = TestCaseSchema(many=True)
-    tst_cases = schema.dump(g.scenario)
+    tst_cases = schema.dump(g.scenario).data
     return make_response(jsonify(scenario_id=g.scenario.id,
                                  scenario_name=g.scenario.name,
                                  cases=tst_cases))
@@ -36,8 +36,8 @@ def get_scenario_n_tst_cases():
 def get_scenario():
     """Return Testcase Info."""
     scenario_schema = ScenariosSchema(many=False)
-    scenario = scenario_schema.dump(g.scenario)
-    return make_response(jsonify(scenario=scenario))
+    scenario = scenario_schema.dump(g.scenario).data
+    return make_response(jsonify(scenario))
 
 
 @scenario.route('/new_scenario_n_cases', methods=['POST'])

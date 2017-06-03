@@ -27,8 +27,8 @@ def pre_process_tstcases(endpoint, values):
 def get_tstcase():
     """Return Testcase Info."""
     tstcase_schema = TestCaseSchema(many=False)
-    tstcase = tstcase_schema.dump(g.test_case)
-    return make_response(jsonify(tstcase=tstcase))
+    tstcase = tstcase_schema.dump(g.test_case).data
+    return make_response(jsonify(tstcase))
 
 
 @test_case.route('/new', methods=['POST'])

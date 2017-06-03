@@ -25,20 +25,25 @@ def get_project(endpoint, values):
 
 @project.route('/show/<int:project_id>', methods=['GET'])
 @auth.login_required
-def get_project_details_n_last_cycle():
+def get_project_details():
     """Show Project Details."""
     schema = ProjectSchema(many=False)
-    project = schema.dump(g.project)
+    project = schema.dump(g.project).data
+    return make_response(jsonify(project))
 
+
+@project.route('/show_cycle_details/<int:project_id>', methods=['GET'])
+@auth.login_required
+def get_project_last_cycle():
     project_cycle = get_last_cycle(Cycle, g.project.id)
 
     if project_cycle is not None:
         current_c_history = load_cycle_history(project_cycle, CycleHistory)
         current_c_stats = count_cycle_stats(current_c_history)
-        return make_response(jsonify(project=project,
-                                     current_cycle_stats=current_c_stats))
+        return make_response(jsonify(get_cycle="YES",
+                                     current_c_stats))
     else:
-        return make_response(jsonify(project=project))
+        return make_response(jsonify(get_cycle="NO"))
 
 
 @project.route('/new', methods=['POST'])
