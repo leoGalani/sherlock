@@ -11,8 +11,8 @@ test_case = Blueprint('test_cases', __name__)
 @auth.login_required
 def pre_process_tstcases(endpoint, values):
     """Blueprint Object Query."""
-    g.scenario = Scenario.query.filter_by(id=values.pop('scenario_id'))
-    if not scenario:
+    g.scenario = Scenario.query.filter_by(id=values.pop('scenario_id')).first()
+    if g.scenario is None:
         abort(make_response(jsonify(message='SCENARIO_NOT_FOUND'), 400))
 
     if 'test_case_id' in values:
@@ -42,7 +42,8 @@ def new():
     case_name = request.json.get('case_name')
     check_none_and_blank(case_name, 'case')
 
-    db.session.add(Case(name=case_name, scenario_id=g.scenario.id))
+    case = Case(name=case_name, scenario_id=g.scenario.id)
+    db.session.add(case)
     db.session.commit()
     return make_response(jsonify(message='CASE_CREATED'))
 
