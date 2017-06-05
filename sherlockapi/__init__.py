@@ -1,5 +1,5 @@
 """Flask Main Project File."""
-from flask import Flask, request, abort, jsonify, abort, make_response
+from flask import Flask, request, abort, jsonify, abort, make_response, g
 from flask_httpauth import HTTPBasicAuth
 from flask_sqlalchemy import SQLAlchemy
 from flask_cache import Cache
@@ -55,6 +55,5 @@ def verify_password(username_or_token, password):
 @app.route('/auth_token')
 @auth.login_required
 def get_auth_token():
-
     token = g.user.generate_auth_token(600)
     return jsonify({'token': token.decode('ascii'), 'duration': 600})

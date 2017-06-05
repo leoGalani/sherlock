@@ -1,5 +1,5 @@
 '''Sherlock User Controllers and Routes.'''
-from flask import Blueprint, request, g, jsonify, abort, make_response
+from flask import Blueprint, request, g, jsonify, make_response
 
 from sherlockapi import db, auth
 from sherlockapi.helpers.string_operations import check_none_and_blank
@@ -15,7 +15,7 @@ def get_user(endpoint, values):
         g.user = User.query.filter_by(
             id=values.pop('user_id')).first()
         if not g.user:
-            abort(make_response(jsonify(message='USER_NOT_FOUND'), 400))
+            return make_response(jsonify(message='USER_NOT_FOUND'), 404)
 
 
 @user.route('/show/<int:user_id>', methods=['GET'])
@@ -24,7 +24,7 @@ def show():
     """Return a user."""
     user_schema = UsersSchema(many=False)
     user = user_schema.dump(g.user).data
-    return make_response(jsonify(user=user))
+    return make_response(jsonify(user))
 
 
 @user.route('/new/', methods=['POST'])
@@ -45,7 +45,7 @@ def new():
     check_none_and_blank(password, 'password')
 
     if User.query.filter_by(email = email).first() is not None:
-        abort(make_response(jsonify(message='EMAIL_IN_USE'), 400))
+        return make_response(jsonify(message='EMAIL_IN_USE'), 400)
 
     new_user = User(name=request.get_json().get('name'),
                     email=request.get_json().get('email'),
@@ -80,7 +80,7 @@ def edit():
         if not User.query.filter_by(username=email).first():
             edited_user.username = email
         else:
-            abort(make_response(jsonify(message='EMAIL_IN_USE'), 400))
+            return make_response(jsonify(message='EMAIL_IN_USE'), 400)
 
     if password:
         check_none_and_blank(password, 'password')

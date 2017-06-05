@@ -31,17 +31,17 @@ class Project(db.Model):
     name = db.Column(db.String(50), nullable=False)
     owner = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     type_of_project = db.Column(db.String(50), nullable=False)
-    is_private = db.Column(db.Boolean, nullable=False)
+    privacy_policy = db.Column(db.String(50), nullable=False)
 
     scenario = db.relationship('Scenario')
 
-    def __init__(self, name, owner, type_of_project, is_private):
+    def __init__(self, name, owner, type_of_project, privacy_policy):
         """Setting params to the object."""
         self.name = name
         self.slug = slugify(name)
         self.owner = owner
         self.type_of_project = type_of_project
-        self.is_private = is_private
+        self.privacy_policy = privacy_policy
 
 
     def __repr__(self):
@@ -118,7 +118,7 @@ class User(db.Model):
             password.encode('utf-8'), bcrypt.gensalt())
 
     def verify_password(self, password):
-        password = pwd.encode('utf-8')
+        password = password.encode('utf-8')
         if bcrypt.hashpw(password, self.password) == self.password:
             return True
         return False
