@@ -1,6 +1,6 @@
 """Setup script to create and populate the database."""
-from sherlock import db
-from sherlock.data.model import User, State
+from sherlockapi import db
+from sherlockapi.data.model import User, State
 
 db.create_all()
 

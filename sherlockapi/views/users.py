@@ -1,9 +1,9 @@
 '''Sherlock User Controllers and Routes.'''
 from flask import Blueprint, request, g, jsonify, abort, make_response
 
-from sherlock import db, auth
-from sherlock.helpers.string_operations import check_none_and_blank
-from sherlock.data.model import User, UsersSchema
+from sherlockapi import db, auth
+from sherlockapi.helpers.string_operations import check_none_and_blank
+from sherlockapi.data.model import User, UsersSchema
 
 user = Blueprint('users', __name__)
 
@@ -18,12 +18,12 @@ def get_user(endpoint, values):
             abort(make_response(jsonify(message='USER_NOT_FOUND'), 400))
 
 
-@auth.login_required
 @user.route('/show/<int:user_id>', methods=['GET'])
+@auth.login_required
 def show():
     """Return a user."""
     user_schema = UsersSchema(many=False)
-    user = user_schema.dump(g.user)
+    user = user_schema.dump(g.user).data
     return make_response(jsonify(user=user))
 
 
@@ -55,8 +55,8 @@ def new():
     return make_response(jsonify(message='USER_CREATED'))
 
 
-@auth.login_required
 @user.route('/edit/<int:user_id>', methods=['POST'])
+@auth.login_required
 def edit():
     """POST endpoint for edit user.
 

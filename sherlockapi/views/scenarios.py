@@ -1,9 +1,9 @@
 from flask import Blueprint, request, g, jsonify, abort, make_response
 
-from sherlock import db, auth
-from sherlock.data.model import Scenario, Project, Case, TestCaseSchema
-from sherlock.data.model import ScenariosSchema
-from sherlock.helpers.string_operations import check_none_and_blank
+from sherlockapi import db, auth
+from sherlockapi.data.model import Scenario, Project, Case, TestCaseSchema
+from sherlockapi.data.model import ScenariosSchema
+from sherlockapi.helpers.string_operations import check_none_and_blank
 
 
 scenario = Blueprint('scenarios', __name__)

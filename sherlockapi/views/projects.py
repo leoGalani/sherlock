@@ -1,12 +1,12 @@
 """Sherlock Project Controllers and Routes."""
 from flask import Blueprint, request, g, jsonify, abort, make_response
 
-from sherlock import db, auth
-from sherlock.data.model import Project, Scenario, Cycle, CycleHistory
-from sherlock.data.model import ProjectSchema
-from sherlock.helpers.util import count_cycle_stats
-from sherlock.helpers.util import load_cycle_history, get_last_cycle
-from sherlock.helpers.string_operations import check_none_and_blank
+from sherlockapi import db, auth
+from sherlockapi.data.model import Project, Scenario, Cycle, CycleHistory
+from sherlockapi.data.model import ProjectSchema
+from sherlockapi.helpers.util import count_cycle_stats
+from sherlockapi.helpers.util import load_cycle_history, get_last_cycle
+from sherlockapi.helpers.string_operations import check_none_and_blank
 
 project = Blueprint('projects', __name__)
 
@@ -41,7 +41,7 @@ def get_project_last_cycle():
         current_c_history = load_cycle_history(project_cycle, CycleHistory)
         current_c_stats = count_cycle_stats(current_c_history)
         return make_response(jsonify(get_cycle="YES",
-                                     current_c_stats))
+                                     stats=current_c_stats))
     else:
         return make_response(jsonify(get_cycle="NO"))
 

@@ -1,12 +1,12 @@
 """Sherlock Cycles Controllers and Routes."""
 from flask import Blueprint, request, g, jsonify, abort, make_response
 
-from sherlock import db, auth
-from sherlock.data.model import Scenario, Project, Case, Cycle, CycleHistory
-from sherlock.data.model import State, CycleSchema, CycleHistorySchema
-from sherlock.helpers.util import get_last_cycle
-from sherlock.helpers.util import load_cases_names_for_cycle
-from sherlock.helpers.util import load_cycle_history, count_cycle_stats
+from sherlockapi import db, auth
+from sherlockapi.data.model import Scenario, Project, Case, Cycle, CycleHistory
+from sherlockapi.data.model import State, CycleSchema, CycleHistorySchema
+from sherlockapi.helpers.util import get_last_cycle
+from sherlockapi.helpers.util import load_cases_names_for_cycle
+from sherlockapi.helpers.util import load_cycle_history, count_cycle_stats
 
 cycle = Blueprint('cycle', __name__)
 

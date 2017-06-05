@@ -6,8 +6,8 @@ from marshmallow import Schema, fields
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 
-from sherlock import db, secretkey
-from sherlock.helpers.string_operations import slugify
+from sherlockapi import db, secretkey
+from sherlockapi.helpers.string_operations import slugify
 
 
 class State(db.Model):
