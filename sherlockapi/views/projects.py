@@ -88,16 +88,16 @@ def edit():
     """POST endpoint for editing existing users.
 
     Param:
-         { name: not required,
-           is_private: not required (boolean),
-           owner: not required,
-           type_of_project: not required
-         }
+        { project_name: not required,
+          privacy_policy: not required (public or false),
+          project_owner: not required (current_user_id),
+          type_of_project: not required
+        }
     """
     edited_project = g.project
 
     project_name = request.json.get('project_name')
-    is_private = request.json.get('is_private')
+    privacy_policy = request.json.get('privacy_policy')
     project_owner = request.json.get('project_owner')
     type_of_project = request.json.get('type_of_project')
 
@@ -105,9 +105,9 @@ def edit():
         check_none_and_blank(project_name, 'project_name')
         edited_project.name = project_name
 
-    if is_private:
-        check_none_and_blank(is_private, 'is_private')
-        edited_project.is_private = is_private
+    if privacy_policy:
+        check_none_and_blank(privacy_policy, 'privacy_policy')
+        edited_project.privacy_policy = privacy_policy
 
     if project_owner:
         check_none_and_blank(project_owner, 'project_owner')
