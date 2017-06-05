@@ -1,5 +1,6 @@
 """Sherlock Cycles Controllers and Routes."""
 from flask import Blueprint, request, g, jsonify, abort, make_response
+from datetime import datetime
 
 from sherlockapi import db, auth
 from sherlockapi.data.model import Scenario, Project, Case, Cycle, CycleHistory
@@ -14,6 +15,10 @@ cycle = Blueprint('cycle', __name__)
 @auth.login_required
 def get_cycles(endpoint, values):
     """Blueprint Object Query."""
+    if request.method is 'POST':
+        if request.json is None:
+            return make_response(jsonify(message='MISSING_JSON_HEADER'), 400)
+
     g.project = Project.query.filter_by(id=values.pop('project_id')).first()
 
     if g.project is None:
@@ -30,23 +35,42 @@ def get_cycles(endpoint, values):
 @cycle.route('/close/<int:cycle_id>', methods=['POST'])
 @auth.login_required
 def close():
+    #TODO: Check untested cases.
+
+        """POST endpoint for closing cycles.
+        Param:
+            {'reason': required  }
+        """
+
     if g.project_cycle.state_code == "CLOSED":
         return make_response(jsonify(message='CYCLE_CLOSED'))
     else:
+
+        g.project_cycle.closed_reason = request.json.get('reason')
+        g.project_cycle.closed_by = g.user.id
+
         g.project_cycle.state_code = "CLOSED"
+        g.project_cycle.closed_at = datetime.now()
+        g.project_cycle.last_change = datetime.now()
+
         db.session.add(g.project_cycle)
         db.session.commit()
         return make_response(jsonify(message='CYCLE_CLOSED'))
 
 
-@cycle.route('/create', methods=['POST'])
+@cycle.route('/new', methods=['POST'])
 @auth.login_required
 def create():
+    """POST endpoint for new cycles.
+    Param:
+        {'cycle_name': required but can be empty }
+    """
     project_lasty_cycle = get_last_cycle(Cycle, g.project.id)
+
     if project_lasty_cycle:
-        if g.project_cycle.state_code == "ACTIVE":
-            abort(make_response(jsonify(message='CURRENT_CYCLE_ACTIVE'), 400))
-        cycle_number = int(g.project_cycle.cycle) + 1
+        if project_lasty_cycle.state_code == "ACTIVE":
+            return make_response(jsonify(message='CURRENT_CYCLE_ACTIVE'), 400)
+        cycle_number = int(get_last_cycle.cycle) + 1
     else:
         cycle_number = 1
 
@@ -58,22 +82,23 @@ def create():
     if len(cases) == 0:
         abort(make_response(jsonify(message='NO_TEST_SCENARIOS'), 400))
 
-
-    cycle_name = request.json.get('cycle_name')
-    if cycle_name is None:
+    if request.json.get('cycle_name') is not None:
+        cycle_name = request.json.get('cycle_name')
+    else:
         cycle_name = "Cycle Number {}".format(cycle_number)
 
     new_cycle = Cycle(cycle=cycle_number,
                       name= cycle_name,
                       project_id=g.project.id)
     db.session.add(new_cycle)
-    db.session.commit()
 
     for case in cases:
-        item = CycleHistory(cycle_id=new_cycle.id, case_id=case.id,
+        item = CycleHistory(cycle_id=new_cycle.id,
+                            case_id=case.id,
                             scenario_id=case.scenario_id)
         db.session.add(item)
-        db.session.commit()
+
+    db.session.commit()
     return make_response(jsonify(message='CYCLE_CREATED'))
 
 

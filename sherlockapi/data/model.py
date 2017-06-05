@@ -158,11 +158,14 @@ class Cycle(db.Model):
     cycle_history = db.relationship('CycleHistory')
     created_at = db.Column(db.DateTime, default=datetime.now)
     closed_at = db.Column(db.DateTime)
+    closed_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    closed_reason = db.Column(db.String(250))
     last_change = db.Column(db.DateTime, default=datetime.now)
 
-    def __init__(self, cycle, project_id):
+    def __init__(self, cycle, name, project_id):
         """Setting params to the object."""
         self.cycle = cycle
+        self.name = name
         self.project_id = project_id
 
     def __repr__(self):
@@ -184,7 +187,7 @@ class CycleHistory(db.Model):
     last_executed_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     last_executed_at = db.Column(db.DateTime)
 
-    def __init__(self, cycle_id, scenario_id, case_id, notes, created_by):
+    def __init__(self, cycle_id, scenario_id, case_id):
         """Setting params to the object."""
         self.cycle_id = cycle_id
         self.case_id = case_id
