@@ -1,9 +1,9 @@
 from flask import Blueprint, request, g, jsonify, abort, make_response
 
-from sherlock import db, auth
-from sherlock.data.model import Scenario, Project, Case, TestCaseSchema
-from sherlock.data.model import ScenariosSchema
-from sherlock.helpers.string_operations import check_none_and_blank
+from sherlockapi import db, auth
+from sherlockapi.data.model import Scenario, Project, Case, TestCaseSchema
+from sherlockapi.data.model import ScenariosSchema
+from sherlockapi.helpers.string_operations import check_none_and_blank
 
 
 scenario = Blueprint('scenarios', __name__)
@@ -13,6 +13,9 @@ scenario = Blueprint('scenarios', __name__)
 @auth.login_required
 def pre_process_scenario(endpoint, values):
     """Blueprint Object Query."""
+    if request.method is 'POST':
+        if request.json is None:
+            return make_response(jsonify(message='MISSING_JSON_HEADER'), 400)
     if 'scenario_id' in values:
         scenario_id = values.pop('scenario_id')
         g.scenario = Scenario.query.filter_by(id=scenario_id).first()
@@ -25,7 +28,8 @@ def pre_process_scenario(endpoint, values):
 def get_scenario_n_tst_cases():
     """Return Scenario and Cases."""
     schema = TestCaseSchema(many=True)
-    tst_cases = schema.dump(g.scenario)
+    cases = Case.query.filter_by(scenario_id=g.scenario.id).all()
+    tst_cases = schema.dump(cases).data
     return make_response(jsonify(scenario_id=g.scenario.id,
                                  scenario_name=g.scenario.name,
                                  cases=tst_cases))
@@ -36,8 +40,8 @@ def get_scenario_n_tst_cases():
 def get_scenario():
     """Return Testcase Info."""
     scenario_schema = ScenariosSchema(many=False)
-    scenario = scenario_schema.dump(g.scenario)
-    return make_response(jsonify(scenario=scenario))
+    scenario = scenario_schema.dump(g.scenario).data
+    return make_response(jsonify(scenario))
 
 
 @scenario.route('/new_scenario_n_cases', methods=['POST'])
@@ -48,17 +52,17 @@ def new_scenario_n_cases():
     Params:
          { scenario_name: required,
            project_id: required,
-           case: [cases_array required]
+           cases: [cases_array required]
          }
     """
-    scenario = ___create_scenario(request)
+    scenario = _create_scenario(request)
     cases = request.json.get('cases')
 
     for case in cases:
         if case.strip() != '' :
             db.session.add(Case(name=case, scenario_id=scenario.id))
     db.session.commit()
-    return make_response(jsonify(message='SCENARIO_N_CASES_CREATED'))
+    return make_response(jsonify(message='SCENARIO_AND_CASES_CREATED'))
 
 
 @scenario.route('/new', methods=['POST'])
@@ -71,7 +75,7 @@ def new():
            project_id: required,
          }
     """
-    scenario = ___create_scenario(request)
+    scenario = _create_scenario(request)
     return make_response(jsonify(message='SCENARIO_CREATED'))
 
 
@@ -93,7 +97,7 @@ def edit():
     return make_response(jsonify(message='SCENARIO_EDITED'))
 
 
-def ___create_scenario(request):
+def _create_scenario(request):
     scenario_name = request.json.get('scenario_name')
     project_id = request.json.get('project_id')
 

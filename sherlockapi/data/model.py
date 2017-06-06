@@ -6,8 +6,8 @@ from marshmallow import Schema, fields
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 
-from sherlock import db, secretkey
-from sherlock.helpers.string_operations import slugify
+from sherlockapi import db, secretkey
+from sherlockapi.helpers.string_operations import slugify
 
 
 class State(db.Model):
@@ -31,17 +31,17 @@ class Project(db.Model):
     name = db.Column(db.String(50), nullable=False)
     owner = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     type_of_project = db.Column(db.String(50), nullable=False)
-    is_private = db.Column(db.Boolean, nullable=False)
+    privacy_policy = db.Column(db.String(50), nullable=False)
 
     scenario = db.relationship('Scenario')
 
-    def __init__(self, name, owner, type_of_project, is_private):
+    def __init__(self, name, owner, type_of_project, privacy_policy):
         """Setting params to the object."""
         self.name = name
         self.slug = slugify(name)
         self.owner = owner
         self.type_of_project = type_of_project
-        self.is_private = is_private
+        self.privacy_policy = privacy_policy
 
 
     def __repr__(self):
@@ -158,11 +158,14 @@ class Cycle(db.Model):
     cycle_history = db.relationship('CycleHistory')
     created_at = db.Column(db.DateTime, default=datetime.now)
     closed_at = db.Column(db.DateTime)
+    closed_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    closed_reason = db.Column(db.String(250))
     last_change = db.Column(db.DateTime, default=datetime.now)
 
-    def __init__(self, cycle, project_id):
+    def __init__(self, cycle, name, project_id):
         """Setting params to the object."""
         self.cycle = cycle
+        self.name = name
         self.project_id = project_id
 
     def __repr__(self):
@@ -184,7 +187,7 @@ class CycleHistory(db.Model):
     last_executed_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     last_executed_at = db.Column(db.DateTime)
 
-    def __init__(self, cycle_id, scenario_id, case_id, notes, created_by):
+    def __init__(self, cycle_id, scenario_id, case_id):
         """Setting params to the object."""
         self.cycle_id = cycle_id
         self.case_id = case_id

@@ -1,8 +1,8 @@
 from flask import Blueprint, request, g, jsonify, abort, make_response
 
-from sherlock import db, auth
-from sherlock.data.model import Scenario, Case, TestCaseSchema
-from sherlock.helpers.string_operations import check_none_and_blank
+from sherlockapi import db, auth
+from sherlockapi.data.model import Scenario, Case, TestCaseSchema
+from sherlockapi.helpers.string_operations import check_none_and_blank
 
 test_case = Blueprint('test_cases', __name__)
 
@@ -11,8 +11,8 @@ test_case = Blueprint('test_cases', __name__)
 @auth.login_required
 def pre_process_tstcases(endpoint, values):
     """Blueprint Object Query."""
-    g.scenario = Scenario.query.filter_by(id=values.pop('scenario_id'))
-    if not scenario:
+    g.scenario = Scenario.query.filter_by(id=values.pop('scenario_id')).first()
+    if g.scenario is None:
         abort(make_response(jsonify(message='SCENARIO_NOT_FOUND'), 400))
 
     if 'test_case_id' in values:
@@ -27,8 +27,8 @@ def pre_process_tstcases(endpoint, values):
 def get_tstcase():
     """Return Testcase Info."""
     tstcase_schema = TestCaseSchema(many=False)
-    tstcase = tstcase_schema.dump(g.test_case)
-    return make_response(jsonify(tstcase=tstcase))
+    tstcase = tstcase_schema.dump(g.test_case).data
+    return make_response(jsonify(tstcase))
 
 
 @test_case.route('/new', methods=['POST'])
@@ -42,7 +42,8 @@ def new():
     case_name = request.json.get('case_name')
     check_none_and_blank(case_name, 'case')
 
-    db.session.add(Case(name=case_name, scenario_id=g.scenario.id))
+    case = Case(name=case_name, scenario_id=g.scenario.id)
+    db.session.add(case)
     db.session.commit()
     return make_response(jsonify(message='CASE_CREATED'))
 

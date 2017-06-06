@@ -1,6 +1,6 @@
 """Load Objects to be displayed on the sherlock application."""
 from flask import g
-from sherlock import cache
+from sherlockapi import cache
 
 
 @cache.memoize(50)

@@ -14,15 +14,15 @@ cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 auth = HTTPBasicAuth()
 
-from sherlock.data import model
-from sherlock.helpers.util import project_loader
+from sherlockapi.data import model
+from sherlockapi.helpers.util import project_loader
 
-from sherlock.views.users import user
-from sherlock.views.projects import project
-from sherlock.views.scenarios import scenario
-from sherlock.views.dashboard import dashboard
-from sherlock.views.testcases import test_case
-from sherlock.views.cycles import cycle
+from sherlockapi.views.users import user
+from sherlockapi.views.projects import project
+from sherlockapi.views.scenarios import scenario
+from sherlockapi.views.dashboard import dashboard
+from sherlockapi.views.testcases import test_case
+from sherlockapi.views.cycles import cycle
 
 
 app.register_blueprint(dashboard, url_prefix='/dashboard')
@@ -35,7 +35,7 @@ app.register_blueprint(test_case, url_prefix='/scenario/<int:scenario_id>/tst_ca
 
 @app.errorhandler(404)
 def page_not_found(error):
-    abort(make_response(jsonify(message="ENDPOINT_NOTFOUND"), 404))
+    return make_response(jsonify(message="ENDPOINT_NOTFOUND"), 404)
 
 
 @app.before_request
