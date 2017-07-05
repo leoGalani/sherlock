@@ -36,11 +36,10 @@ def get_cycles(endpoint, values):
 @auth.login_required
 def close():
     #TODO: Check untested cases.
-
-        """POST endpoint for closing cycles.
-        Param:
-            {'reason': required  }
-        """
+    """POST endpoint for closing cycles.
+    Param:
+        {'reason': required  }
+    """
 
     if g.project_cycle.state_code == "CLOSED":
         return make_response(jsonify(message='CYCLE_CLOSED'))
