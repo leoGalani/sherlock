@@ -10,7 +10,7 @@ user = Blueprint('users', __name__)
 
 @user.url_value_preprocessor
 def get_user(endpoint, values):
-    """Blueprint Object Query."""
+    """ Blueprint Object Query."""
     if 'user_id' in values:
         g.user = User.query.filter_by(
             id=values.pop('user_id')).first()
@@ -21,7 +21,14 @@ def get_user(endpoint, values):
 @user.route('/show/<int:user_id>', methods=['GET'])
 @auth.login_required
 def show():
-    """Return a user."""
+    """ Return a user.
+        ex:
+        {
+            "email": "email@email.com",
+            "id": 1,
+            "name": "Name"
+        }
+    """
     user_schema = UsersSchema(many=False)
     user = user_schema.dump(g.user).data
     return make_response(jsonify(user))

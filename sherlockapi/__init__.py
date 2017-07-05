@@ -33,7 +33,6 @@ app.register_blueprint(scenario, url_prefix='/scenario')
 app.register_blueprint(test_case, url_prefix='/scenario/<int:scenario_id>/tst_case')
 
 
-
 @app.errorhandler(404)
 def page_not_found(error):
     return make_response(jsonify(message="ENDPOINT_NOTFOUND"), 404)
@@ -42,6 +41,7 @@ def page_not_found(error):
 @app.before_request
 def before_request():
     project_loader(model.Project)
+
 
 @auth.verify_password
 def verify_password(username_or_token, password):
@@ -52,7 +52,7 @@ def verify_password(username_or_token, password):
     g.user = user
     return True
 
-@app.route('/auth_token')
+@app.route('/auth_token', methods=['POST'])
 @auth.login_required
 def get_auth_token():
     token = g.user.generate_auth_token(600)
