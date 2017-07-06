@@ -27,7 +27,6 @@ class Project(db.Model):
     """Project Schema."""
 
     id = db.Column(db.Integer, primary_key=True)
-    slug = db.Column(db.String(50), unique=True)
     name = db.Column(db.String(50), nullable=False)
     owner = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     type_of_project = db.Column(db.String(50), nullable=False)
@@ -38,7 +37,6 @@ class Project(db.Model):
     def __init__(self, name, owner, type_of_project, privacy_policy):
         """Setting params to the object."""
         self.name = name
-        self.slug = slugify(name)
         self.owner = owner
         self.type_of_project = type_of_project
         self.privacy_policy = privacy_policy

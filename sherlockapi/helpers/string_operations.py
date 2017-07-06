@@ -18,10 +18,13 @@ def is_empty(obj):
     return len(obj) == 0
 
 
-def check_none_and_blank(obj, name):
+def check_none_and_blank(request, name):
+    try:
+        obj = request.json.get(name)
+    except:
+        abort(make_response(jsonify(message='MISSING_{}'.format(name.upper())), 400))
+
     name = name.upper()
-    if obj is None:
-        abort(make_response(jsonify(message='MISSING_{}'.format(name)), 400))
 
     if type(obj) is str:
         if obj.strip() == '':
@@ -29,3 +32,4 @@ def check_none_and_blank(obj, name):
     elif type(obj) is list:
         if len(obj) == 0:
             abort(make_response(jsonify(message='EMPTY_{}_LIST'.format(name)), 400))
+    return obj

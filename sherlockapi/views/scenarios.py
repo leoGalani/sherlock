@@ -13,9 +13,9 @@ scenario = Blueprint('scenarios', __name__)
 @auth.login_required
 def pre_process_scenario(endpoint, values):
     """Blueprint Object Query."""
-    if request.method is 'POST':
+    if request.method == 'POST':
         if request.json is None:
-            return make_response(jsonify(message='MISSING_JSON_HEADER'), 400)
+            abort(make_response(jsonify(message='MISSING_JSON_HEADER'), 400))
     if 'scenario_id' in values:
         scenario_id = values.pop('scenario_id')
         g.scenario = Scenario.query.filter_by(id=scenario_id).first()

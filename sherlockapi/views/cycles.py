@@ -1,5 +1,5 @@
 """Sherlock Cycles Controllers and Routes."""
-from flask import Blueprint, request, g, jsonify, abort, make_response
+from flask import Blueprint, request, g, jsonify, abort, make_response, abort
 from datetime import datetime
 
 from sherlockapi import db, auth
@@ -15,9 +15,9 @@ cycle = Blueprint('cycle', __name__)
 @auth.login_required
 def get_cycles(endpoint, values):
     """Blueprint Object Query."""
-    if request.method is 'POST':
+    if request.method == 'POST':
         if request.json is None:
-            return make_response(jsonify(message='MISSING_JSON_HEADER'), 400)
+            abort(make_response(jsonify(message='MISSING_JSON_HEADER'), 400))
 
     g.project = Project.query.filter_by(id=values.pop('project_id')).first()
 

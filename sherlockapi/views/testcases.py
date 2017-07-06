@@ -11,6 +11,10 @@ test_case = Blueprint('test_cases', __name__)
 @auth.login_required
 def pre_process_tstcases(endpoint, values):
     """Blueprint Object Query."""
+    if request.method == 'POST':
+        if request.json is None:
+            abort(make_response(jsonify(message='MISSING_JSON_HEADER'), 400))
+
     g.scenario = Scenario.query.filter_by(id=values.pop('scenario_id')).first()
     if g.scenario is None:
         abort(make_response(jsonify(message='SCENARIO_NOT_FOUND'), 400))

@@ -1,5 +1,5 @@
 '''Sherlock User Controllers and Routes.'''
-from flask import Blueprint, request, g, jsonify, make_response
+from flask import Blueprint, request, g, jsonify, make_response, abort
 
 from sherlockapi import db, auth
 from sherlockapi.helpers.string_operations import check_none_and_blank
@@ -11,11 +11,15 @@ user = Blueprint('users', __name__)
 @user.url_value_preprocessor
 def get_user(endpoint, values):
     """ Blueprint Object Query."""
+    if request.method == 'POST':
+        if request.json is None:
+            abort(make_response(jsonify(message='MISSING_JSON_HEADER'), 400))
+
     if 'user_id' in values:
         g.user = User.query.filter_by(
             id=values.pop('user_id')).first()
         if not g.user:
-            return make_response(jsonify(message='USER_NOT_FOUND'), 404)
+            abort(make_response(jsonify(message='USER_NOT_FOUND'), 404))
 
 
 @user.route('/show/<int:user_id>', methods=['GET'])

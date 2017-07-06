@@ -1,5 +1,5 @@
 """Sherlock Project Controllers and Routes."""
-from flask import Blueprint, request, g, jsonify, make_response
+from flask import Blueprint, request, g, jsonify, make_response, abort
 
 from sherlockapi import db, auth
 from sherlockapi.data.model import Project, Scenario, Cycle, CycleHistory
@@ -15,15 +15,15 @@ project = Blueprint('projects', __name__)
 @auth.login_required
 def get_project(endpoint, values):
     """Blueprint Object Query."""
-    if request.method is 'POST':
+    if request.method == 'POST':
         if request.json is None:
-            return make_response(jsonify(message='MISSING_JSON_HEADER'), 400)
+            abort(make_response(jsonify(message='MISSING_JSON_HEADER'), 400))
 
     if 'project_id' in values:
         project_id = values.pop('project_id')
         g.project = Project.query.filter_by(id=project_id).first()
         if g.project is None:
-            return make_response(jsonify(message='PROJECT_NOT_FOUND'), 404)
+            abort(make_response(jsonify(message='PROJECT_NOT_FOUND'), 404))
 
 
 @project.route('/show/<int:project_id>', methods=['GET'])
@@ -56,21 +56,16 @@ def new():
 
     Param:
          { project_name: required,
-           privacy_policy: required (public or false),
+           privacy_policy: required (public or private),
            project_owner: required (current_user_id),
            type_of_project: required
          }
     """
 
-    project_name = request.json.get('project_name')
-    privacy_policy = request.json.get('privacy_policy')
-    project_owner = request.json.get('project_owner')
-    type_of_project = request.json.get('type_of_project')
-
-    check_none_and_blank(project_name, 'project_name')
-    check_none_and_blank(privacy_policy, 'privacy_policy')
-    check_none_and_blank(project_owner, 'project_owner')
-    check_none_and_blank(type_of_project, 'type_of_project')
+    project_name = check_none_and_blank(request, 'project_name')
+    privacy_policy = check_none_and_blank(request, 'privacy_policy')
+    project_owner = check_none_and_blank(request, 'project_owner')
+    type_of_project = check_none_and_blank(request, 'type_of_project')
 
     new_project = Project(name=project_name,
                           privacy_policy=privacy_policy,

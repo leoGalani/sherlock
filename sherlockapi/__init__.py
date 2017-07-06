@@ -2,6 +2,7 @@
 from flask import Flask, request, abort, jsonify, abort, make_response, g
 from flask_httpauth import HTTPBasicAuth
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS, cross_origin
 from flask_cache import Cache
 
 app = Flask(__name__, instance_relative_config=True, static_url_path="")
@@ -10,6 +11,7 @@ app.config.from_object('config')
 secretkey = app.config['SECRET_KEY']
 token_timeout = app.config['TOKEN_TIMEOUT']
 db = SQLAlchemy(app)
+CORS(app, support_credentials=True)
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 auth = HTTPBasicAuth()
