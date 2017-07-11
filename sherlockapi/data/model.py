@@ -28,18 +28,20 @@ class Project(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
-    owner = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     type_of_project = db.Column(db.String(50), nullable=False)
     privacy_policy = db.Column(db.String(50), nullable=False)
+    favorite = db.Column(db.Boolean)
 
     scenario = db.relationship('Scenario')
 
-    def __init__(self, name, owner, type_of_project, privacy_policy):
+    def __init__(self, name, owner_id, type_of_project, privacy_policy):
         """Setting params to the object."""
         self.name = name
-        self.owner = owner
+        self.owner_id = owner_id
         self.type_of_project = type_of_project
         self.privacy_policy = privacy_policy
+        favorite = False
 
 
     def __repr__(self):
@@ -238,8 +240,8 @@ class UsersSchema(Schema):
     email = fields.Str()
 
 class ProjectSchema(Schema):
-    slug = fields.Str()
+    id = fields.Int(dump_only=True)
     name = fields.Str()
-    owner = fields.Str()
+    owner_id = fields.Int()
     type_of_project = fields.Str()
-    is_private = fields.Bool() #Does it work?
+    privacy_policy = fields.Str()
