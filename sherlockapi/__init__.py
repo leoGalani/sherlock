@@ -6,12 +6,14 @@ from flask_cors import CORS, cross_origin
 from flask_cache import Cache
 
 app = Flask(__name__, instance_relative_config=True, static_url_path="")
+CORS(app, resources={r'/*': {"origins": '*', 'allow_headers': '*'}})
+app.config['CORS_HEADER'] = 'Content-Type'
+
 db_relative_path = '/data/sherlock.db'
 app.config.from_object('config')
 secretkey = app.config['SECRET_KEY']
 token_timeout = app.config['TOKEN_TIMEOUT']
 db = SQLAlchemy(app)
-CORS(app, support_credentials=True)
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 auth = HTTPBasicAuth()
@@ -47,15 +49,22 @@ def before_request():
 
 @auth.verify_password
 def verify_password(username_or_token, password):
-    if not model.User.verify_auth_token(username_or_token):
-        user = model.User.query.filter_by(email=username_or_token).first()
-        if not user or not user.verify_password(password):
-            return False
-    g.user = user
-    return True
+    try:
+        if model.User.verify_auth_token(username_or_token):
+            g.user = model.User.verify_auth_token(username_or_token)
+            return True
+        else:
+            g.user = model.User.query.filter_by(email=username_or_token).first()
+            if g.user and g.user.verify_password(password):
+                return True
+            else:
+                return False
+    except:
+        return False
+
 
 @app.route('/auth_token', methods=['POST'])
 @auth.login_required
 def get_auth_token():
-    token = g.user.generate_auth_token(600)
+    token = g.user.generate_auth_token(6000)
     return jsonify({'token': token.decode('ascii'), 'duration': 600})

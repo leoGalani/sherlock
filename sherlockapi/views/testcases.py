@@ -4,6 +4,9 @@ from sherlockapi import db, auth
 from sherlockapi.data.model import Scenario, Case, TestCaseSchema
 from sherlockapi.helpers.string_operations import check_none_and_blank
 
+from sherlockapi.helpers.util import get_scenario, get_tstcase
+
+
 test_case = Blueprint('test_cases', __name__)
 
 
@@ -15,54 +18,82 @@ def pre_process_tstcases(endpoint, values):
         if request.json is None:
             abort(make_response(jsonify(message='MISSING_JSON_HEADER'), 400))
 
-    g.scenario = Scenario.query.filter_by(id=values.pop('scenario_id')).first()
-    if g.scenario is None:
-        abort(make_response(jsonify(message='SCENARIO_NOT_FOUND'), 400))
-
-    if 'test_case_id' in values:
-        g.test_case = Case.query.filter_by(
-            id=values.pop('test_case_id')).first()
-        if not g.test_case:
-            abort(make_response(jsonify(message='CASE_NOT_FOUND'), 400))
-
 
 @test_case.route('/show/<int:test_case_id>', methods=['GET'])
 @auth.login_required
-def get_tstcase():
+def show_testcase(scenario_id, test_case_id):
     """Return Testcase Info."""
+    tst_case = get_tstcase(test_case_id)
     tstcase_schema = TestCaseSchema(many=False)
-    tstcase = tstcase_schema.dump(g.test_case).data
+    tstcase = tstcase_schema.dump(tst_case).data
     return make_response(jsonify(tstcase))
 
 
 @test_case.route('/new', methods=['POST'])
 @auth.login_required
-def new():
+def new(scenario_id):
     """POST endpoint for new scenarios.
 
     Param:
         {'case_name': required }
     """
-    case_name = request.json.get('case_name')
-    check_none_and_blank(case_name, 'case')
+    case_name = check_none_and_blank(request, 'case_name')
 
-    case = Case(name=case_name, scenario_id=g.scenario.id)
+    scenario = get_scenario(scenario_id)
+    case = Case(name=case_name, scenario_id=scenario.id)
     db.session.add(case)
     db.session.commit()
     return make_response(jsonify(message='CASE_CREATED'))
 
 
-@test_case.route('/edit/<int:test_case_id>', methods=['POST'])
+@test_case.route('/change_status', methods=['POST'])
 @auth.login_required
-def edit():
+def tstcase_changestatus(scenario_id):
     """POST endpoint for new scenarios.
 
     Param:
-        {'case_name': required }
+        {
+         'case_id': required,
+         'action': required,
+        }
     """
-    edited_tc = g.test_case
-    new_case_name = request.get_json().get('case_name')
-    check_none_and_blank(case_name, 'case')
+    case_id = check_none_and_blank(request, 'case_id')
+    action = check_none_and_blank(request, 'action')
+    tst_case = get_tstcase(case_id)
+
+    if action == 'REMOVE':
+        db.session.delete(tst_case)
+        db.session.commit()
+        return make_response(jsonify(message='TSTCASE_REMOVED'))
+    elif action == 'DISABLE':
+        state = State.query.filter_by(code='DISABLE').first()
+    elif action == 'ENABLE':
+        state = State.query.filter_by(code='ACTIVE').first()
+    else:
+        return make_response(jsonify(message='ACTION_UNKNOW'))
+
+    tst_case.state = state
+    db.session.add(tst_case)
+    db.session.commit()
+    return make_response(jsonify(message='TSTCASE_STATE_CHANGED'))
+
+
+@test_case.route('/edit', methods=['POST'])
+@auth.login_required
+def edit(scenario_id):
+    """POST endpoint for new scenarios.
+
+    Param:
+        {
+         'case_name': required,
+         'case_id': required
+        }
+    """
+    case_id = check_none_and_blank(request, 'case_id')
+    new_case_name = check_none_and_blank(request, 'case_name')
+
+    edited_tc = get_tstcase(case_id)
+
     edited_tc.name = new_case_name
     db.session.add(edited_tc)
     db.session.commit()

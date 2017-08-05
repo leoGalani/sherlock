@@ -8,7 +8,7 @@ from sherlockapi.helpers.util import load_last_cyle_status_of_projects
 dashboard = Blueprint('dashboard', __name__)
 
 @dashboard.route('/', methods=['GET'])
-#@auth.login_required
+@auth.login_required
 def home():
     schema = ProjectSchema(many=True)
     projects = schema.dump(Project.query.all()).data

@@ -5,41 +5,36 @@ from sherlockapi import db, auth
 from sherlockapi.data.model import Project, Scenario, Cycle, CycleHistory, User
 from sherlockapi.data.model import ProjectSchema
 from sherlockapi.helpers.util import count_cycle_stats
-from sherlockapi.helpers.util import load_cycle_history, get_last_cycle
+from sherlockapi.helpers.util import load_cycle_history, get_last_cycle, get_project
 from sherlockapi.helpers.string_operations import check_none_and_blank
 
 project = Blueprint('projects', __name__)
 
 
 @project.url_value_preprocessor
-#@auth.login_required
-def get_project(endpoint, view_args):
+@auth.login_required
+def project_pre_processor(endpoint, view_args):
     """Blueprint Object Query."""
     if request.method == 'POST':
         if request.json is None:
             abort(make_response(jsonify(message='MISSING_JSON_HEADER'), 400))
 
-    if 'project_id' in view_args:
-        project_id = view_args.pop('project_id')
-        g.project = Project.query.filter_by(id=project_id).first()
-        if g.project is None:
-            abort(make_response(jsonify(message='PROJECT_NOT_FOUND'), 404))
-
 
 @project.route('/show/<int:project_id>', methods=['GET'])
-#@auth.login_required
-def get_project_details():
+@auth.login_required
+def get_project_details(project_id):
     """Show Project Details."""
     schema = ProjectSchema(many=False)
-    project = schema.dump(g.project).data
-    user = User.query.filter_by(id=g.project.owner_id).first()
+    project = schema.dump(get_project(project_id)).data
+    user = User.query.filter_by(id=project['owner_id']).first()
     project['owner_name'] = user.name
     return make_response(jsonify(project))
 
 
 @project.route('/show_cycle_details/<int:project_id>', methods=['GET'])
 @auth.login_required
-def get_project_last_cycle():
+def get_project_last_cycle(project_id):
+    g.project = get_project(project_id)
     project_cycle = get_last_cycle(Cycle, g.project.id)
 
     if project_cycle is not None:
@@ -52,7 +47,7 @@ def get_project_last_cycle():
 
 
 @project.route('/new', methods=['POST'])
-#@auth.login_required
+@auth.login_required
 def new():
     """POST endpoint for new projects.
 
@@ -81,7 +76,7 @@ def new():
 
 @project.route('/edit/<int:project_id>', methods=[ 'POST'])
 @auth.login_required
-def edit():
+def edit(project_id):
     """POST endpoint for editing existing users.
 
     Param:
@@ -91,7 +86,7 @@ def edit():
           type_of_project: not required
         }
     """
-    edited_project = g.project
+    edited_project = get_project(project_id)
 
     if 'project_name' in request.json:
         project_name = check_none_and_blank(request, 'project_name')
