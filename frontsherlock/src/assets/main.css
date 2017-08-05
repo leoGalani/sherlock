@@ -1,0 +1,123 @@
+
+
+html, body{
+  background: #f8f8f8;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+h1, h2, h3, h4{
+  font-family: 'Ubuntu', sans-serif;
+}
+
+#loading{
+  background-color: #000;
+  color: #fff;
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+  position: fixed !important;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 10;
+  width: 100%;
+  height:100%;
+  text-align: center;
+  font-size: 30px;
+}
+
+#loading > center{
+  margin-top: 20%;
+}
+
+/* HEADER  */
+  .uk-navbar-item, .uk-navbar-nav>li>a, .uk-navbar-toggle {
+    height: 70px;
+    margin-bottom: 13px;
+  }
+
+  .uk-tooltip:before {
+    content:'';
+    display:block;
+    width:0;
+    height:0;
+    position:absolute;
+
+
+    border-bottom: 8px solid gray;
+    border-right:8px solid transparent;
+    border-left:8px solid transparent;
+    left:40%;
+
+    top:-8px;
+}
+
+/* DASHBOARD */
+
+.project_box h4{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
+}
+
+.project_box {
+  background: #fff;
+  border-radius: 2px;
+  display: inline-block;
+  height: 230px;
+  margin: 1rem;
+  position: relative;
+  width: 200px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+  padding: 8px;
+}
+
+.project_box:hover {
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+
+/* COMMON */
+
+.uk-link, a {
+  display:block;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  color: #000 !important;
+}
+
+.content {
+  background: #fff;
+  border-radius: 2px;
+  display: inline-block;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  padding: 13px;
+  width: 98%;
+  padding-top: 20px;
+}
+
+input[type=text]:focus, input[type=textarea]:focus, input[type=password]:focus,
+input[type=number]:focus {
+  border-color: orange;
+}
+
+.uk-input:focus, .uk-select:focus, .uk-textarea:focus {
+  border-color: orange;
+  opacity: 0.5;
+}
+
+.uk-notification-message-danger {
+  border-bottom: solid red !important;
+}
+
+.uk-notification-message-success {
+  border-bottom: solid green !important;
+}
+
+.uk-notification-message-warning {
+  border-bottom: solid orange !important;
+}
+
+.uk-navbar-dropdown.uk-open {
+  width: 230px !important;
+}
