@@ -23,7 +23,7 @@
       <div class="content scenario">
       <div v-for="scenario in scenarios" :key="scenario.id" class="uk-grid ">
           <div class="uk-width-4-5">
-            <span>{{ scenario.name }} <br>
+            <span @click="fecthCases(scenario.id)" style="cursor: pointer; width: 100%">{{ scenario.name }} <br>
           </span>
           <div v-if="scenario.state_code === 'DISABLE'" class="uk-badge uk-label">Disabled</div>
             <hr>
@@ -119,7 +119,7 @@ export default {
     },
     addNewScenario () {
       if (this.newScenario === '') {
-        UIkit.notification('The scenario can`t be blank', {status: 'warning'})
+        UIkit.notification('The scenario can`t be blank', {status: 'warning'}, {timeout: '700'})
       } else {
         var scenario = {
           'scenario_name': this.newScenario,
@@ -127,20 +127,20 @@ export default {
         }
         this.$http.post('scenario/new', scenario).then(function (response) {
           this.newScenario = ''
-          UIkit.notification('<span uk-icon="icon: check"></span> Scenario Created')
+          UIkit.notification('<span uk-icon="icon: check"></span> Scenario Created', {timeout: '700'})
         })
       }
     },
     addNewCase () {
       if (this.newCase === '') {
-        UIkit.notification('The case can`t be blank', {status: 'warning'})
+        UIkit.notification('The case can`t be blank', {status: 'warning'}, {timeout: '700'})
       } else {
         var tstcase = {
           'case_name': this.newCase
         }
         this.$http.post('scenarios/' + this.scenarioFull.scenario_id + '/tst_case/new', tstcase).then(function (response) {
           this.newCase = ''
-          UIkit.notification('<span uk-icon="icon: check"></span> Case Created')
+          UIkit.notification('<span uk-icon="icon: check"></span> Case Created', {timeout: '700'})
           this.fecthCases(this.scenarioFull.scenario_id)
         })
       }

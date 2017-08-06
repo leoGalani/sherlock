@@ -31,7 +31,7 @@ auth = HTTPBasicAuth()
 app.register_blueprint(dashboard, url_prefix='/dashboard')
 app.register_blueprint(user, url_prefix='/user')
 app.register_blueprint(project, url_prefix='/project')
-app.register_blueprint(cycle, url_prefix='/projects/<int:project_id>/')
+app.register_blueprint(cycle, url_prefix='/projects/<int:project_id>/cycle')
 app.register_blueprint(scenario, url_prefix='/scenario')
 app.register_blueprint(test_case,
                        url_prefix='/scenarios/<int:scenario_id>/tst_case')

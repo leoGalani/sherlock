@@ -5,8 +5,9 @@ import Login from '@/components/Login'
 import Dashboard from '@/components/Dashboard'
 import AddProject from '@/components/project/Add'
 import ProjectDetails from '@/components/project/View'
-import ScenarioCases from '@/components/scenario_cases/Dash'
-import UIkit from 'uikit'
+import ScenarioCases from '@/components/scenario_cases/Dashscenarios'
+import ProjectCycles from '@/components/cycles/Dashcycles'
+// import UIkit from 'uikit'
 
 Vue.use(Router)
 
@@ -16,7 +17,8 @@ const router = new Router({
     {path: '/', name: 'dashboard', component: Dashboard, meta: { requiresAuth: true }},
     {path: '/project/new', name: 'new_project', component: AddProject, meta: { requiresAuth: true }},
     {path: '/project/view/:projectId', name: 'view_project', component: ProjectDetails, meta: { requiresAuth: true }},
-    {path: '/project/view/:projectId/scenario_cases/', name: 'scenario_cases', component: ScenarioCases, meta: { requiresAuth: true }}
+    {path: '/project/view/:projectId/scenario_cases/', name: 'scenario_cases', component: ScenarioCases, meta: { requiresAuth: true }},
+    {path: '/project/view/:projectId/cycle/:cycleId', name: 'project_cycles', component: ProjectCycles, meta: { requiresAuth: true }}
   ]
 })
 
@@ -27,7 +29,6 @@ router.beforeEach((to, from, next) => {
     const auth = JSON.parse(window.localStorage.getItem('auth'))
     const user = JSON.parse(window.localStorage.getItem('user'))
     if (!auth || !user) {
-      UIkit.notification('<span uk-icon="icon: warning">Please Login Again.', {status: 'danger'})
       router.push({path: '/login'})
     }
   }
