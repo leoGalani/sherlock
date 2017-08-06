@@ -1,11 +1,11 @@
 """Sherlock Project Controllers and Routes."""
 from flask import Blueprint, request, g, jsonify, make_response, abort
+from datetime import date, datetime
 
 from sherlockapi import db, auth
-from sherlockapi.data.model import Project, Scenario, Cycle, CycleHistory, User
+from sherlockapi.data.model import Project, Scenario, Cycle, User, CycleCases
 from sherlockapi.data.model import ProjectSchema
-from sherlockapi.helpers.util import count_cycle_stats
-from sherlockapi.helpers.util import load_cycle_history, get_last_cycle, get_project
+from sherlockapi.helpers.util import get_last_cycle, get_project, count_cycle_stats
 from sherlockapi.helpers.string_operations import check_none_and_blank
 
 project = Blueprint('projects', __name__)
@@ -27,23 +27,30 @@ def get_project_details(project_id):
     schema = ProjectSchema(many=False)
     project = schema.dump(get_project(project_id)).data
     user = User.query.filter_by(id=project['owner_id']).first()
+
+    scenarios = Scenario.query.filter_by(project_id=project_id).first()
+
     project['owner_name'] = user.name
-    return make_response(jsonify(project))
-
-
-@project.route('/show_cycle_details/<int:project_id>', methods=['GET'])
-@auth.login_required
-def get_project_last_cycle(project_id):
-    g.project = get_project(project_id)
-    project_cycle = get_last_cycle(Cycle, g.project.id)
-
-    if project_cycle is not None:
-        current_c_history = load_cycle_history(project_cycle, CycleHistory)
-        current_c_stats = count_cycle_stats(current_c_history)
-        return make_response(jsonify(get_cycle="YES",
-                                     stats=current_c_stats))
+    if scenarios:
+        project['have_scenarios'] = True
     else:
-        return make_response(jsonify(get_cycle="NO"))
+        project['have_scenarios'] = False
+
+    project_last_cycle = get_last_cycle(project_id)
+
+    if project_last_cycle:
+        cycle_cases_h = CycleCases.query.filter_by(
+            cycle_id=project_last_cycle.id).all()
+        project['have_cycles'] = True
+        project['last_cycle'] = {}
+        project['last_cycle']['id'] = project_last_cycle.id
+        project['last_cycle']['cycle'] = project_last_cycle.cycle
+        project['last_cycle']['created_at'] = datetime.strftime(project_last_cycle.created_at, '%d-%m-%Y')
+        project['last_cycle']['stats'] = count_cycle_stats(cycle_cases_h)
+    else:
+        project['have_cycles'] = False
+
+    return make_response(jsonify(project))
 
 
 @project.route('/new', methods=['POST'])

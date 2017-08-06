@@ -72,10 +72,10 @@ export default {
           window.localStorage.setItem('user', JSON.stringify(user))
           this.$router.push({path: '/'})
         }, (response) => {
-          UIkit.notification('<span uk-icon="icon: ban"></span> User ' + this.email + 'might be corrupted', {status: 'danger'})
+          UIkit.notification('<span uk-icon="icon: ban"></span> User ' + this.email + 'might be corrupted', {status: 'danger', timeout: '700'})
         })
       }, (response) => {
-        UIkit.notification('<span uk-icon="icon: ban"></span> Wrong Email or Password', {status: 'danger'})
+        UIkit.notification('<span uk-icon="icon: ban"></span> Wrong Email or Password', {status: 'danger', timeout: '700'})
       })
     }
   }

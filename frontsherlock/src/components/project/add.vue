@@ -56,16 +56,17 @@ export default {
       if (!this.project_name) {
         UIkit.notification('Please fill all the inputs', {status: 'danger'})
       } else {
+        var user = JSON.parse(window.localStorage.getItem('user'))
         let newProject = {
           project_name: this.project_name,
           type_of_project: this.type_of_project,
           privacy_policy: this.privacy_policy,
-          project_owner: 1 // Get user_id / email from auth
+          project_owner: user.user_id
         }
         e.preventDefault()
         this.$http.post('project/new', newProject)
         .then(function (response) {
-          UIkit.notification('<span uk-icon="icon: check"></span> Project added with Success', {status: 'success'})
+          UIkit.notification('<span uk-icon="icon: check"></span> Project added with Success', {status: 'success', timeout: '700'})
           this.$router.push({path: '/'})
         })
         e.preventDefault()
@@ -75,7 +76,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
 .dashboard{

@@ -155,10 +155,11 @@ class Cycle(db.Model):
     state = db.relationship('State')
     state_code = db.Column(db.Integer, db.ForeignKey('state.code'),
                          default="ACTIVE")
-    cycle_history = db.relationship('CycleHistory')
+    cycle_cases = db.relationship('CycleCases')
+    cycle_scenarios = db.relationship('CycleScenarios')
     created_at = db.Column(db.DateTime, default=datetime.now)
     closed_at = db.Column(db.DateTime)
-    closed_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    closed_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     closed_reason = db.Column(db.String(250))
     last_change = db.Column(db.DateTime, default=datetime.now)
 
@@ -173,8 +174,25 @@ class Cycle(db.Model):
         return '<Cycle %r>' % self.id
 
 
-class CycleHistory(db.Model):
-    """Cycle History Schema."""
+class CycleScenarios(db.Model):
+    """Cycle Scenarios History."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
+    state_code = db.Column(db.Integer, db.ForeignKey('state.code'))
+    state = db.relationship('State')
+    scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
+    last_executed_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    last_executed_at = db.Column(db.DateTime)
+
+    def __init__(self, cycle_id, scenario_id):
+        """Setting params to the object."""
+        self.cycle_id = cycle_id
+        self.scenario_id = scenario_id
+
+
+class CycleCases(db.Model):
+    """Cycle Cases History."""
 
     id = db.Column(db.Integer, primary_key=True)
     cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
@@ -183,7 +201,6 @@ class CycleHistory(db.Model):
     state = db.relationship('State')
     case_id = db.Column(db.Integer, db.ForeignKey('case.id'))
     scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
-    notes = db.Column(db.Text())
     last_executed_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     last_executed_at = db.Column(db.DateTime)
 
@@ -193,11 +210,19 @@ class CycleHistory(db.Model):
         self.case_id = case_id
         self.scenario_id = scenario_id
 
-    def __repr__(self):
-        """Representative Object Return."""
-        return '<Cycle %r>' % self.cycle_id
+class Notes(db.Model):
+    """Notes."""
+    id = db.Column(db.Integer, primary_key=True)
+    cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
+    where = db.Column(db.String(250)) #scenario or case
+    text = db.Column(db.String(250))
 
-
+    def __init__(self, cycle_id, scenario_id, case_id):
+        """Setting params to the object."""
+        self.cycle_id = cycle_id
+        self.where = where
+        self.text = text
+    
 #  SCHEMAS #####
 
 class CycleSchema(Schema):
@@ -210,17 +235,6 @@ class CycleSchema(Schema):
     closed_at = fields.Str()
     last_change = fields.Str()
 
-class CycleHistorySchema(Schema):
-    id = fields.Int(dump_only=True)
-    cycle_id = fields.Int()
-    state_code = fields.Str()
-    case_id = fields.Int()
-    case_name = fields.Str()
-    scenario_id = fields.Int()
-    scenario_name = fields.Str()
-    notes = fields.Str()
-    last_executed_by = fields.Str()
-    last_executed_at = fields.Str()
 
 class TestCaseSchema(Schema):
     id = fields.Int(dump_only=True)

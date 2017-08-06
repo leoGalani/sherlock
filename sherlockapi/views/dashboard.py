@@ -2,8 +2,7 @@
 from flask import Blueprint, request, g, jsonify, make_response, abort
 
 from sherlockapi import db, auth
-from sherlockapi.data.model import Cycle, CycleHistory, Project, ProjectSchema
-from sherlockapi.helpers.util import load_last_cyle_status_of_projects
+from sherlockapi.data.model import Cycle, Project, ProjectSchema
 
 dashboard = Blueprint('dashboard', __name__)
 

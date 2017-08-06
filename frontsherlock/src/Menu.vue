@@ -12,10 +12,10 @@
     <div class="uk-navbar-right">
       <ul class="uk-navbar-nav">
         <li v-if="['dashboard'].indexOf($route.name) > -1">
-          <router-link to="/project/new" title="New Project" uk-tooltip="delay: 300" > <img src='./assets/img/new_project.png'> </i></router-link>
+          <router-link to="/project/new" title="New Project" uk-tooltip="delay: 300" > <i class="material-icons" style="color: rgb(117, 117, 117);">note_add</i> </router-link>
         </li>
         <li v-else>
-          <a href="#"><img src='./assets/img/project_settings.png'></a>
+          <a><i class="material-icons" style="color: rgb(117, 117, 117);">build</i></a>
           <div class="uk-navbar-dropdown">
               <ul class="uk-nav uk-navbar-dropdown-nav" style="width:450px !important">
                   <router-link :to="{ path: '/project/view/'+projectId+'/scenario_cases' }">Manage Cases and Scenarios </router-link>
@@ -36,9 +36,11 @@
         </li>
         <li></li>
         <li class="nav_divider"></li>
-        <li><a href="#" title="Sherlock Settings" uk-tooltip="delay: 300"><img src='./assets/img/sherlock_settings.png'></a>
+        <li>
+          <a href="#" title="Sherlock Settings" uk-tooltip="delay: 300">
+            <i class="material-icons" style="color: rgb(117, 117, 117);">settings</i></a>
         </li>
-        <li><a><img src='./assets/img/user.png'></a>
+        <li><a><i class="material-icons" style="color: rgb(117, 117, 117);">account_circle</i></a>
           <div class="uk-navbar-dropdown">
               <ul class="uk-nav uk-navbar-dropdown-nav" style="width:450px !important">
                   <router-link :to="{ path: '/project/view/'+projectId+'/scenario_cases' }"> My Settings </router-link>
@@ -83,7 +85,7 @@ export default {
 <style scoped>
 
 .nav_divider{
-    background-color: orange;
+    background-color: rgb(117, 117, 117);
     width: 1px;
     height: 30px;
     margin-top: 21px;
