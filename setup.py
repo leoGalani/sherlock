@@ -29,7 +29,8 @@ db.session.add(closed_cycle)
 db.session.commit()
 
 
-
-initial_user = User(name="Administrador", email="admin@admin.xpto", password="admin")
+initial_user = User(name="Administrador",
+                    email="admin@admin.xpto",
+                    password="admin")
 db.session.add(initial_user)
 db.session.commit()

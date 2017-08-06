@@ -1,7 +1,7 @@
-from flask import Blueprint, request, g, jsonify, abort, make_response
+from flask import Blueprint, request, jsonify, abort, make_response
 
 from sherlockapi import db, auth
-from sherlockapi.data.model import Scenario, Case, TestCaseSchema
+from sherlockapi.data.model import Case, TestCaseSchema
 from sherlockapi.helpers.string_operations import check_none_and_blank
 
 from sherlockapi.helpers.util import get_scenario, get_tstcase
@@ -56,6 +56,8 @@ def tstcase_changestatus(scenario_id):
          'case_id': required,
          'action': required,
         }
+
+    TODO: State is not defined
     """
     case_id = check_none_and_blank(request, 'case_id')
     action = check_none_and_blank(request, 'action')

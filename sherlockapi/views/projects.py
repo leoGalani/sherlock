@@ -2,11 +2,12 @@
 from flask import Blueprint, request, g, jsonify, make_response, abort
 
 from sherlockapi import db, auth
-from sherlockapi.data.model import Project, Scenario, Cycle, CycleHistory, User
+from sherlockapi.data.model import Project, Cycle, CycleHistory, User
 from sherlockapi.data.model import ProjectSchema
 from sherlockapi.helpers.util import count_cycle_stats
-from sherlockapi.helpers.util import load_cycle_history, get_last_cycle, get_project
 from sherlockapi.helpers.string_operations import check_none_and_blank
+from sherlockapi.helpers.util import (load_cycle_history, get_last_cycle,
+                                      get_project)
 
 project = Blueprint('projects', __name__)
 
@@ -74,7 +75,7 @@ def new():
     return make_response(jsonify(message='PROJECT_CREATED'))
 
 
-@project.route('/edit/<int:project_id>', methods=[ 'POST'])
+@project.route('/edit/<int:project_id>', methods=['POST'])
 @auth.login_required
 def edit(project_id):
     """POST endpoint for editing existing users.

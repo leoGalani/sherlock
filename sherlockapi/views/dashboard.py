@@ -1,11 +1,11 @@
 """Sherlock User Controllers and Routes."""
-from flask import Blueprint, request, g, jsonify, make_response, abort
+from flask import Blueprint, jsonify, make_response
 
-from sherlockapi import db, auth
-from sherlockapi.data.model import Cycle, CycleHistory, Project, ProjectSchema
-from sherlockapi.helpers.util import load_last_cyle_status_of_projects
+from sherlockapi import auth
+from sherlockapi.data.model import Project, ProjectSchema
 
 dashboard = Blueprint('dashboard', __name__)
+
 
 @dashboard.route('/', methods=['GET'])
 @auth.login_required
@@ -17,7 +17,7 @@ def home():
 
     for item in projects:
         item['current_cycle'] = 1
-        item['cycle_state'] = random.choice(["ACTIVE","CLOSED"])
+        item['cycle_state'] = random.choice(["ACTIVE", "CLOSED"])
         item['NOT_EXECUTED'] = 10
         item['PASSED'] = 30
         item['ERROR'] = 10

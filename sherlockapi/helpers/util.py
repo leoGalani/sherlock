@@ -36,6 +36,7 @@ def load_cases_names_for_cycle(Scenario, Case, CycleHistory, c_cycle):
 
     return history
 
+
 def get_last_cycle(Cycle, project_id):
     cycle = Cycle.query.order_by('-id').filter_by(
         project_id=project_id).first()
@@ -98,6 +99,7 @@ def get_scenario(scenario_id):
     if scenario is None:
         abort(make_response(jsonify(message='SCENARIO_NOT_FOUND'), 404))
     return scenario
+
 
 def get_tstcase(case_id):
     test_case = Case.query.filter_by(id=case_id).first()

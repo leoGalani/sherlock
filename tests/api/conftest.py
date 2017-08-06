@@ -4,11 +4,12 @@ import os
 
 sys.path.append("../../") #Need to fix it
 from sherlock import app as sherlock
-from sherlock import app as sherlock
+
 
 @pytest.fixture(scope='session')
 def app():
     return sherlock
+
 
 @pytest.yield_fixture
 def client(app):

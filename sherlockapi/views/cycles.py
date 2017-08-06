@@ -7,9 +7,10 @@ from sherlockapi.data.model import Scenario, Project, Case, Cycle, CycleHistory
 from sherlockapi.data.model import State, CycleSchema, CycleHistorySchema
 from sherlockapi.helpers.util import get_last_cycle
 from sherlockapi.helpers.util import load_cases_names_for_cycle
-from sherlockapi.helpers.util import load_cycle_history, count_cycle_stats
+from sherlockapi.helpers.util import count_cycle_stats
 
 cycle = Blueprint('cycle', __name__)
+
 
 @cycle.url_value_preprocessor
 @auth.login_required
@@ -35,7 +36,7 @@ def get_cycles(endpoint, values):
 @cycle.route('/close/<int:cycle_id>', methods=['POST'])
 @auth.login_required
 def close():
-    #TODO: Check untested cases.
+    # TODO: Check untested cases.
     """POST endpoint for closing cycles.
     Param:
         {'reason': required  }
@@ -87,7 +88,7 @@ def create():
         cycle_name = "Cycle Number {}".format(cycle_number)
 
     new_cycle = Cycle(cycle=cycle_number,
-                      name= cycle_name,
+                      name=cycle_name,
                       project_id=g.project.id)
     db.session.add(new_cycle)
 
@@ -104,6 +105,9 @@ def create():
 @cycle.route('/show/<int:cycle_id>', methods=['GET'])
 @auth.login_required
 def show():
+    """
+    TODO: Trye is not defined
+    """
     chistory = load_cases_names_for_cycle(
         Scenario, Case, CycleHistory, g.project_cycle)
 
@@ -112,7 +116,8 @@ def show():
 
     cycle = cycle_schema.dump(g.project_cycle).data
     cycle_history = cycle_history_schema.dump(chistory).data
-    return make_response(jsonify(cycle_info=cycle, cycle_history=cycle_history))
+    return make_response(jsonify(cycle_info=cycle,
+                                 cycle_history=cycle_history))
 
 
 @cycle.route('/get_states/<int:cycle_id>', methods=['GET'])
