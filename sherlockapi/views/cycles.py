@@ -11,6 +11,7 @@ from sherlockapi.helpers.util import get_project, get_cycle, get_user
 
 cycle = Blueprint('cycle', __name__)
 
+
 @cycle.url_value_preprocessor
 @auth.login_required
 def cycles_url_pre_processor(endpoint, values):
@@ -32,8 +33,8 @@ def get_cycle_resume(project_id, cycle_id):
 
 @cycle.route('/close/<int:cycle_id>', methods=['POST'])
 @auth.login_required
-def close(project_id, cycle_id):
-    #TODO: Check untested cases.
+def close():
+    # TODO: Check untested cases.
     """POST endpoint for closing cycles.
     Param:
         {

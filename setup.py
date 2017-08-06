@@ -65,7 +65,9 @@ name = input('Enter the First user Name: ')
 email = input('Enter the First user Email: ')
 password = input('Enter the First user Password: ')
 
-initial_user = User(name=name, email=email, password=password)
+initial_user = User(name=name,
+                    email=email,
+                    password=password)
 db.session.add(initial_user)
 db.session.commit()
 

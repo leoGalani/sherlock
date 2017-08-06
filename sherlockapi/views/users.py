@@ -1,5 +1,5 @@
-'''Sherlock User Controllers and Routes.'''
-from flask import Blueprint, request, g, jsonify, make_response, abort
+"""Sherlock User Controllers and Routes."""
+from flask import Blueprint, request, jsonify, make_response, abort
 
 from sherlockapi import db, auth
 from sherlockapi.helpers.string_operations import check_none_and_blank
@@ -12,7 +12,7 @@ user = Blueprint('users', __name__)
 @user.url_value_preprocessor
 @auth.login_required
 def user_pre_processor(endpoint, values):
-    """ Blueprint Object Query."""
+    """Blueprint Object Query."""
     if request.method == 'POST':
         if request.json is None:
             abort(make_response(jsonify(message='MISSING_JSON_HEADER'), 400))
@@ -21,13 +21,14 @@ def user_pre_processor(endpoint, values):
 @user.route('/get_user_id/<int:user_id>', methods=['GET'])
 @auth.login_required
 def show_user_id(user_id):
-    """ Return a user.
-        ex:
-        {
-            "email": "email@email.com",
-            "id": 1,
-            "name": "Name"
-        }
+    """Return a user.
+
+    ex:
+    {
+        "email": "email@email.com",
+        "id": 1,
+        "name": "Name"
+    }
     """
     user = get_user({'id': user_id})
     user_schema = UsersSchema(many=False)
@@ -38,18 +39,20 @@ def show_user_id(user_id):
 @user.route('/get_user_email/<email>', methods=['GET'])
 @auth.login_required
 def show_user_email(email):
-    """ Return a user.
-        ex:
-        {
-            "email": "email@email.com",
-            "id": 1,
-            "name": "Name"
-        }
+    """Return a user.
+
+    ex:
+    {
+        "email": "email@email.com",
+        "id": 1,
+        "name": "Name"
+    }
     """
     user = get_user({'email': email})
     user_schema = UsersSchema(many=False)
     user = user_schema.dump(user).data
     return make_response(jsonify(user))
+
 
 @user.route('/new/', methods=['POST'])
 def new():
@@ -68,7 +71,7 @@ def new():
     check_none_and_blank(email, 'email')
     check_none_and_blank(password, 'password')
 
-    if User.query.filter_by(email = email).first() is not None:
+    if User.query.filter_by(email=email).first() is not None:
         return make_response(jsonify(message='EMAIL_IN_USE'), 400)
 
     new_user = User(name=request.get_json().get('name'),
@@ -89,7 +92,6 @@ def edit(user_id):
          'email': not_required,
          'password': not_required }
     """
-
     edited_user = get_user({'id': user_id})
     name = request.get_json().get('name')
     email = request.get_json().get('email')

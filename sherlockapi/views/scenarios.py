@@ -47,7 +47,6 @@ def show_scenario(scenario_id):
 @auth.login_required
 def get_scenarios_by_project(project_id):
     """Return Testcase Info."""
-
     raw_scenarios = Scenario.query.filter_by(project_id=project_id).all()
     scenario_schema = ScenariosSchema(many=True)
     scenarios = scenario_schema.dump(raw_scenarios).data

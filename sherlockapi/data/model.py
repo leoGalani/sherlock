@@ -7,7 +7,6 @@ from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 
 from sherlockapi import db, secretkey
-from sherlockapi.helpers.string_operations import slugify
 
 
 class State(db.Model):
@@ -41,7 +40,6 @@ class Project(db.Model):
         self.owner_id = owner_id
         self.type_of_project = type_of_project
         self.privacy_policy = privacy_policy
-        favorite = False
 
 
     def __repr__(self):
@@ -67,7 +65,7 @@ class Scenario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False)
     state_code = db.Column(db.Integer, db.ForeignKey('state.code'),
-                         default="ACTIVE")
+                           default="ACTIVE")
     state = db.relationship('State')
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
     testcase = db.relationship('Case')
@@ -89,7 +87,7 @@ class Case(db.Model):
     name = db.Column(db.String(500), nullable=False)
     scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
     state_code = db.Column(db.Integer, db.ForeignKey('state.code'),
-                         default="ACTIVE")
+                           default="ACTIVE")
     state = db.relationship('State')
 
     def __init__(self, name, scenario_id):
@@ -154,7 +152,7 @@ class Cycle(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
     state = db.relationship('State')
     state_code = db.Column(db.Integer, db.ForeignKey('state.code'),
-                         default="ACTIVE")
+                           default="ACTIVE")
     cycle_cases = db.relationship('CycleCases')
     cycle_scenarios = db.relationship('CycleScenarios')
     created_at = db.Column(db.DateTime, default=datetime.now)
@@ -235,12 +233,13 @@ class CycleSchema(Schema):
     closed_at = fields.Str()
     last_change = fields.Str()
 
-
+    
 class TestCaseSchema(Schema):
     id = fields.Int(dump_only=True)
     scenario_id = fields.Int()
     name = fields.Str()
     state_code = fields.Str()
+
 
 class ScenariosSchema(Schema):
     id = fields.Int(dump_only=True)
@@ -248,10 +247,12 @@ class ScenariosSchema(Schema):
     state_code = fields.Str()
     project_id = fields.Int()
 
+
 class UsersSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str()
     email = fields.Str()
+
 
 class ProjectSchema(Schema):
     id = fields.Int(dump_only=True)

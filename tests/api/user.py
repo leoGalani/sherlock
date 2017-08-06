@@ -1,10 +1,10 @@
 import pytest
-import requests
 import json
 
 from flask import url_for
 
 from helper import user_hash
+
 
 @pytest.fixture
 def user(client):
@@ -22,11 +22,13 @@ def user(client):
     assert response.json['message'] == 'USER_CREATED'
     return payload
 
+
 @pytest.mark.first
 def test_login(client, user):
     header = {'Authorization': user_hash(user['email'], user['password']),
               'Content-Type': 'application/json'}
-    response = client.open(url_for('get_auth_token'), method='POST', headers=header)
+    response = client.open(url_for('get_auth_token'),
+                           method='POST', headers=header)
     assert 'token' in response.json
 
 

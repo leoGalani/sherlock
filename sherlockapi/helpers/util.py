@@ -54,6 +54,7 @@ def get_scenario(scenario_id):
         abort(make_response(jsonify(message='SCENARIO_NOT_FOUND'), 404))
     return scenario
 
+
 def get_tstcase(case_id):
     test_case = Case.query.filter_by(id=case_id).first()
     if not test_case:
