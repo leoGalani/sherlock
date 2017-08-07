@@ -25,7 +25,7 @@ def project_pre_processor(endpoint, view_args):
 @project.route('/show/<int:project_id>', methods=['GET'])
 @auth.login_required
 def get_project_details(project_id):
-    """Show Project Details."""
+    """Show Project Details and last cycle Details."""
     schema = ProjectSchema(many=False)
     project = schema.dump(get_project(project_id)).data
     user = User.query.filter_by(id=project['owner_id']).first()

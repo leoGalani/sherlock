@@ -220,7 +220,7 @@ class Notes(db.Model):
         self.cycle_id = cycle_id
         self.where = where
         self.text = text
-    
+
 #  SCHEMAS #####
 
 class CycleSchema(Schema):
@@ -233,7 +233,7 @@ class CycleSchema(Schema):
     closed_at = fields.Str()
     last_change = fields.Str()
 
-    
+
 class TestCaseSchema(Schema):
     id = fields.Int(dump_only=True)
     scenario_id = fields.Int()

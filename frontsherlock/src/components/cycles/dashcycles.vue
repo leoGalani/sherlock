@@ -12,25 +12,45 @@
 
 <ul class="uk-switcher uk-margin" id='cenarios_cases'>
     <li>
-      <div class="uk-form-controls">
-          <textarea class="uk-textarea uk-width-1-1"
-          placeholder="Enter a new scenario description" type="textarea"
-          v-model="newScenario" @keyup.shift.enter="addNewScenario">
-        </textarea>
-        <center style="padding-top: 17px;"> <hr class="divider_new_scenario"> </center>
-      </div>
-
       <div class="content scenario">
-      <div v-for="scenario in scenarios" :key="scenario.id" class="uk-grid ">
-          <div class="uk-width-4-5">
-            <span @click="removeScenario(scenario.id)">{{ scenario.name }} <br>
+      <div v-for="scenario in scenarios" :key="scenario.scenario_id" class="uk-grid ">
+          <div @click="fetchCycleCases(scenario.scenario_id)" class="uk-width-4-5" style="cursor: pointer; width: 77% !important;">
+            <span>{{ scenario.scenario_name }} <br>
           </span>
-          <div v-if="scenario.state_code === 'DISABLE'" class="uk-badge uk-label">Disabled</div>
             <hr>
           </div>
-          <div class="uk-width-1-5">
+          <div class="uk-width-1-5" style="width: 23% !important;">
             <ul class="uk-iconnav">
-                <li> <a @click="fecthCases(scenario.id)" uk-icon="icon: chevron-right;"></a></li>
+                <li style="padding-left: 8px !important;">
+                  <a @click="fetchCycleCases(scenario.scenario_id)" uk-icon="icon: chevron-right;" title="Access Test Cases" uk-tooltip="delay: 300; pos: bottom"></a></li>
+                <li style="padding-left: 8px !important;">
+                  <span class="uk-badge passed">
+                    <a style="color: white !important; cursor: default !important;" title="Cases Passed" uk-tooltip="delay: 300; pos: bottom ">
+                      {{scenario.cases_stats.total_passed}}
+                    </a>
+                  </span>
+                </li>
+                <li style="padding-left: 8px !important;">
+                  <span class="uk-badge failed">
+                    <a style="color: white !important; cursor: default !important;" title="Cases Failed" uk-tooltip="delay: 300; pos: bottom ">
+                      {{scenario.cases_stats.total_error}}
+                    </a>
+                  </span>
+                </li>
+                <li style="padding-left: 8px !important;">
+                  <span class="uk-badge blocked">
+                    <a style="color: white !important; cursor: default !important;" title="Cases Blocked" uk-tooltip="delay: 300; pos: bottom ">
+                      {{scenario.cases_stats.total_blocked}}
+                    </a>
+                  </span>
+                </li>
+                <li style="padding-left: 8px !important;">
+                  <span class="uk-badge">
+                    <a style="color: white !important; cursor: default !important;" title="Cases Not Executed" uk-tooltip="delay: 300; pos: bottom ">
+                      {{scenario.cases_stats.total_not_executed}}
+                    </a>
+                  </span>
+                </li>
             </ul>
           </div>
       </div>
@@ -39,31 +59,25 @@
     <li>
         <h3 v-if="! caseslodaded">
           Nothing to see here... <br>
-          Please click on any Scenario to load or create cases for them.
+          Please click on any scenario to load the cases.
         </h3>
         <div v-else>
           <h4 class="scenario_name_case">
             Scenario: {{ scenarioFull.scenario_name }} <br>
           </h4>
-          <div class="uk-form-controls">
-              <textarea class="uk-textarea uk-width-1-1"
-              placeholder="Enter a new test case" type="textarea"
-              v-model="newCase" @keyup.shift.enter="addNewCase">
-            </textarea>
-            <center style="padding-top: 30px;"> <hr class="divider_new_scenario"> </center>
-          </div>
-
           <div class="content scenario">
-            <div v-for="tstcase in tstcases" :key="tstcase.id" class="uk-grid">
+            <div v-for="tstcase in tstcases" :key="tstcase.case_id" class="uk-grid">
               <div class="uk-width-4-5">
-                <span> {{ tstcase.name }} </span>
+                <span> {{ tstcase.case_name }} </span>
               </span>
-              <div v-if="tstcase.state_code === 'DISABLE'" class="uk-badge uk-label">Disabled</div>
-                <hr>
+              <hr>
               </div>
               <div class="uk-width-1-5">
                 <ul class="uk-iconnav">
-                    <li> <a @click="approveCase(tstcase.id)" uk-icon="icon: lock"></a></li>
+                    <li> <a v-bind:class="{'passed': classChanger(tstcase.case_cycle_state, 'PASSED')}" @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'PASSED')" uk-icon="icon: check; ratio: 1.2"></a></li>
+                    <li> <a v-bind:class="{'failed': classChanger(tstcase.case_cycle_state, 'ERROR')}" @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'ERROR')" uk-icon="icon: ban; ratio: 1.2"></a></li>
+                    <li> <a v-bind:class="{'blocked': classChanger(tstcase.case_cycle_state, 'BLOCKED')}" @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'BLOCKED')" uk-icon="icon: lock; ratio: 1.2"></a></li>
+                    <li> <a @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'NOT_EXECUTED')" uk-icon="icon: reply; ratio: 1.2"></a></li>
                 </ul>
               </div>
             </div>
@@ -74,11 +88,12 @@
 
 </div>
     <div class="uk-width-1-5">
-      <div class="info">
+      <div class="info" style="z-index: 980;" uk-sticky="bottom: true">
+        <br><br><router-link class="uk-button uk-button-default" style='margin-top:10px;' :to="{ path: '/project/view/'+ this.projectId }">Return to DashBoard</router-link>
+        <br>
+        <hr>
         <h3> info </h3>
-        - After typing the test case, you can hit keyword "shift + enter" on your keyboard and it will be saved automactily
-        <br><br>
-        - If you wish to edit a scenario or  case, just click on the edit button <a uk-icon="icon: file-edit"></a>.
+        - If you disabled a case test, it will not appear here.
       </div>
     </div>
   </div>
@@ -91,8 +106,8 @@ export default {
   name: 'dashboard',
   data () {
     return {
-      project_id: this.$route.params.projectId,
-      cycle_id: this.$route.params.cycleId,
+      projectId: this.$route.params.projectId,
+      cycleId: this.$route.params.cycleId,
       scenarios: [],
       scenarioFull: '',
       tstcases: [],
@@ -104,28 +119,34 @@ export default {
     }
   },
   methods: {
-    fetchCycleScenarios (e) {
-      this.$http.get('scenario/project_scenarios/' + this.project_id).then(function (response) {
+    fetchCycleScenarios () {
+      this.$http.get('projects/' + this.projectId + '/cycle/get_scenarios_for_cyle/' + this.cycleId).then(function (response) {
         this.loading = false
         this.scenarios = response.body
         this.scenarios = this.scenarios.reverse()
       })
     },
-    approveCase (caseId) {
-      var vueInstance = this
-      vueInstance.$http.post('projects/' + this.projectId + '/cycle/' + this.cycleId + '/change_case_state', {'case_id': caseId, 'action': 'PASSED'})
+    changeCaseStatus (caseId, scenarioId, status) {
+      this.$http.post('projects/' + this.projectId + '/cycle/change_case_state_code', {'case_id': caseId, 'cycle_id': this.cycleId, 'action': status})
       .then(function (response) {
+        this.fetchCycleCases(scenarioId)
       })
     },
-    fecthCycleHistory () {
+    fetchCycleCases (scenarioId) {
       this.loading = true
-      this.$http.get('scenario/cases/' + 0).then(function (response) {
+      this.$http.get('projects/' + this.projectId + '/cycle/get_cases_for_cyle/' + this.cycleId + '/scenario/' + scenarioId).then(function (response) {
         this.loading = false
         this.caseslodaded = true
         this.scenarioFull = response.body
         this.tstcases = this.scenarioFull.cases.reverse()
         UIkit.tab('#cenarios_cases', {'animation': 'uk-animation-middle-left'}).show(1)
       })
+    },
+    classChanger (currentState, rightState) {
+      if (currentState === rightState) {
+        return true
+      }
+      return false
     },
     cleanCases () {
       this.caseslodaded = false
@@ -135,10 +156,10 @@ export default {
   },
   created: function () {
     this.loading = true
-    this.fecthCycleHistory()
+    this.fetchCycleScenarios()
 
     this.interval = setInterval(function () {
-      this.fecthCycleHistory()
+      this.fetchCycleScenarios()
     }.bind(this), 2000)
   },
   updated: function () {
@@ -159,6 +180,7 @@ export default {
   min-height: 400px;
   overflow-x: hidden;
   padding: 10px;
+  width: 100%;
 }
 
 .info{
@@ -196,15 +218,35 @@ ul li {
   float: right;
 }
 
-.uk-badge {
-  background: #788b9e !important;
-  margin: 10px;
-}
-
 .scenario_name_case{
   border: 1px solid orange;
   text-align: center;
   padding: 10px;
 }
 
+.uk-badge {
+    margin: 0px;
+    padding: 0px 7px;
+}
+
+.passed {
+  background: green;
+  color: white !important;
+  stroke: white !important;
+  border-radius: 16px;
+}
+
+.failed {
+  background-color: #e80303;
+  color: white !important;
+  stroke: white !important;
+  border-radius: 16px;
+}
+
+.blocked {
+  background-color: orange;
+  color: whitesmoke !important;
+  stroke: whitesmoke !important;
+  border-radius: 16px;
+}
 </style>

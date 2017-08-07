@@ -38,6 +38,8 @@ def close():
     """POST endpoint for closing cycles.
     Param:
         {
+            reason: required,
+            user_id: required
         }
     """
     project = get_project(project_id)
@@ -124,15 +126,18 @@ def get_scenarios_for_cyle(project_id, cycle_id):
 
     cycle_scenarios_h = CycleScenarios.query.filter_by(cycle_id=cycle.id).all()
     scenarios = Scenario.query.filter_by(project_id=project_id).all()
+
     obj = []
 
     for item in cycle_scenarios_h:
         for scenario in scenarios:
             if scenario.id == item.scenario_id :
+                cases = CycleCases.query.filter_by(cycle_id=cycle.id).filter_by(scenario_id=scenario.id)
                 temp = {}
                 temp['scenario_name'] = scenario.name
                 temp['scenario_id'] = scenario.id
                 temp['scenario_cycle_id'] = item.id
+                temp['cases_stats'] = count_cycle_stats(cases)
                 obj.append(temp)
                 break
     return make_response(jsonify(obj))
@@ -155,6 +160,7 @@ def get_cases_for_cyle(project_id, cycle_id, scenario_id):
                 temp['case_name'] = case.name
                 temp['case_id'] = case.id
                 temp['case_cycle_id'] = item.id
+                temp['case_cycle_state'] = item.state_code
                 obj.append(temp)
                 break
 
@@ -163,26 +169,39 @@ def get_cases_for_cyle(project_id, cycle_id, scenario_id):
                                  cycle_id=cycle.id,
                                  cases=obj))
 
-"""
 
-@cycle.route('/edit/<int:cycle_id>', methods=['POST'])
+@cycle.route('/change_case_state_code', methods=['POST'])
 @auth.login_required
-def change_case_status_for_cycle_history():
+def change_cycle_case_state_code_(project_id):
+    """ Endpoint for changing the cycle cases state_code .
+    Param:
+        {
+            'cycle_id': required,
+            'case_id': required,
+            'action': required
+        }
+    """
+    action = check_none_and_blank(request, 'action')
+    case_id = check_none_and_blank(request, 'case_id')
+    cycle_id = check_none_and_blank(request, 'cycle_id')
+    cycle = get_cycle(cycle_id, project_id)
 
-    state_code = request.get_json().get('state_code')
-    case_id = request.get_json().get('case_id')
+    last_cycle = get_last_cycle(project_id)
 
-    if State.query.filter_by(code=state_code).first() is None:
-        abort(make_response(jsonify(message='INCORRECT_STATUS'), 400))
+    if cycle.id != last_cycle.id:
+        return make_response(jsonify(message='NOT_LAST_CYCLE'), 400)
 
-    edited_cycle_case = CycleHistory.query.filter_by(
-        cycle_id=g.project_cycle.id).filter_by(case_id=case_id).first()
+    state = State.query.filter_by(code=action).first()
+    if not state:
+        return make_response(jsonify(message='ACTION_UNKNOW'), 400)
+
+    edited_cycle_case = CycleCases.query.filter_by(
+        cycle_id=cycle.id).filter_by(case_id=case_id).first()
 
     if edited_cycle_case is None:
         abort(make_response(jsonify(message='UNKNOW_CASE'), 400))
-    edited_cycle_case.state_code = state_code
+    edited_cycle_case.state_code = action
     db.session.add(edited_cycle_case)
     db.session.commit()
 
-    return make_response(jsonify(message='CYCLE_EDITED')
-"""
+    return make_response(jsonify(message='CYCLE_EDITED'))

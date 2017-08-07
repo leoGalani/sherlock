@@ -5,16 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_cache import Cache
 
-from sherlockapi.data import model
-from sherlockapi.helpers.util import project_loader
-
-from sherlockapi.views.users import user
-from sherlockapi.views.projects import project
-from sherlockapi.views.scenarios import scenario
-from sherlockapi.views.dashboard import dashboard
-from sherlockapi.views.testcases import test_case
-from sherlockapi.views.cycles import cycle
-
 app = Flask(__name__, instance_relative_config=True, static_url_path="")
 CORS(app, resources={r'/*': {"origins": '*', 'allow_headers': '*'}})
 app.config['CORS_HEADER'] = 'Content-Type'
@@ -27,6 +17,16 @@ db = SQLAlchemy(app)
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 auth = HTTPBasicAuth()
+
+from sherlockapi.data import model
+from sherlockapi.helpers.util import project_loader
+
+from sherlockapi.views.users import user
+from sherlockapi.views.projects import project
+from sherlockapi.views.scenarios import scenario
+from sherlockapi.views.dashboard import dashboard
+from sherlockapi.views.testcases import test_case
+from sherlockapi.views.cycles import cycle
 
 app.register_blueprint(dashboard, url_prefix='/dashboard')
 app.register_blueprint(user, url_prefix='/user')

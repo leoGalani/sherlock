@@ -22,17 +22,17 @@ Vue.http.interceptors.push(function (request, next) {
 
   next(function (response) {
     if (response.status === 401) {
-      UIkit.notification('Please Login', {status: 'warning'})
+      UIkit.notification('Please Login', {status: 'warning', timeout: '700'})
       window.localStorage.removeItem('user')
       window.localStorage.removeItem('auth')
       this.$router.push({path: '/login'})
     }
     if (response.status === 400) {
-      UIkit.notification('Something went wrong', {status: 'danger'})
+      UIkit.notification('Something went wrong', {status: 'danger', timeout: '700'})
     }
 
     if (response.status === 404) {
-      UIkit.notification('The item you looking for no longer exist', {status: 'warning'})
+      UIkit.notification('The item you looking for no longer exist', {status: 'warning', timeout: '700'})
       this.$router.push({path: '/dashboard'})
     }
   })

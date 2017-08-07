@@ -44,7 +44,7 @@
               <div> <b>cases passed: </b> {{this.current_cycle.stats.total_passed}} </div>
               <div> <b>cases failed: </b> {{this.current_cycle.stats.total_error}} </div>
               <div> <b>cases blocked: </b> {{this.current_cycle.stats.total_blocked}} </div>
-              <button class="uk-button uk-button-default" style='margin-top:10px;'>Execute Test Cases</button>
+              <router-link class="uk-button uk-button-default" style='margin-top:10px;' :to="{ name: 'project_cycles', params: {projectId: this.projectId, cycleId: this.current_cycle.id} }">Execute Test Cases</router-link>
             </div>
           </div>
           <hr>
@@ -141,7 +141,7 @@ export default {
     this.mount_chart()
     this.interval = setInterval(function () {
       this.mount_chart()
-    }.bind(this), 1000)
+    }.bind(this), 4000)
   },
   beforeDestroy: function () {
     clearInterval(this.interval)
@@ -167,5 +167,16 @@ export default {
   border-bottom: 1px solid #e5e5e5;
   margin-left: 12px;
   padding-right: 20px;
+}
+
+.ct-series-a .ct-bar, .ct-series-a .ct-line, .ct-series-a .ct-point, .ct-series-a .ct-slice-donut {
+  stroke: green !important;
+}
+.ct-series-b .ct-bar, .ct-series-b .ct-line, .ct-series-b .ct-point, .ct-series-b .ct-slice-donut {
+  stroke: #d70206!important;
+}
+
+.ct-series-d .ct-bar, .ct-series-d .ct-line, .ct-series-d .ct-point, .ct-series-d .ct-slice-donut {
+  stroke: #807e7d !important;
 }
 </style>
