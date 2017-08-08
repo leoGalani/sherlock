@@ -28,13 +28,13 @@ from sherlockapi.views.dashboard import dashboard
 from sherlockapi.views.testcases import test_case
 from sherlockapi.views.cycles import cycle
 
-app.register_blueprint(dashboard, url_prefix='/dashboard')
-app.register_blueprint(user, url_prefix='/user')
-app.register_blueprint(project, url_prefix='/project')
-app.register_blueprint(cycle, url_prefix='/projects/<int:project_id>/cycle')
-app.register_blueprint(scenario, url_prefix='/scenario')
+app.register_blueprint(dashboard, url_prefix='/api/dashboard')
+app.register_blueprint(user, url_prefix='/api/user')
+app.register_blueprint(project, url_prefix='/api/project')
+app.register_blueprint(cycle, url_prefix='/api/projects/<int:project_id>/cycle')
+app.register_blueprint(scenario, url_prefix='/api/scenario')
 app.register_blueprint(test_case,
-                       url_prefix='/scenarios/<int:scenario_id>/tst_case')
+                       url_prefix='/api/scenarios/<int:scenario_id>/tst_case')
 
 
 @app.errorhandler(404)
@@ -66,7 +66,7 @@ def verify_password(username_or_token, password):
         return False
 
 
-@app.route('/auth_token', methods=['POST'])
+@app.route('/api/auth_token', methods=['POST'])
 @auth.login_required
 def get_auth_token():
     token = g.user.generate_auth_token(6000)

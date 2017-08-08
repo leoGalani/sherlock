@@ -27,7 +27,7 @@
               </div>
             </div>
           </div>
-          <div class="uk-grid">
+          <div class="uk-grid" v-if="project.have_cycles">
             <div class="uk-width-3-5">
               <h3>Current cycle stats</h3>
               <div class="ct-chart">
@@ -160,7 +160,7 @@ export default {
 }
 
 .uk-card-default .uk-card-title {
-    color: #bb1d1d;
+  color: #bb1d1d;
 }
 
 .title_span{

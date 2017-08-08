@@ -70,7 +70,7 @@ export default {
           user.user_id = response.body.id
           user.name = response.body.name
           window.localStorage.setItem('user', JSON.stringify(user))
-          this.$router.push({path: '/'})
+          this.$router.push({path: '/dashboard'})
         }, (response) => {
           UIkit.notification('<span uk-icon="icon: ban"></span> User ' + this.email + 'might be corrupted', {status: 'danger', timeout: '700'})
         })

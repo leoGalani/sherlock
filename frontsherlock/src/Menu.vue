@@ -4,7 +4,7 @@
     <div class="uk-navbar-left">
       <ul class="uk-navbar-nav">
         <li>
-          <router-link to="/"><img class="logo_menu" src='./assets/img/sherlock_name.png' style="width: 123px;"></router-link>
+          <router-link :to="{name: 'dashboard'}"><img class="logo_menu" src='./assets/img/sherlock_name.png' style="width: 123px;"></router-link>
         </li>
       </ul>
 

@@ -67,7 +67,7 @@ export default {
         this.$http.post('project/new', newProject)
         .then(function (response) {
           UIkit.notification('<span uk-icon="icon: check"></span> Project added with Success', {status: 'success', timeout: '700'})
-          this.$router.push({path: '/'})
+          this.$router.push({name: 'dashboard'})
         })
         e.preventDefault()
       }

@@ -10,7 +10,7 @@ import UIkit from 'uikit'
 require('./assets/main.css')
 Vue.config.productionTip = false
 Vue.use(VueResource)
-Vue.http.options.root = 'http://localhost:5000'
+Vue.http.options.root = '/api'
 Vue.http.options.crossOrigin = true
 
 Vue.http.interceptors.push(function (request, next) {
