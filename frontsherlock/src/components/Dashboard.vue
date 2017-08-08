@@ -10,12 +10,18 @@
       <router-link :to="{ path: 'project/view/'+project.id }" class="box-link">
         <h4>{{project.name}}</h4>
         <hr>
-        <span> Current Cycle: 1 </span> <br>
-        <span> Cycle State: {{project.cycle_state}} </span> <br>
-        <span> Cases Not Executed: {{project.NOT_EXECUTED}} </span> <br>
-        <span> Cases Passed: {{project.PASSED}} </span> <br>
-        <span> Cases Failed: {{project.ERROR}} </span> <br>
-        <span> Cases Blocked: {{project.BLOCKED}} </span> <br>
+        <span v-if="project.have_cycle === true">
+          <span> Current Cycle:  {{project.current_cycle}} </span> <br>
+          <span> Cycle State: {{project.cycle_state}} </span> <br>
+          <span> Cases Not Executed: {{project.stats.total_not_executed}} </span> <br>
+          <span> Cases Passed: {{project.stats.total_passed}} </span> <br>
+          <span> Cases Failed: {{project.stats.total_error}} </span> <br>
+          <span> Cases Blocked: {{project.stats.total_blocked}} </span> <br>
+        </span>
+        <span v-else>
+          <center><i class="material-icons">cake</i>
+          <p>Brand new project! <br> no cyles yet!</p></center><br>
+        </span>
       </router-link>
     </div>
   </div>
@@ -52,6 +58,10 @@ export default {
 
 .dashboard div{
   padding: 10px;
+}
+
+.project_box{
+  min-height: 210px;
 }
 
 </style>

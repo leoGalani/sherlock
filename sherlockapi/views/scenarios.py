@@ -3,8 +3,9 @@ from flask import Blueprint, request, g, jsonify, abort, make_response
 from sherlockapi import db, auth
 from sherlockapi.data.model import Scenario, Project, Case, TestCaseSchema
 from sherlockapi.data.model import ScenariosSchema, State
+from sherlockapi.data.model import Cycle, CycleScenarios, CycleCases
 from sherlockapi.helpers.string_operations import check_none_and_blank
-from sherlockapi.helpers.util import get_scenario
+from sherlockapi.helpers.util import get_scenario, get_last_cycle
 
 
 scenario = Blueprint('scenarios', __name__)
@@ -68,21 +69,27 @@ def remove_scenario():
     scenario = get_scenario(scenario_id)
     action = check_none_and_blank(request, 'action')
 
-    if action == 'REMOVE':
-        db.session.delete(scenario)
-        db.session.commit()
-        return make_response(jsonify(message='SCENARIO_REMOVED'))
-    elif action == 'DISABLE':
-        state = State.query.filter_by(code='DISABLE').first()
-    elif action == 'ENABLE':
-        state = State.query.filter_by(code='ACTIVE').first()
+    last_cycle = get_last_cycle(scenario.project_id)
+
+    if action in ['DISABLE', 'ENABLE', 'REMOVE']:
+        if action == 'DISABLE':
+            state = State.query.filter_by(code='DISABLE').first()
+            cycle_state = State.query.filter_by(code='BLOCKED').first()
+        elif action == 'ENABLE':
+            state = State.query.filter_by(code='ACTIVE').first()
+            cycle_state = State.query.filter_by(code='NOT_EXECUTED').first()
+        else:
+            cycle_state = None
+
+        scenario_case_process(last_cycle,
+                              scenario,
+                              state,
+                              action,
+                              cycle_state)
     else:
         return make_response(jsonify(message='ACTION_UNKNOW'))
 
-    scenario.state = state
-    db.session.add(scenario)
-    db.session.commit()
-    return make_response(jsonify(message='SCENARIO_STATE_CHANGED'))
+    return make_response(jsonify(message='DONE'))
 
 
 @scenario.route('/new', methods=['POST'])
@@ -134,3 +141,48 @@ def _create_scenario(request):
     db.session.add(new_scenario)
     db.session.commit()
     return new_scenario
+
+
+def scenario_case_process(cycle, scenario, state, action, cycle_state):
+    scenario_cases = Scenario.query.filter_by(scenario_id=scenario_id).all()
+
+    # disabling cases
+    if action == 'REMOVE':
+        db.session.delete(scenario)
+        db.session.commit()
+        for scenario in scenario_cases:
+            db.session.delete(scenario)
+    else:
+        scenario.state = state
+        db.session.add(scenario)
+        db.session.commit()
+        for scenario in scenario_cases:
+            scenario.state_code = state
+            db.session.add(scenario)
+    db.session.commit()
+
+    # blocking scenario on current_cycle
+    if cycle and cycle_state:
+        cycle_scenario = CycleScenarios.query.filter_by(
+            id=cycle.id).filter_by(scenario_id=scenario.id).first()
+
+        cycle_cases = CycleCases.filter_by(id=cycle.id).filter_by(
+            scenario_id=scenario.id).all()
+
+        # Scenario in the current cycle
+        if action == 'REMOVE':
+            db.session.delete(cycle_scenario)
+        else:
+            cycle_scenario.state_code = cycle_state
+            db.session.add(cycle_scenario)
+        db.session.commit()
+
+        # Cases in the current cycle
+        if action == 'REMOVE':
+            for ccase in cycle_cases:
+                db.session.delete(ccase)
+        else:
+            for ccase in cycle_cases:
+                ccase.state = cycle_state
+                db.session.add(ccase)
+        db.session.commit()

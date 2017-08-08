@@ -4,7 +4,7 @@ from sherlockapi import db, auth
 from sherlockapi.data.model import Case, TestCaseSchema
 from sherlockapi.helpers.string_operations import check_none_and_blank
 
-from sherlockapi.helpers.util import get_scenario, get_tstcase
+from sherlockapi.helpers.util import get_scenario, get_tstcase, get_last_cycle
 
 
 test_case = Blueprint('test_cases', __name__)
@@ -62,22 +62,40 @@ def tstcase_changestatus(scenario_id):
     case_id = check_none_and_blank(request, 'case_id')
     action = check_none_and_blank(request, 'action')
     tst_case = get_tstcase(case_id)
+    scenario = get_scenario(scenario_id)
+
+    last_cycle = get_last_cycle(scenario.project_id)
+
+    if last_cycle:
+        cycle_case = CycleCases.query.filter_by(
+            last_cycle.id).filter_by(case_id=case_id).first()
 
     if action == 'REMOVE':
         db.session.delete(tst_case)
+        if last_cycle:
+            db.session.delete(cycle_case)
         db.session.commit()
-        return make_response(jsonify(message='TSTCASE_REMOVED'))
+
     elif action == 'DISABLE':
         state = State.query.filter_by(code='DISABLE').first()
+        if last_cycle:
+            cycle_state = State.query.filter_by(code='BLOCKED').first()
     elif action == 'ENABLE':
         state = State.query.filter_by(code='ACTIVE').first()
+        if last_cycle:
+            cycle_state = State.query.filter_by(code='NOT_EXECUTED').first()
     else:
         return make_response(jsonify(message='ACTION_UNKNOW'))
+
+    if last_cycle:
+        cycle_case.cycle_state
+        db.session.add(cycle_case)
+        db.session.commit()
 
     tst_case.state = state
     db.session.add(tst_case)
     db.session.commit()
-    return make_response(jsonify(message='TSTCASE_STATE_CHANGED'))
+    return make_response(jsonify(message='DONE'))
 
 
 @test_case.route('/edit', methods=['POST'])

@@ -18,6 +18,14 @@ def user_pre_processor(endpoint, values):
             abort(make_response(jsonify(message='MISSING_JSON_HEADER'), 400))
 
 
+@user.route('/get_all_users', methods=['GET'])
+@auth.login_required
+def get_all_users():
+    user_schema = UsersSchema(many=True)
+    users = user_schema.dump(User.query.all()).data
+    return make_response(jsonify(users))
+
+
 @user.route('/get_user_id/<int:user_id>', methods=['GET'])
 @auth.login_required
 def show_user_id(user_id):

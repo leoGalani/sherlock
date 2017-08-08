@@ -17,7 +17,7 @@ def get_last_cycle(project_id):
     if cycle:
         return cycle
     else:
-        return ''
+        return False
 
 
 def count_cycle_stats(casesCycle):

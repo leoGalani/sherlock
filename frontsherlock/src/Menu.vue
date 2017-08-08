@@ -20,7 +20,8 @@
               <ul class="uk-nav uk-navbar-dropdown-nav" style="width:450px !important">
                   <router-link :to="{ path: '/project/view/'+projectId+'/scenario_cases' }">Manage Cases and Scenarios </router-link>
                   <hr style="width:150px">
-                  <a href="#"><li>Edit project</li></a>
+                  <router-link :to="{ path: '/project/edit/'+projectId }">Edit Project </router-link>
+
               </ul>
           </div>
         </li>
@@ -43,12 +44,14 @@
         <li><a><i class="material-icons" style="color: rgb(117, 117, 117);">account_circle</i></a>
           <div class="uk-navbar-dropdown">
               <ul class="uk-nav uk-navbar-dropdown-nav" style="width:450px !important">
-                  <router-link :to="{ path: '/project/view/'+projectId+'/scenario_cases' }"> My Settings </router-link>
-                  <hr style="width:150px">
-                  <a @Click="logoff()"> Logoff </a>
+                  <li><router-link :to="{ path: '/project/view/'+projectId+'/scenario_cases' }"> My Settings </router-link></li>
+                  <li><hr style="width:150px"></li>
+                <li><a @click="logoff()"> Logoff </a></li>
+                <li><a href="http://sherlockqa.readthedocs.io/" target="_blank" uk-icon="icon: question"> Help </a></li>
               </ul>
           </div>
         </li>
+
       </ul>
     </div>
   </nav>

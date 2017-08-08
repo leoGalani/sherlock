@@ -106,18 +106,6 @@ input[type=number]:focus {
   opacity: 0.5;
 }
 
-.uk-notification-message-danger {
-  border-bottom: solid red !important;
-}
-
-.uk-notification-message-success {
-  border-bottom: solid green !important;
-}
-
-.uk-notification-message-warning {
-  border-bottom: solid orange !important;
-}
-
 .uk-navbar-dropdown.uk-open {
   width: 230px !important;
 }

@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     addProject (e) {
-      if (!this.project_name) {
+      if (!this.project_name || !this.type_of_project || !this.privacy_policy) {
         UIkit.notification('Please fill all the inputs', {status: 'danger'})
       } else {
         var user = JSON.parse(window.localStorage.getItem('user'))

@@ -86,6 +86,10 @@
         - After typing the test case, you can hit keyword "shift + enter" on your keyboard and it will be saved automactily
         <br><br>
         - If you wish to edit a scenario or  case, just click on the edit button <a uk-icon="icon: file-edit"></a>.
+        <br><br>
+        - Blocking a Scenario or a Case will block on the current cycle and all the coming cycles.
+        <br><br>
+        - Blocking or removing a scenario will block / delete all their test cases.
       </div>
     </div>
   </div>

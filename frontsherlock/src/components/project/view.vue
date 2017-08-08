@@ -141,7 +141,7 @@ export default {
     this.mount_chart()
     this.interval = setInterval(function () {
       this.mount_chart()
-    }.bind(this), 4000)
+    }.bind(this), 1000)
   },
   beforeDestroy: function () {
     clearInterval(this.interval)
