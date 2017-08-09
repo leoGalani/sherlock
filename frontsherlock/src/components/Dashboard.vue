@@ -44,7 +44,7 @@ export default {
       projects: [],
       loading: false,
       showTitle: false,
-      showGreetings: true
+      showGreetings: false
     }
   },
   methods: {
@@ -53,9 +53,12 @@ export default {
       this.$http.get('dashboard/').then(response => {
         this.loading = false
         this.projects = response.body
-        if (Object.values(this.projects).length > 0) {
+        if (this.projects.projects.length > 0) {
           this.showTitle = true
           this.showGreetings = false
+        } else {
+          this.showGreetings = true
+          this.showTitle = false
         }
       })
     }
