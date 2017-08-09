@@ -5,7 +5,7 @@ RUN apt-get update
 RUN apt-get upgrade -y
 RUN apt-get install -y build-essential git python3 python3-pip curl
 
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash
 RUN apt-get install -y nodejs
 
 RUN pip3 install --upgrade pip
@@ -28,7 +28,7 @@ RUN pip3 install -r /sherlock/requirements.txt
 
 ADD frontsherlock/package.json /sherlock/frontsherlock/
 WORKDIR /sherlock/frontsherlock/
-RUN npm install
+RUN npm install --no-optional
 COPY . /sherlock
 RUN npm run build
 WORKDIR /sherlock/
