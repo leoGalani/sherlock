@@ -14,6 +14,7 @@ Vue.use(Router)
 
 const router = new Router({
   routes: [
+    { path: '*', component: Login },
     {path: '/', name: 'login', component: Login},
     {path: '/dashboard', name: 'dashboard', component: Dashboard, meta: { requiresAuth: true }},
     {path: '/project/new', name: 'new_project', component: AddProject, meta: { requiresAuth: true }},
