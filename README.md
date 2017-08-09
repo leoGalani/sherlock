@@ -1,4 +1,4 @@
-![alt tag](https://raw.githubusercontent.com/leoGalani/sherlock/master/sherlock/static/img/sherlock.png)
+![alt tag](https://raw.githubusercontent.com/leoGalani/sherlock/master/frontsherlock/src/assets/img/sherlock.png)
 
 #Sherlock QA
 
