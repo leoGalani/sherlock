@@ -100,7 +100,7 @@ def new():
 
     Params:
          { scenario_name: required,
-           project_id: required,
+           projectId: required,
          }
     """
     scenario = _create_scenario(request)
@@ -130,7 +130,7 @@ def edit():
 
 def _create_scenario(request):
     scenario_name = request.json.get('scenario_name')
-    project_id = request.json.get('project_id')
+    project_id = request.json.get('projectId')
 
     check_none_and_blank(request, 'scenario_name')
     check_none_and_blank(request, 'project_id')
