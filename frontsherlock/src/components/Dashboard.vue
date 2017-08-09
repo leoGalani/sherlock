@@ -49,7 +49,6 @@ export default {
   },
   methods: {
     fetchProjects: function () {
-      this.loading = true
       this.$http.get('dashboard/').then(response => {
         this.loading = false
         this.projects = response.body
@@ -64,10 +63,17 @@ export default {
     }
   },
   created: function () {
+    this.loading = true
     this.fetchProjects()
+    this.interval = setInterval(function () {
+      this.fetchProjects()
+    }.bind(this), 2000)
   },
   updated: function () {
     //  this.fetchProjects()
+  },
+  beforeDestroy: function () {
+    clearInterval(this.interval)
   }
 }
 </script>
