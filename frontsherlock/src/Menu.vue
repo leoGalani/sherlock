@@ -11,7 +11,7 @@
     </div>
     <div class="uk-navbar-right">
       <ul class="uk-navbar-nav">
-        <li v-if="['dashboard'].indexOf($route.name) > -1">
+        <li v-if="['dashboard', 'new_project'].indexOf($route.name) > -1">
           <router-link to="/project/new" title="New Project" uk-tooltip="delay: 300" > <i class="material-icons" style="color: rgb(117, 117, 117);">note_add</i> </router-link>
         </li>
         <li v-else>
@@ -38,7 +38,7 @@
         <li></li>
         <li class="nav_divider"></li>
         <li>
-          <a href="#" title="Sherlock Settings" uk-tooltip="delay: 300">
+          <a title="Sherlock Settings" uk-tooltip="delay: 300">
             <i class="material-icons" style="color: rgb(117, 117, 117);">settings</i></a>
         </li>
         <li><a><i class="material-icons" style="color: rgb(117, 117, 117);">account_circle</i></a>

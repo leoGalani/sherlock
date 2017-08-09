@@ -67,7 +67,8 @@ password = input('Enter the First user Password: ')
 
 initial_user = User(name=name,
                     email=email,
-                    password=password)
+                    password=password,
+                    profile='admin')
 db.session.add(initial_user)
 db.session.commit()
 

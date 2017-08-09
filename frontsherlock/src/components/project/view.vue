@@ -20,7 +20,7 @@
               <p>You can't have cycles without test cases!</p>
             </div>
           </div>
-            <div v-if="project.have_cycles === false && project.have_scenarios" @click="createCycle()">
+            <div v-if="project.have_cycles === false && project.have_scenarios" @click="createCycle()" style="cursor:pointer;">
               <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body">
                 <h4 class="uk-card-title">This project have no cycles!</h4>
                 <p>Click here to create cenarios and test cases for this project.</p>

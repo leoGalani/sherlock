@@ -30,7 +30,7 @@
           </div>
           <div class="uk-width-1-5">
             <ul class="uk-iconnav">
-                <li v-show="scenario.state_code === 'ACTIVE'"> <a @click="fecthCases(scenario.id)" uk-icon="icon: chevron-right;"></a></li>
+                <li> <a @click="fecthCases(scenario.id)" uk-icon="icon: chevron-right;"></a></li>
                 <li v-show="scenario.state_code === 'ACTIVE'"> <a @click="disableScenario(scenario.id)" uk-icon="icon: lock"></a></li>
                 <li v-show="scenario.state_code === 'DISABLE'"> <a @click="enableScenario(scenario.id)" uk-icon="icon: unlock"></a></li>
                 <li><a @click="editScenario(scenario.name, scenario.id)" uk-icon="icon: file-edit"></a></li>
@@ -47,7 +47,9 @@
         </h3>
         <div v-else>
           <h4 class="scenario_name_case">
-            Scenario: {{ scenarioFull.scenario_name }} <br>
+            Scenario: {{ scenarioFull.scenario_name }}
+             <div v-if="scenarioFull.scenario_state === 'DISABLE'" class="uk-badge uk-label">Disabled</div>
+
           </h4>
           <div class="uk-form-controls">
               <textarea class="uk-textarea uk-width-1-1"
@@ -82,6 +84,9 @@
 </div>
     <div class="uk-width-1-5">
       <div class="info">
+        <br><br><router-link class="uk-button uk-button-default" style='margin-top:10px;' :to="{ path: '/project/view/'+ this.projectId }">Return to DashBoard</router-link>
+        <br>
+        <hr>
         <h3> info </h3>
         - After typing the test case, you can hit keyword "shift + enter" on your keyboard and it will be saved automactily
         <br><br>
@@ -102,7 +107,7 @@ export default {
   name: 'dashboard',
   data () {
     return {
-      project_id: this.$route.params.projectId,
+      projectId: this.$route.params.projectId,
       scenarios: [],
       scenarioFull: '',
       tstcases: [],
@@ -115,7 +120,7 @@ export default {
   },
   methods: {
     fetchScenarios (e) {
-      this.$http.get('scenario/project_scenarios/' + this.project_id).then(function (response) {
+      this.$http.get('scenario/project_scenarios/' + this.projectId).then(function (response) {
         this.loading = false
         this.scenarios = response.body
         this.scenarios = this.scenarios.reverse()
@@ -127,7 +132,7 @@ export default {
       } else {
         var scenario = {
           'scenario_name': this.newScenario,
-          'project_id': this.$route.params.projectId
+          'projectId': this.$route.params.projectId
         }
         this.$http.post('scenario/new', scenario).then(function (response) {
           this.newScenario = ''
@@ -215,9 +220,9 @@ export default {
     disableCase (caseId) {
       var vueInstance = this
       UIkit.modal.confirm('Do you want to disable this Test Case? It will not be available for the next cycle.').then(function () {
-        vueInstance.$http.post('scenarios/' + this.scenarioFull.scenario_id + '/tst_case/change_status', {'case_d': caseId, 'action': 'DISABLE'}).then(function (response) {
+        vueInstance.$http.post('scenarios/' + vueInstance.scenarioFull.scenario_id + '/tst_case/change_status', {'case_d': caseId, 'action': 'DISABLE'}).then(function (response) {
           UIkit.notification('<span uk-icon="icon: lock"></span> Test Case Disabled', {timeout: '700'})
-          this.fecthCases(this.scenarioFull.scenario_id)
+          this.fecthCases(vueInstance.scenarioFull.scenario_id)
         })
       }, function () {
       })
@@ -225,9 +230,13 @@ export default {
     enableCase (caseId) {
       var vueInstance = this
       UIkit.modal.confirm('Please confirm the Test Case activation.').then(function () {
-        vueInstance.$http.post('scenarios/' + this.scenarioFull.scenario_id + '/tst_case/change_status', {'case_id': caseId, 'action': 'ENABLE'}).then(function (response) {
+        vueInstance.$http.post('scenarios/' + vueInstance.scenarioFull.scenario_id + '/tst_case/change_status', {'case_id': caseId, 'action': 'ENABLE'}).then(function (response) {
+          if (response.message === 'SCENARIO_DISABLED') {
+            UIkit.notification('<span uk-icon="icon: ban"></span> This Case Scenario is disabled!', {timeout: '700'})
+            return
+          }
           UIkit.notification('<span uk-icon="icon: unlock"></span> Test Case Enabled', {timeout: '700'})
-          this.fecthCases(this.scenarioFull.scenario_id)
+          this.fecthCases(vueInstance.scenarioFull.scenario_id)
         })
       }, function () {
       })

@@ -1,6 +1,7 @@
 """Setup for SHERLOCK database."""
 from datetime import datetime
 
+from flask import g
 import bcrypt
 from marshmallow import Schema, fields
 from itsdangerous import (TimedJSONWebSignatureSerializer
@@ -90,6 +91,7 @@ class Case(db.Model):
                            default="ACTIVE")
     state = db.relationship('State')
 
+
     def __init__(self, name, scenario_id):
         """Setting params to the object."""
         self.name = name
@@ -107,13 +109,15 @@ class User(db.Model):
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(50), nullable=False)
+    profile = db.Column(db.String(50), nullable=False)
 
-    def __init__(self, name, email, password):
+    def __init__(self, name, email, password, profile='user'):
         """Setting params to the object."""
         self.name = name
         self.email = email
         self.password = bcrypt.hashpw(
             password.encode('utf-8'), bcrypt.gensalt())
+        self.profile=profile
 
     def verify_password(self, password):
         password = password.encode('utf-8')
@@ -138,8 +142,8 @@ class User(db.Model):
             return None
         except BadSignature:
             return None
-        user = User.query.get(data['id'])
-        return user
+        g.user = User.query.get(data['id'])
+        return g.user
 
 
 class Cycle(db.Model):

@@ -70,6 +70,8 @@ def tstcase_changestatus(scenario_id):
         cycle_case = CycleCases.query.filter_by(
             last_cycle.id).filter_by(case_id=case_id).first()
 
+    import pdb; pdb.set_trace()
+
     if action == 'REMOVE':
         db.session.delete(tst_case)
         if last_cycle:
@@ -82,6 +84,8 @@ def tstcase_changestatus(scenario_id):
             cycle_state = State.query.filter_by(code='BLOCKED').first()
     elif action == 'ENABLE':
         state = State.query.filter_by(code='ACTIVE').first()
+        if scenario.state_code == 'DISABLE':
+            return make_response(jsonify(message='SCENARIO_DISABLED'))
         if last_cycle:
             cycle_state = State.query.filter_by(code='NOT_EXECUTED').first()
     else:

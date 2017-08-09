@@ -34,6 +34,7 @@ db.session.commit()
 
 initial_user = User(name='Admin',
                     email='admin@admin.xpto',
-                    password='admin')
+                    password='admin',
+                    profile='admin')
 db.session.add(initial_user)
 db.session.commit()

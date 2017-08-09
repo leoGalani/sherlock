@@ -2,17 +2,18 @@
   <div id="base_app">
     <app-menu></app-menu>
     <router-view></router-view>
+    <app-footer></app-footer>
   </div>
 </template>
 
 <script>
 import Menu from '@/Menu.vue'
+import Footer from '@/Footer.vue'
 
 export default {
   name: 'base_app',
   data () {
     return {
-      alert_msg: ''
     }
   },
   created: function () {
@@ -22,7 +23,8 @@ export default {
 
   },
   components: {
-    AppMenu: Menu
+    AppMenu: Menu,
+    AppFooter: Footer
   }
 }
 </script>

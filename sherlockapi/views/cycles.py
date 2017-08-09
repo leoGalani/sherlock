@@ -80,8 +80,6 @@ def create(project_id):
     else:
         cycle_number = 1
 
-    cycle_number = int(project_lasty_cycle.cycle) + 1
-
     scenarios = Scenario.query.filter_by(
         project_id=project.id).filter_by(state_code='ACTIVE').all()
     cases = Case.query.join(

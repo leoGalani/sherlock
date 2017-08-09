@@ -4,7 +4,7 @@
        <center><div uk-spinner></div>
        Loading...</center>
      </div>
-    <h2> Current Projects </h2>
+    <h2 v-if="showTitle"> Current Projects </h2>
 
     <div v-for="project in projects.projects" class="project_box">
       <router-link :to="{ path: 'project/view/'+project.id }" class="box-link">
@@ -24,6 +24,15 @@
         </span>
       </router-link>
     </div>
+
+    <div v-if="showGreetings">
+      <hr>
+      <h2 style="margin-left:20px"><span class="uk-margin-small-right" uk-icon="icon: heart"></span> Hey, this seems like a brand new installation! thanks for giving sherlock a try! <span class="uk-margin-small-right" uk-icon="icon: heart"></span></h2>
+
+      <p style="margin-left:20px"> Sherlock still in beta, so it means its not quite ready for production (unless you know what u doing and can handle migrations in a few weeks) </p>
+      <p style="margin-left:20px"> If you found any bug, please added them on the github issues... but we also appreciate a PR to fix it :) <p/>
+    </div>
+
   </div>
 </template>
 
@@ -33,7 +42,9 @@ export default {
   data () {
     return {
       projects: [],
-      loading: false
+      loading: false,
+      showTitle: false,
+      showGreetings: true
     }
   },
   methods: {
@@ -42,6 +53,10 @@ export default {
       this.$http.get('dashboard/').then(response => {
         this.loading = false
         this.projects = response.body
+        if (Object.values(this.projects).length > 0) {
+          this.showTitle = true
+          this.showGreetings = false
+        }
       })
     }
   },

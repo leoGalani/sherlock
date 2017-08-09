@@ -30,6 +30,7 @@ def get_scenario_n_tst_cases(scenario_id):
     tst_cases = schema.dump(cases).data
 
     return make_response(jsonify(scenario_id=scenario.id,
+                                 scenario_state=scenario.state_code,
                                  scenario_name=scenario.name,
                                  cases=tst_cases))
 
@@ -144,22 +145,23 @@ def _create_scenario(request):
 
 
 def scenario_case_process(cycle, scenario, state, action, cycle_state):
-    scenario_cases = Scenario.query.filter_by(scenario_id=scenario_id).all()
+    scenario_cases = Case.query.filter_by(scenario_id=scenario.id).all()
 
     # disabling cases
     if action == 'REMOVE':
         db.session.delete(scenario)
         db.session.commit()
-        for scenario in scenario_cases:
-            db.session.delete(scenario)
+        for case in scenario_cases:
+            db.session.delete(case)
+            db.session.commit()
     else:
         scenario.state = state
         db.session.add(scenario)
         db.session.commit()
-        for scenario in scenario_cases:
-            scenario.state_code = state
-            db.session.add(scenario)
-    db.session.commit()
+        for case in scenario_cases:
+            case.state_code = state.code
+            db.session.add(case)
+            db.session.commit()
 
     # blocking scenario on current_cycle
     if cycle and cycle_state:
@@ -172,17 +174,19 @@ def scenario_case_process(cycle, scenario, state, action, cycle_state):
         # Scenario in the current cycle
         if action == 'REMOVE':
             db.session.delete(cycle_scenario)
+            db.session.commit()
         else:
-            cycle_scenario.state_code = cycle_state
+            cycle_scenario.state_code = cycle_state.code
             db.session.add(cycle_scenario)
-        db.session.commit()
+            db.session.commit()
 
         # Cases in the current cycle
         if action == 'REMOVE':
             for ccase in cycle_cases:
                 db.session.delete(ccase)
+                db.session.commit()
         else:
             for ccase in cycle_cases:
-                ccase.state = cycle_state
+                ccase.state = cycle_state.code
                 db.session.add(ccase)
-        db.session.commit()
+                db.session.commit()
