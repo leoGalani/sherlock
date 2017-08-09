@@ -26,7 +26,7 @@ RUN npm install -g chartist
 ADD requirements.txt /sherlock/
 RUN pip3 install -r /sherlock/requirements.txt
 
-ADD package.json /sherlock/
+ADD frontsherlock/package.json /sherlock/frontsherlock/
 WORKDIR /sherlock/frontsherlock/
 RUN npm install
 COPY . /sherlock
