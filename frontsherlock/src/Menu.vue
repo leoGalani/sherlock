@@ -1,6 +1,6 @@
 <template>
   <div id="menu_Component">
-    <nav class="uk-navbar-container" uk-navbar v-if="['login', 'register'].indexOf($route.name) === -1">
+    <nav class="uk-navbar-container" uk-navbar v-if="['login', '404', 'register'].indexOf($route.name) === -1">
     <div class="uk-navbar-left">
       <ul class="uk-navbar-nav">
         <li>

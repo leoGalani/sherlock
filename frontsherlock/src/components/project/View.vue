@@ -28,26 +28,93 @@
             </div>
           </div>
           <div class="uk-grid" v-if="project.have_cycles">
-            <div class="uk-width-3-5">
-              <h3>Current cycle stats</h3>
-              <div class="ct-chart">
-                <div v-if="display_load_chart">
-                  <div uk-spinner></div>
-                  Loading chart
+              <div class="uk-width-3-5">
+                <h3 v-if="project.last_cycle.state_code === 'ACTIVE'">Current cycle stats</h3>
+                <h3 v-else>Resume of Last Cycle</h3>
+                <div class="ct-chart">
+                  <div v-if="display_load_chart">
+                    <div uk-spinner></div>
+                    Loading chart
+                  </div>
                 </div>
+                <router-link v-if="project.last_cycle.state_code === 'ACTIVE'" class="uk-button uk-button-default" style='margin-top:10px;' :to="{ name: 'project_cycles', params: {projectId: this.projectId, cycleId: this.current_cycle.id} }">Execute Test Cases</router-link>
+                <a v-if="project.last_cycle.state_code === 'ACTIVE'" class="uk-button uk-button-default" style='margin-top:10px;' @click="checkCloseCyle(project.last_cycle.id)">Close Cycle</a>
+                <a v-if="project.last_cycle.state_code === 'CLOSED'" @click="createCycle()" class="uk-button uk-button-default"> Create New Cycle</a>
               </div>
-            </div>
-            <div class="uk-width-2-5">
-              <h3>Cycle {{this.current_cycle.cycle}} status </h3>
-              <div> <b>created at: </b> {{this.current_cycle.created_at}} <a title="dd-mm-yyyy" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: question"></a></div>
-              <div> <b>cases not executed: </b> {{this.current_cycle.stats.total_not_executed}} </div>
-              <div> <b>cases passed: </b> {{this.current_cycle.stats.total_passed}} </div>
-              <div> <b>cases failed: </b> {{this.current_cycle.stats.total_error}} </div>
-              <div> <b>cases blocked: </b> {{this.current_cycle.stats.total_blocked}} </div>
-              <router-link class="uk-button uk-button-default" style='margin-top:10px;' :to="{ name: 'project_cycles', params: {projectId: this.projectId, cycleId: this.current_cycle.id} }">Execute Test Cases</router-link>
-            </div>
+              <div class="uk-width-2-5">
+                <h3>Cycle {{this.current_cycle.cycle}} status </h3>
+
+                <div class="uk-grid-divider uk-child-width-expand@s" uk-grid style="margin-top:20px !important">
+                  <div>
+                      <div class="uk-form-label" style="font-weight: 800;">created at:</div>
+                      <div>
+                        {{this.current_cycle.created_at}} <a title="dd-mm-yyyy" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: question"></a>
+                    </div>
+                  </div>
+                  <div v-if="project.last_cycle.state_code === 'CLOSED'">
+                      <div class="uk-form-label" style="font-weight: 800;">closed at:</div>
+                      <div>
+                        {{this.current_cycle.closed_at}} <a title="dd-mm-yyyy" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: question"></a>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="uk-grid-divider uk-child-width-expand@s" uk-grid style="margin-top:20px !important">
+                  <div>
+                      <div class="uk-form-label" style="font-weight: 800;">closed by:</div>
+                      <div>
+                        {{this.current_cycle.closed_by}}
+                    </div>
+                  </div>
+                  <div v-if="project.last_cycle.state_code === 'CLOSED'">
+                      <div class="uk-form-label" style="font-weight: 800;">reason:</div>
+                      <div  style="max-height: 137px; white-space: normal" class="hide_overflow">
+                        {{this.current_cycle.closed_reason}}</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="uk-grid-divider uk-child-width-expand@s" uk-grid style="margin-top:20px !important">
+                  <div>
+                      <div class="uk-form-label" style="font-weight: 800;">cases not executed:</div>
+                      <div>
+                        {{this.current_cycle.stats.total_not_executed}}
+                    </div>
+                  </div>
+                  <div v-if="project.last_cycle.state_code === 'CLOSED'">
+                      <div class="uk-form-label" style="font-weight: 800;">cases passed:</div>
+                      <div>
+                        {{this.current_cycle.stats.total_passed}}</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="uk-grid-divider uk-child-width-expand@s" uk-grid style="margin-top:20px !important">
+                  <div>
+                      <div class="uk-form-label" style="font-weight: 800;">cases failed:</div>
+                      <div>
+                        {{this.current_cycle.stats.total_error}}
+                    </div>
+                  </div>
+                  <div v-if="project.last_cycle.state_code === 'CLOSED'">
+                      <div class="uk-form-label" style="font-weight: 800;">cases blocked:</div>
+                      <div>
+                        {{this.current_cycle.stats.total_blocked}}</a>
+                    </div>
+                  </div>
+                </div>
+                <br>
+              </div>
           </div>
           <hr>
+          <div v-if="project.have_cycles">
+            <div class="ct-chart-line-legendnames" v-if="this.current_cycle.cycle >= 2">
+              <div v-if="display_load_chart">
+                <div uk-spinner></div>
+                Loading chart
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="uk-width-1-4">
@@ -66,6 +133,7 @@
 <script>
 import UIkit from 'uikit'
 import Chartist from 'chartist'
+require('chartist-plugin-legend')
 
 export default {
   name: 'projectdetails',
@@ -120,7 +188,33 @@ export default {
         })
       }
     },
-    mount_chart () {
+    checkCloseCyle (cycleID) {
+      var notExecuted = this.current_cycle.stats.total_not_executed
+      var vueInstance = this
+      if (notExecuted > 0) {
+        UIkit.modal.confirm('This cycle still have [' + notExecuted.toString() + '] not executed. Are you sure!?').then(function () {
+          UIkit.modal.prompt('Please provide a reason why closing the cycle with not executed tests? (required):', '').then(function (reason) {
+            if (reason === null || reason === '') {
+              UIkit.notification('<span uk-icon="icon: ban"></span> You should provide a reason', {timeout: '700'})
+              return
+            } else {
+              vueInstance.closeCycle(cycleID, reason)
+            }
+          })
+        }, function () {
+        })
+      } else {
+        vueInstance.closeCycle(cycleID, 'normal cycle end')
+      }
+    },
+    closeCycle (cycleID, reason) {
+      this.$http.post('projects/' + this.projectId + '/cycle/close/' + cycleID, {'reason': reason}).then(function (response) {
+        if (response.body.message === 'CYCLE_CLOSED') {
+          UIkit.notification('<span uk-icon="icon: check"></span> Cycle Closed', {timeout: '700'})
+        }
+      })
+    },
+    mountChartCurrentCycle () {
       if (this.project.have_cycles) {
         var citem = this.current_cycle.stats
         Chartist.Bar('.ct-chart', {
@@ -131,6 +225,32 @@ export default {
         })
         this.display_load_chart = false
       }
+    },
+    mountChartResume () {
+      if (this.project.have_cycles) {
+        this.$http.get('projects/' + this.projectId + '/cycle/timeline').then(function (response) {
+          Chartist.Line('.ct-chart-line-legendnames', {
+            labels: response.body.cycles_number,
+            series: [
+              response.body.cycles_passed,
+              response.body.cycles_failed,
+              response.body.cycles_blocked,
+              response.body.cycles_not_executed
+            ]
+          }, {
+            fullWidth: true,
+            height: '300px',
+            chartPadding: {
+              right: 40
+            },
+            plugins: [
+              Chartist.plugins.legend({
+                legendNames: ['Passed', 'Failed', 'Blocked', 'Not Executed']
+              })
+            ]
+          })
+        })
+      }
     }
   },
   created: function () {
@@ -138,9 +258,11 @@ export default {
     this.fetchProject(this.$route.params.projectId)
   },
   mounted: function () {
-    this.mount_chart()
+    this.mountChartCurrentCycle()
+    this.mountChartResume()
     this.interval = setInterval(function () {
-      this.mount_chart()
+      this.fetchProject(this.$route.params.projectId)
+      this.mountChartCurrentCycle()
     }.bind(this), 1000)
   },
   beforeDestroy: function () {

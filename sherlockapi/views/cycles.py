@@ -21,6 +21,38 @@ def cycles_url_pre_processor(endpoint, values):
             abort(make_response(jsonify(message='MISSING_JSON_HEADER'), 400))
 
 
+@cycle.route('/timeline/<int:cycle_limit>', methods=['GET'])
+@cycle.route('/timeline', methods=['GET'])
+@auth.login_required
+def get_cycle_timeline_resume(project_id, cycle_limit=5):
+    # TODO: Need to find a better way - Did this cz chartist works like that.
+
+    project = get_project(project_id)
+    project_cycles = Cycle.query.filter_by(
+        project_id=project.id).limit(cycle_limit).all()
+
+    cycles = []
+    cycle_cases_passed = []
+    cycle_cases_failed = []
+    cycle_cases_blocked = []
+    cycle_cases_not_executed = []
+
+    for item in project_cycles:
+        cycle_cases = CycleCases.query.filter_by(cycle_id=item.id).all()
+        stats = count_cycle_stats(cycle_cases)
+        cycles.append('Cycle Number {}'.format(item.cycle))
+        cycle_cases_passed.append(stats['total_passed'])
+        cycle_cases_failed.append(stats['total_error'])
+        cycle_cases_blocked.append(stats['total_blocked'])
+        cycle_cases_not_executed.append(stats['total_not_executed'])
+
+    return make_response(jsonify(cycles_number=cycles,
+                                 cycles_passed=cycle_cases_passed,
+                                 cycles_failed=cycle_cases_failed,
+                                 cycles_blocked=cycle_cases_blocked,
+                                 cycles_not_executed=cycle_cases_not_executed))
+
+
 @cycle.route('/resume/<int:cycle_id>', methods=['GET'])
 @auth.login_required
 def get_cycle_resume(project_id, cycle_id):
@@ -31,15 +63,15 @@ def get_cycle_resume(project_id, cycle_id):
     body_response = count_cycle_stats(cycle_cases_h)
     return make_response(jsonify(body_response))
 
+
 @cycle.route('/close/<int:cycle_id>', methods=['POST'])
 @auth.login_required
-def close():
+def close(project_id, cycle_id):
     # TODO: Check untested cases.
     """POST endpoint for closing cycles.
     Param:
         {
             reason: required,
-            user_id: required
         }
     """
     project = get_project(project_id)
@@ -49,8 +81,7 @@ def close():
         return make_response(jsonify(message='CYCLE_CLOSED'))
     else:
         reason = check_none_and_blank(request, 'reason')
-        user_id = check_none_and_blank(request, 'user_id')
-        user = get_user(user_id)
+        user = g.user
 
         cycle.closed_reason = reason
         cycle.closed_by = user.id

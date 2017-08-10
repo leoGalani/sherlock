@@ -8,7 +8,7 @@
 
     <div v-for="project in projects.projects" class="project_box">
       <router-link :to="{ path: 'project/view/'+project.id }" class="box-link">
-        <h4>{{project.name}}</h4>
+        <h4 class="hide_overflow">{{project.name}}</h4>
         <hr>
         <span v-if="project.have_cycle === true">
           <span> Current Cycle:  {{project.current_cycle}} </span> <br>

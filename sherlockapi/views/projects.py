@@ -46,9 +46,20 @@ def get_project_details(project_id):
             cycle_id=project_last_cycle.id).all()
         project['have_cycles'] = True
         project['last_cycle'] = {}
+
+        if project_last_cycle.state_code == 'CLOSED':
+            user_ = User.query.filter_by(id=project_last_cycle.closed_by).first()
+            closed_by = user_.name
+            project['last_cycle']['closed_at'] = datetime.strftime(
+                project_last_cycle.closed_at, '%d-%m-%Y')
+            project['last_cycle']['closed_reason'] = project_last_cycle.closed_reason
+            project['last_cycle']['closed_by'] = closed_by
+
         project['last_cycle']['id'] = project_last_cycle.id
+        project['last_cycle']['state_code'] = project_last_cycle.state_code
         project['last_cycle']['cycle'] = project_last_cycle.cycle
-        project['last_cycle']['created_at'] = datetime.strftime(project_last_cycle.created_at, '%d-%m-%Y')
+        project['last_cycle']['created_at'] = datetime.strftime(
+            project_last_cycle.created_at, '%d-%m-%Y')
         project['last_cycle']['stats'] = count_cycle_stats(cycle_cases_h)
     else:
         project['have_cycles'] = False
