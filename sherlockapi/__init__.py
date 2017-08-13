@@ -70,4 +70,4 @@ def verify_password(username_or_token, password):
 @auth.login_required
 def get_auth_token():
     token = g.user.generate_auth_token(6000)
-    return jsonify({'token': token.decode('ascii'), 'duration': 600})
+    return jsonify({'token': token.decode('ascii'), 'duration': 6000})
