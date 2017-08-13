@@ -24,7 +24,7 @@
               </div>
 
               <button class="uk-button uk-button-default" type="Submit" style="margin-right:15px; ">Login</button>
-              <button class="uk-button uk-button-default">Register</button>
+              <router-link v-if="show_register_button" class="uk-button uk-button-default" :to="{ name: 'registerg' }">Register</router-link>
             </div>
             </form>
           </center>
@@ -44,10 +44,20 @@ export default {
       login: {
         email: 'admin@admin.xpto',
         password: 'admin'
-      }
+      },
+      show_register_button: false
     }
   },
   methods: {
+    checkOpenRegister () {
+      this.$http.get('dashboard/check_global_register_permission').then(function (response) {
+        if (response.body.permission === false) {
+          this.show_register_button = false
+        } else {
+          this.show_register_button = true
+        }
+      })
+    },
     handleLogin () {
       if (!this.login.email || !this.login.password) {
         UIkit.notification('Please fill all the inputs', {status: 'danger'})
@@ -78,6 +88,15 @@ export default {
         UIkit.notification('<span uk-icon="icon: ban"></span> Wrong Email or Password', {status: 'danger', timeout: '700'})
       })
     }
+  },
+  created: function () {
+    this.checkOpenRegister()
+    this.interval = setInterval(function () {
+      this.checkOpenRegister()
+    }.bind(this), 4000)
+  },
+  beforeDestroy: function () {
+    clearInterval(this.interval)
   }
 }
 </script>

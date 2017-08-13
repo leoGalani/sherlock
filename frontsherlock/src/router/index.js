@@ -8,6 +8,7 @@ import EditProject from '@/components/project/Edit'
 import ProjectDetails from '@/components/project/View'
 import ScenarioCases from '@/components/scenario_cases/Dashscenarios'
 import ProjectCycles from '@/components/cycles/Dashcycles'
+import RegisterGlobal from '@/components/RegisterGlobal'
 // import UIkit from 'uikit'
 
 Vue.use(Router)
@@ -16,6 +17,7 @@ const router = new Router({
   routes: [
     { path: '*', name: '404', component: Login },
     {path: '/', name: 'login', component: Login},
+    {path: '/register', name: 'registerg', component: RegisterGlobal},
     {path: '/dashboard', name: 'dashboard', component: Dashboard, meta: { requiresAuth: true }},
     {path: '/project/new', name: 'new_project', component: AddProject, meta: { requiresAuth: true }},
     {path: '/project/edit/:projectId', name: 'edit_project', component: EditProject, meta: { requiresAuth: true }},

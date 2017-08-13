@@ -62,7 +62,7 @@ def show_user_email(email):
     return make_response(jsonify(user))
 
 
-@user.route('/new/', methods=['POST'])
+@user.route('/new', methods=['POST'])
 def new():
     """POST endpoint for new user.
 
@@ -72,7 +72,7 @@ def new():
          'password': required }
     """
     open_user_setting = SherlockSettings.query.filter_by(
-        Setting=OPEN_USER_REGISTER).first()
+        setting='OPEN_USER_REGISTER').first()
 
     try:
         if g.user.profile == 'admin':
@@ -82,7 +82,7 @@ def new():
     except:
         is_admin = False
 
-    if open_user_setting == "false" and not is_admin:
+    if open_user_setting == "False" and not is_admin:
         return make_response(jsonify(message='UNAUTHORIZED'))
 
     name = check_none_and_blank(request, 'name')

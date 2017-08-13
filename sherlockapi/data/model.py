@@ -112,8 +112,7 @@ class User(db.Model):
         """Setting params to the object."""
         self.name = name
         self.email = email
-        self.password = bcrypt.hashpw(
-            password.encode('utf-8'), bcrypt.gensalt())
+        self.password = User.generate_hash_password(password)
         self.profile=profile
 
     def verify_password(self, password):
