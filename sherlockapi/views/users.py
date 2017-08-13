@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify, make_response, abort
 from sherlockapi import db, auth
 from sherlockapi.helpers.string_operations import check_none_and_blank
 from sherlockapi.helpers.util import get_user
-from sherlockapi.data.model import User, UsersSchema
+from sherlockapi.data.model import User, UsersSchema, SherlockSettings
 
 user = Blueprint('users', __name__)
 
@@ -71,20 +71,30 @@ def new():
          'email': required,
          'password': required }
     """
-    name = request.json.get('name')
-    email = request.json.get('email')
-    password = request.json.get('password')
+    open_user_setting = SherlockSettings.query.filter_by(
+        Setting=OPEN_USER_REGISTER).first()
 
-    check_none_and_blank(name, 'name')
-    check_none_and_blank(email, 'email')
-    check_none_and_blank(password, 'password')
+    try:
+        if g.user.profile == 'admin':
+            is_admin = True
+        else:
+            is_admin = False
+    except:
+        is_admin = False
+
+    if open_user_setting == "false" and not is_admin:
+        return make_response(jsonify(message='UNAUTHORIZED'))
+
+    name = check_none_and_blank(request, 'name')
+    email = check_none_and_blank(request, 'email')
+    password = check_none_and_blank(request, 'password')
 
     if User.query.filter_by(email=email).first() is not None:
-        return make_response(jsonify(message='EMAIL_IN_USE'), 400)
+        return make_response(jsonify(message='EMAIL_IN_USE'))
 
-    new_user = User(name=request.get_json().get('name'),
-                    email=request.get_json().get('email'),
-                    password=request.get_json().get('password'))
+    new_user = User(name=name,
+                    email=email,
+                    password=password)
     db.session.add(new_user)
     db.session.commit()
     return make_response(jsonify(message='USER_CREATED'))
@@ -101,24 +111,19 @@ def edit(user_id):
          'password': not_required }
     """
     edited_user = get_user({'id': user_id})
-    name = request.get_json().get('name')
-    email = request.get_json().get('email')
-    password = request.get_json().get('password')
 
-    if name:
-        check_none_and_blank(name, 'name')
-        edited_user.name = name
+    if 'name' in request.json:
+        edited_user.name = check_none_and_blank(request, 'name')
 
-    if email:
-        check_none_and_blank(email, 'email')
+    if 'email' in request.json:
+        email = check_none_and_blank(request, 'email')
         if not User.query.filter_by(username=email).first():
-            edited_user.username = email
-        else:
-            return make_response(jsonify(message='EMAIL_IN_USE'), 400)
+            edited_user.email = email
 
-    if password:
-        check_none_and_blank(password, 'password')
-        edited_user.password = edited_user.generate_hash_password(password)
+    if 'password' in request.json:
+        pwd_raw = check_none_and_blank(request, 'password')
+        password = edited_user.generate_hash_password(pwd_raw)
+        edited_user.password = password
 
     db.session.add(edited_user)
     db.session.commit()

@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, abort, make_response
 
 from sherlockapi import db, auth
-from sherlockapi.data.model import Case, TestCaseSchema
+from sherlockapi.data.model import Case, TestCaseSchema, StateType
 from sherlockapi.helpers.string_operations import check_none_and_blank
 
 from sherlockapi.helpers.util import get_scenario, get_tstcase, get_last_cycle
@@ -79,15 +79,15 @@ def tstcase_changestatus(scenario_id):
         db.session.commit()
 
     elif action == 'DISABLE':
-        state = State.query.filter_by(code='DISABLE').first()
+        state = StateType.disable
         if last_cycle:
-            cycle_state = State.query.filter_by(code='BLOCKED').first()
+            cycle_state = StateType.blocked
     elif action == 'ENABLE':
-        state = State.query.filter_by(code='ACTIVE').first()
-        if scenario.state_code == 'DISABLE':
+        state = StateType.active
+        if scenario.state_code == StateType.disable:
             return make_response(jsonify(message='SCENARIO_DISABLED'))
         if last_cycle:
-            cycle_state = State.query.filter_by(code='NOT_EXECUTED').first()
+            cycle_state = StateType.not_executed
     else:
         return make_response(jsonify(message='ACTION_UNKNOW'))
 

@@ -4,7 +4,7 @@ from datetime import datetime
 
 from sherlockapi import db, auth
 from sherlockapi.data.model import Scenario, Project, Case, Cycle, CycleCases
-from sherlockapi.data.model import CycleScenarios, State, CycleSchema
+from sherlockapi.data.model import CycleScenarios, StateType, CycleSchema
 from sherlockapi.helpers.string_operations import check_none_and_blank
 from sherlockapi.helpers.util import get_scenario, get_last_cycle, count_cycle_stats
 from sherlockapi.helpers.util import get_project, get_cycle, get_user
@@ -77,7 +77,7 @@ def close(project_id, cycle_id):
     project = get_project(project_id)
     cycle = get_cycle(cycle_id, project_id)
 
-    if cycle.state_code == "CLOSED":
+    if cycle.state_code == StateType.closed:
         return make_response(jsonify(message='CYCLE_CLOSED'))
     else:
         reason = check_none_and_blank(request, 'reason')
@@ -85,7 +85,7 @@ def close(project_id, cycle_id):
 
         cycle.closed_reason = reason
         cycle.closed_by = user.id
-        cycle.state_code = "CLOSED"
+        cycle.state_code = StateType.closed
         cycle.closed_at = datetime.now()
         cycle.last_change = datetime.now()
 
@@ -105,18 +105,18 @@ def create(project_id):
     project_lasty_cycle = get_last_cycle(project.id)
 
     if project_lasty_cycle:
-        if project_lasty_cycle.state_code == "ACTIVE":
+        if project_lasty_cycle.state_code == StateType.active:
             return make_response(jsonify(message='CURRENT_CYCLE_ACTIVE'))
         cycle_number = int(project_lasty_cycle.cycle) + 1
     else:
         cycle_number = 1
 
     scenarios = Scenario.query.filter_by(
-        project_id=project.id).filter_by(state_code='ACTIVE').all()
+        project_id=project.id).filter_by(state_code=StateType.active).all()
     cases = Case.query.join(
         Scenario, Case.scenario_id == Scenario.id).filter(
             Scenario.project_id == project.id).filter(
-                Case.state_code == "ACTIVE").all()
+                Case.state_code == StateType.active).all()
 
     if len(cases) == 0:
         abort(make_response(jsonify(message='NO_TEST_SCENARIOS')))
@@ -220,8 +220,8 @@ def change_cycle_case_state_code_(project_id):
     if cycle.id != last_cycle.id:
         return make_response(jsonify(message='NOT_LAST_CYCLE'), 400)
 
-    state = State.query.filter_by(code=action).first()
-    if not state:
+
+    if not state not in StateType.__members__:
         return make_response(jsonify(message='ACTION_UNKNOW'), 400)
 
     edited_cycle_case = CycleCases.query.filter_by(

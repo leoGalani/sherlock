@@ -1,30 +1,30 @@
 """Setup for SHERLOCK database."""
 from datetime import datetime
-
+from enum import Enum
 from flask import g
 import bcrypt
+
 from marshmallow import Schema, fields
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 
 from sherlockapi import db, secretkey
 
-
-class State(db.Model):
-    """Static State Table to avoid Enum."""
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), unique=True)
-    code = db.Column(db.String(20), unique=True)
-
-    def __init__(self, name, code):
-        """Setting params to the object."""
-        self.name = name
-        self.code = code
+class StateType(Enum):
+    active = "active"
+    disable = "disable"
+    not_executed = "not_executed"
+    passed = "passed"
+    error = "error"
+    blocked = "blocked"
+    ongoing = "ongoing"
+    closed = "closed"
 
 
 class Project(db.Model):
     """Project Schema."""
+    __tablename__ = "project"
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
@@ -34,6 +34,7 @@ class Project(db.Model):
     favorite = db.Column(db.Boolean)
 
     scenario = db.relationship('Scenario')
+    cycle = db.relationship('Cycle')
 
     def __init__(self, name, owner_id, type_of_project, privacy_policy):
         """Setting params to the object."""
@@ -48,28 +49,19 @@ class Project(db.Model):
         return '<Project %r>' % self.name
 
 
-class Tags(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
-    scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
-
-
-    def __init__(self, name, scenario_id):
-        """Setting params to the object."""
-        self.name = name
-        self.scenario_id = scenario_id
-
-
 class Scenario(db.Model):
     """Scenario` Schema."""
+    __tablename__ = "scenario"
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False)
-    state_code = db.Column(db.Integer, db.ForeignKey('state.code'),
-                           default="ACTIVE")
-    state = db.relationship('State')
+    state_code = db.Column(db.Enum(StateType))
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
-    testcase = db.relationship('Case')
+
+    cycle_scenarios = db.relationship('CycleScenarios')
+    cycle_cases = db.relationship('CycleCases')
+    case = db.relationship('Case')
 
     def __init__(self, name, project_id):
         """Setting params to the object."""
@@ -83,14 +75,13 @@ class Scenario(db.Model):
 
 class Case(db.Model):
     """TestCase Schema."""
+    __tablename__ = "case"
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500), nullable=False)
     scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
-    state_code = db.Column(db.Integer, db.ForeignKey('state.code'),
-                           default="ACTIVE")
-    state = db.relationship('State')
-
+    state_code = db.Column(db.Enum(StateType))
 
     def __init__(self, name, scenario_id):
         """Setting params to the object."""
@@ -104,12 +95,18 @@ class Case(db.Model):
 
 class User(db.Model):
     """User Schema."""
+    __tablename__ = "user"
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), nullable=False, unique=True)
-    password = db.Column(db.String(50), nullable=False)
+    password = db.Column(db.String(250), nullable=False)
     profile = db.Column(db.String(50), nullable=False)
+
+    cycle_scenarios = db.relationship('CycleScenarios')
+    project = db.relationship('Project')
+
 
     def __init__(self, name, email, password, profile='user'):
         """Setting params to the object."""
@@ -149,16 +146,18 @@ class User(db.Model):
 class Cycle(db.Model):
     """Cycle Schema."""
 
+    __tablename__ = "cycle"
+    __table_args__ = {'extend_existing': True}
+
     id = db.Column(db.Integer, primary_key=True)
     cycle = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String(250))
-    project = db.relationship('Project')
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
-    state = db.relationship('State')
-    state_code = db.Column(db.Integer, db.ForeignKey('state.code'),
-                           default="ACTIVE")
+    state_code = db.Column(db.Enum(StateType))
+
     cycle_cases = db.relationship('CycleCases')
     cycle_scenarios = db.relationship('CycleScenarios')
+
     created_at = db.Column(db.DateTime, default=datetime.now)
     closed_at = db.Column(db.DateTime)
     closed_by = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -179,10 +178,12 @@ class Cycle(db.Model):
 class CycleScenarios(db.Model):
     """Cycle Scenarios History."""
 
+    __tablename__ = "cycle_scenarios"
+    __table_args__ = {'extend_existing': True}
+
     id = db.Column(db.Integer, primary_key=True)
     cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
-    state_code = db.Column(db.Integer, db.ForeignKey('state.code'))
-    state = db.relationship('State')
+    state_code = db.Column(db.Enum(StateType))
     scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
     last_executed_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     last_executed_at = db.Column(db.DateTime)
@@ -196,11 +197,12 @@ class CycleScenarios(db.Model):
 class CycleCases(db.Model):
     """Cycle Cases History."""
 
+    __tablename__ = "cycle_cases"
+    __table_args__ = {'extend_existing': True}
+
     id = db.Column(db.Integer, primary_key=True)
     cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
-    state_code = db.Column(db.Integer, db.ForeignKey('state.code'),
-                           default="NOT_EXECUTED")
-    state = db.relationship('State')
+    state_code = db.Column(db.Enum(StateType))
     case_id = db.Column(db.Integer, db.ForeignKey('case.id'))
     scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
     last_executed_by = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -212,18 +214,54 @@ class CycleCases(db.Model):
         self.case_id = case_id
         self.scenario_id = scenario_id
 
-class Notes(db.Model):
+class ScenarioNotes(db.Model):
     """Notes."""
+    __tablename__ = "notes"
+    __table_args__ = {'extend_existing': True}
+
     id = db.Column(db.Integer, primary_key=True)
     cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
-    where = db.Column(db.String(250)) #scenario or case
+    scenario_id = db.Column(db.Integer)
     text = db.Column(db.String(250))
 
-    def __init__(self, cycle_id, scenario_id, case_id):
+    def __init__(self, cycle_id, scenario_id,  text):
         """Setting params to the object."""
         self.cycle_id = cycle_id
-        self.where = where
+        self.scenario_id = scenario_id
         self.text = text
+
+class CaseNotes(db.Model):
+    """Notes."""
+    __tablename__ = "notes"
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer, primary_key=True)
+    cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
+    case_id = db.Column(db.Integer)
+    text = db.Column(db.String(250))
+
+    def __init__(self, cycle_id, scenario_id,  text):
+        """Setting params to the object."""
+        self.cycle_id = cycle_id
+        self.scenario_id = scenario_id
+        self.text = text
+
+class SherlockSettings(db.Model):
+    """Notes."""
+    __tablename__ = "sherlock_settings"
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer, primary_key=True)
+    setting = db.Column(db.String(250))
+    value = db.Column(db.String(250))
+    who_can_change = db.Column(db.String(250))
+
+    def __init__(self, setting, value, who_can_change='admin'):
+        """Setting params to the object."""
+        self.setting = setting
+        self.value = value
+        self.who_can_change = who_can_change
+
 
 #  SCHEMAS #####
 

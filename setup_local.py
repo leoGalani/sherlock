@@ -1,15 +1,15 @@
 """Setup script to create and populate the database."""
 import sys
 from sherlockapi import db
-from sherlockapi.data.model import User, State
+from sherlockapi.data.model import User, SherlockSettings
 
 # DONT CHANGE THE CODE BELOW.
 try:
-    state = State.query.filter_by(code='ACTIVE').first()
+    user = User.query.first()
 except:
-    state = None
+    user = None
 
-if state:
+if user:
     choose = input('Seems you already have configured sherlock. Do you want to wipeout the current Database? (Yes/No): ')
     while not choose in['yes','Yes','Y','y','N','n','No', 'no']:
         choose = input('Urgh.. Type yes or no to the question ;)  ')
@@ -34,32 +34,9 @@ if state:
 
 db.create_all()
 
-# general states
-available_state = State(name="active", code="ACTIVE")
-disable_state = State(name="disable", code="DISABLE")
-
-# test_case_states
-not_executed_state = State(name="not executed", code="NOT_EXECUTED")
-passed_state = State(name="passed", code="PASSED")
-error_state = State(name="error", code="ERROR")
-blocked_state = State(name="blocked", code="BLOCKED")
-ongoing_state = State(name="ongoing", code="ONGOING")
-
-# scenario cycle history
-
-# cycle states
-closed_cycle = State(name="closed", code="CLOSED")
-
-db.session.add(available_state)
-db.session.add(disable_state)
-db.session.add(not_executed_state)
-db.session.add(passed_state)
-db.session.add(error_state)
-db.session.add(blocked_state)
-db.session.add(closed_cycle)
-db.session.add(ongoing_state)
+open_user_register = SherlockSettings('OPEN_USER_REGISTER', 'True')
+db.session.add(open_user_register)
 db.session.commit()
-
 
 name = input('Enter the First user Name: ')
 email = input('Enter the First user Email: ')

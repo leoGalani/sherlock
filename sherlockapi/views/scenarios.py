@@ -2,7 +2,7 @@ from flask import Blueprint, request, g, jsonify, abort, make_response
 
 from sherlockapi import db, auth
 from sherlockapi.data.model import Scenario, Project, Case, TestCaseSchema
-from sherlockapi.data.model import ScenariosSchema, State
+from sherlockapi.data.model import ScenariosSchema, StateType
 from sherlockapi.data.model import Cycle, CycleScenarios, CycleCases
 from sherlockapi.helpers.string_operations import check_none_and_blank
 from sherlockapi.helpers.util import get_scenario, get_last_cycle
@@ -74,11 +74,11 @@ def remove_scenario():
 
     if action in ['DISABLE', 'ENABLE', 'REMOVE']:
         if action == 'DISABLE':
-            state = State.query.filter_by(code='DISABLE').first()
-            cycle_state = State.query.filter_by(code='BLOCKED').first()
+            state = StateType.disable
+            cycle_state = StateType.blocked
         elif action == 'ENABLE':
-            state = State.query.filter_by(code='ACTIVE').first()
-            cycle_state = State.query.filter_by(code='NOT_EXECUTED').first()
+            state = StateType.active
+            cycle_state = StateType.not_executed
         else:
             cycle_state = None
 
@@ -176,7 +176,7 @@ def scenario_case_process(cycle, scenario, state, action, cycle_state):
             db.session.delete(cycle_scenario)
             db.session.commit()
         else:
-            cycle_scenario.state_code = cycle_state.code
+            cycle_scenario.state_code = cycle_state
             db.session.add(cycle_scenario)
             db.session.commit()
 
@@ -187,6 +187,6 @@ def scenario_case_process(cycle, scenario, state, action, cycle_state):
                 db.session.commit()
         else:
             for ccase in cycle_cases:
-                ccase.state = cycle_state.code
+                ccase.state = cycle_state
                 db.session.add(ccase)
                 db.session.commit()

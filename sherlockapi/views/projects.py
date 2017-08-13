@@ -5,7 +5,7 @@ from datetime import date, datetime
 from sherlockapi import db, auth
 
 from sherlockapi.data.model import Project, User, ProjectSchema
-from sherlockapi.data.model import Scenario, Cycle, CycleCases
+from sherlockapi.data.model import Scenario, Cycle, CycleCases, StateType
 from sherlockapi.helpers.string_operations import check_none_and_blank
 from sherlockapi.helpers.util import (count_cycle_stats, get_last_cycle,
                                       get_project, get_user)
@@ -47,7 +47,7 @@ def get_project_details(project_id):
         project['have_cycles'] = True
         project['last_cycle'] = {}
 
-        if project_last_cycle.state_code == 'CLOSED':
+        if project_last_cycle.state_code == StateType.closed:
             user_ = User.query.filter_by(id=project_last_cycle.closed_by).first()
             closed_by = user_.name
             project['last_cycle']['closed_at'] = datetime.strftime(
