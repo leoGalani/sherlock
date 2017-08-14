@@ -2,13 +2,11 @@
 from sherlockapi import db
 from sherlockapi.data.model import User, SherlockSettings
 
-# DONT CHANGE THE CODE BELOW.
 
 db.create_all()
 
 # SherlockSettings
-
-open_user_register = SherlockSettings('OPEN_USER_REGISTER', 'True')
+open_user_register = SherlockSettings('OPEN_USER_REGISTER', 'True', 'Anyone can register?')
 db.session.add(open_user_register)
 db.session.commit()
 

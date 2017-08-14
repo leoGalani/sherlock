@@ -1,0 +1,25 @@
+version: '2'
+services:
+  web:
+    container_name: sherlock
+    ports:
+     - "80:80"
+    volumes:
+      - .:/sherlock
+    depends_on:
+      - mysql
+    build: .
+  mysql:
+    ports:
+     - "32768:32768"
+     - "3306:3306"
+    container_name: sherlock-mysql
+    restart: always
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: 'thiswillbechangeonsetupscript'
+      MYSQL_DATABASE: 'sherlockdb'
+    volumes:
+     - ./database:/var/lib/mysql
+    ports:
+      - "3306:3306"

@@ -13,6 +13,7 @@ RUN pip3 install --upgrade pip
 RUN apt-get install -y libffi-dev
 RUN apt-get install -y libssl-dev g++ gcc
 RUN apt-get install -y libmysqlclient-dev
+RUN apt-get install -y libyaml-dev
 
 RUN apt-get install -y nginx gunicorn supervisor
 RUN apt-get install -y uwsgi

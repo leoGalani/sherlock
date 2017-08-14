@@ -7,9 +7,6 @@ from flask_cache import Cache
 
 app = Flask(__name__, instance_relative_config=True, static_url_path="")
 CORS(app, resources={r'/*': {"origins": '*', 'allow_headers': '*'}})
-app.config['CORS_HEADER'] = 'Content-Type'
-
-db_relative_path = '/data/sherlock.db'
 app.config.from_object('config')
 secretkey = app.config['SECRET_KEY']
 token_timeout = app.config['TOKEN_TIMEOUT']

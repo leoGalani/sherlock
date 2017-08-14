@@ -34,7 +34,7 @@ if user:
 
 db.create_all()
 
-open_user_register = SherlockSettings('OPEN_USER_REGISTER', 'True')
+open_user_register = SherlockSettings('OPEN_USER_REGISTER', 'True', 'Anyone can register?')
 db.session.add(open_user_register)
 db.session.commit()
 
