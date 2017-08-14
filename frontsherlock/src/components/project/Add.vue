@@ -25,7 +25,7 @@
             <div class="uk-form-label">Type of Project</div>
             <div class="uk-form-controls uk-form-controls-text">
                 <label><input class="uk-radio" type="radio" name="type_of_project"
-                   value="WEB" v-model="type_of_project" :checked="true"> Web </label><br>
+                   value="WEB" v-model="type_of_project"> Web </label><br>
                 <label><input class="uk-radio" type="radio" name="type_of_project"
                    value="MOBILE" v-model="type_of_project"> Mobile </label><br>
                 <label><input class="uk-radio" type="radio" name="type_of_project"
@@ -54,7 +54,7 @@ export default {
   methods: {
     addProject (e) {
       if (!this.project_name || !this.type_of_project || !this.privacy_policy) {
-        UIkit.notification('Please fill all the inputs', {status: 'danger'})
+        UIkit.notification('<span uk-icon="icon: ban"></span> Please fill all the inputs', {status: 'danger'})
       } else {
         var user = JSON.parse(window.localStorage.getItem('user'))
         let newProject = {

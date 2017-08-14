@@ -16,39 +16,30 @@
         </li>
         <li v-else>
           <a><i class="material-icons" style="color: rgb(117, 117, 117);">build</i></a>
-          <div class="uk-navbar-dropdown">
-              <ul class="uk-nav uk-navbar-dropdown-nav" style="width:450px !important">
-                  <router-link :to="{ path: '/project/view/'+projectId+'/scenario_cases' }">Manage Cases and Scenarios </router-link>
-                  <hr style="width:150px">
-                  <router-link :to="{ path: '/project/edit/'+projectId }">Edit Project </router-link>
-
-              </ul>
+          <div uk-dropdown="delay-hide: 50;">
+            <ul class="uk-nav uk-dropdown-nav">
+                <router-link :to="{ path: '/project/view/'+projectId+'/scenario_cases' }">Manage Cases and Scenarios </router-link>
+                <hr style="width:150px">
+                <router-link :to="{ path: '/project/edit/'+projectId }">Edit Project </router-link>
+            </ul>
           </div>
         </li>
-
-        <li v-else>
-            <a href="#"><img src='./assets/img/projects.png'></a>
-            <div class="uk-navbar-dropdown">
-                <ul class="uk-nav uk-navbar-dropdown-nav">
-                    <li class="uk-active">FAZER UM MODAL QUE MOSTRA PROJETOS RECENTES QUE O USUARIO FAZ PARTE - tem que fazer um endpoint para retornar esses valores</li>
-                    <li>Projeto2</li>
-                </ul>
-            </div>
-        </li>
-        <li></li>
         <li class="nav_divider"></li>
         <li>
-          <a title="Sherlock Settings" uk-tooltip="delay: 300">
-            <i class="material-icons" style="color: rgb(117, 117, 117);">settings</i></a>
+          <router-link title="Sherlock Settings" uk-tooltip="delay: 300"
+          :to="{ path: 'settings' }">
+            <i class="material-icons" style="color: rgb(117, 117, 117);">settings</i>
+          </router-link>
         </li>
-        <li><a><i class="material-icons" style="color: rgb(117, 117, 117);">account_circle</i></a>
-          <div class="uk-navbar-dropdown">
-              <ul class="uk-nav uk-navbar-dropdown-nav" style="width:450px !important">
-                  <li><router-link :to="{ path: '/project/view/'+projectId+'/scenario_cases' }"> My Settings </router-link></li>
-                  <li><hr style="width:150px"></li>
-                <li><a @click="logoff()"> Logoff </a></li>
-                <li><a href="http://sherlockqa.readthedocs.io/" target="_blank" uk-icon="icon: question"> Help </a></li>
-              </ul>
+        <li>
+          <a><i class="material-icons" style="color: rgb(117, 117, 117);">account_circle</i></a>
+          <div uk-dropdown="delay-hide: 50;">
+            <ul class="uk-nav uk-dropdown-nav">
+              <li><router-link :to="{ path: '/project/view/'+projectId+'/scenario_cases' }"> My Settings </router-link></li>
+              <li><hr style="width:150px"></li>
+            <li><a @click="logoff()"> Logoff </a></li>
+            <li><a href="http://sherlockqa.readthedocs.io/" target="_blank" uk-icon="icon: question"> Help </a></li>
+            </ul>
           </div>
         </li>
 

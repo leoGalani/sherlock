@@ -162,7 +162,7 @@ export default {
       },
       function (response) {
         if (response.body.message === 'PROJECT_NOT_FOUND') {
-          UIkit.notification('Project Not Found.', {status: 'danger'})
+          UIkit.notification('Project Not Found.', {status: 'danger', timeout: '700'})
           this.$router.push({path: '/'})
         }
       })

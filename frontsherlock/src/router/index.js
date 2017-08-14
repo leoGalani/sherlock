@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 import Login from '@/components/Login'
 import Dashboard from '@/components/Dashboard'
+import Settings from '@/components/Settings'
 import AddProject from '@/components/project/Add'
 import EditProject from '@/components/project/Edit'
 import ProjectDetails from '@/components/project/View'
@@ -19,6 +20,7 @@ const router = new Router({
     {path: '/', name: 'login', component: Login},
     {path: '/register', name: 'registerg', component: RegisterGlobal},
     {path: '/dashboard', name: 'dashboard', component: Dashboard, meta: { requiresAuth: true }},
+    {path: '/settings', name: 'settings', component: Settings, meta: { requiresAuth: true }},
     {path: '/project/new', name: 'new_project', component: AddProject, meta: { requiresAuth: true }},
     {path: '/project/edit/:projectId', name: 'edit_project', component: EditProject, meta: { requiresAuth: true }},
     {path: '/project/view/:projectId', name: 'view_project', component: ProjectDetails, meta: { requiresAuth: true }},

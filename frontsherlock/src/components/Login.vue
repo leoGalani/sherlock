@@ -79,6 +79,7 @@ export default {
           user.email = response.body.email
           user.user_id = response.body.id
           user.name = response.body.name
+          user.profile = response.body.profile
           window.localStorage.setItem('user', JSON.stringify(user))
           this.$router.push({path: '/dashboard'})
         }, (response) => {

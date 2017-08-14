@@ -22,7 +22,6 @@ class StateType(Enum):
 
 
 class Project(db.Model):
-    """Project Schema."""
     __tablename__ = "project"
     __table_args__ = {'extend_existing': True}
 
@@ -50,7 +49,6 @@ class Project(db.Model):
 
 
 class Scenario(db.Model):
-    """Scenario` Schema."""
     __tablename__ = "scenario"
     __table_args__ = {'extend_existing': True}
 
@@ -64,17 +62,11 @@ class Scenario(db.Model):
     case = db.relationship('Case')
 
     def __init__(self, name, project_id):
-        """Setting params to the object."""
         self.name = name
         self.project_id = project_id
 
-    def __repr__(self):
-        """Representative Object Return."""
-        return '<Scenario %r>' % self.name
-
 
 class Case(db.Model):
-    """TestCase Schema."""
     __tablename__ = "case"
     __table_args__ = {'extend_existing': True}
 
@@ -84,17 +76,11 @@ class Case(db.Model):
     state_code = db.Column(db.Enum(StateType))
 
     def __init__(self, name, scenario_id):
-        """Setting params to the object."""
         self.name = name
         self.scenario_id = scenario_id
 
-    def __repr__(self):
-        """Representative Object Return."""
-        return '<Test_Case %r>' % self.name
-
 
 class User(db.Model):
-    """User Schema."""
     __tablename__ = "user"
     __table_args__ = {'extend_existing': True}
 
@@ -109,7 +95,6 @@ class User(db.Model):
 
 
     def __init__(self, name, email, password, profile='user'):
-        """Setting params to the object."""
         self.name = name
         self.email = email
         self.password = User.generate_hash_password(password)
@@ -144,8 +129,6 @@ class User(db.Model):
 
 
 class Cycle(db.Model):
-    """Cycle Schema."""
-
     __tablename__ = "cycle"
     __table_args__ = {'extend_existing': True}
 
@@ -165,19 +148,12 @@ class Cycle(db.Model):
     last_change = db.Column(db.DateTime, default=datetime.now)
 
     def __init__(self, cycle, name, project_id):
-        """Setting params to the object."""
         self.cycle = cycle
         self.name = name
         self.project_id = project_id
 
-    def __repr__(self):
-        """Representative Object Return."""
-        return '<Cycle %r>' % self.id
-
 
 class CycleScenarios(db.Model):
-    """Cycle Scenarios History."""
-
     __tablename__ = "cycle_scenarios"
     __table_args__ = {'extend_existing': True}
 
@@ -189,14 +165,11 @@ class CycleScenarios(db.Model):
     last_executed_at = db.Column(db.DateTime)
 
     def __init__(self, cycle_id, scenario_id):
-        """Setting params to the object."""
         self.cycle_id = cycle_id
         self.scenario_id = scenario_id
 
 
 class CycleCases(db.Model):
-    """Cycle Cases History."""
-
     __tablename__ = "cycle_cases"
     __table_args__ = {'extend_existing': True}
 
@@ -215,7 +188,6 @@ class CycleCases(db.Model):
         self.scenario_id = scenario_id
 
 class ScenarioNotes(db.Model):
-    """Notes."""
     __tablename__ = "notes"
     __table_args__ = {'extend_existing': True}
 
@@ -230,8 +202,8 @@ class ScenarioNotes(db.Model):
         self.scenario_id = scenario_id
         self.text = text
 
+
 class CaseNotes(db.Model):
-    """Notes."""
     __tablename__ = "notes"
     __table_args__ = {'extend_existing': True}
 
@@ -241,13 +213,12 @@ class CaseNotes(db.Model):
     text = db.Column(db.String(250))
 
     def __init__(self, cycle_id, scenario_id,  text):
-        """Setting params to the object."""
         self.cycle_id = cycle_id
         self.scenario_id = scenario_id
         self.text = text
 
+
 class SherlockSettings(db.Model):
-    """Notes."""
     __tablename__ = "sherlock_settings"
     __table_args__ = {'extend_existing': True}
 
@@ -255,15 +226,23 @@ class SherlockSettings(db.Model):
     setting = db.Column(db.String(250))
     value = db.Column(db.String(250))
     who_can_change = db.Column(db.String(250))
+    label = db.Column(db.String(250))
 
-    def __init__(self, setting, value, who_can_change='admin'):
-        """Setting params to the object."""
+    def __init__(self, setting, value, label, who_can_change='admin'):
         self.setting = setting
         self.value = value
         self.who_can_change = who_can_change
+        self.label = label
 
 
 #  SCHEMAS #####
+
+class SettingsSchema(Schema):
+    id = fields.Int(dump_only=True)
+    setting = fields.Str()
+    value = fields.Str()
+    label = fields.Str()
+
 
 class CycleSchema(Schema):
     id = fields.Int(dump_only=True)
@@ -294,6 +273,7 @@ class UsersSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str()
     email = fields.Str()
+    profile = fields.Str()
 
 
 class ProjectSchema(Schema):

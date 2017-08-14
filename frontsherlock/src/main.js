@@ -24,7 +24,6 @@ Vue.http.interceptors.push(function (request, next) {
 
   next(function (response) {
     if (response.status === 401) {
-      UIkit.notification('Please Login', {status: 'warning', timeout: '700'})
       window.localStorage.removeItem('user')
       window.localStorage.removeItem('auth')
       this.$router.push({path: '/'})
