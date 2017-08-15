@@ -32,7 +32,6 @@ class Project(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     type_of_project = db.Column(db.String(50), nullable=False)
     privacy_policy = db.Column(db.String(50), nullable=False)
-    favorite = db.Column(db.Boolean)
 
     scenario = db.relationship('Scenario')
     cycle = db.relationship('Cycle')
