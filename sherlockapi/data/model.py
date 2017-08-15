@@ -9,6 +9,8 @@ from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 
 from sherlockapi import db, secretkey
+from sherlockapi.db_init import check_first_run
+
 
 class StateType(Enum):
     active = "active"
@@ -282,3 +284,5 @@ class ProjectSchema(Schema):
     owner_id = fields.Int()
     type_of_project = fields.Str()
     privacy_policy = fields.Str()
+
+check_first_run(db)

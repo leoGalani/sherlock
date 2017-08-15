@@ -33,9 +33,6 @@ RUN npm install --no-optional
 COPY . /sherlock
 RUN npm run build
 WORKDIR /sherlock/
-# Temporary Item (we gonna move to mysql)
-RUN rm -rf sherlockapi/data/sherlock.db
-RUN python3 setup_container.py
 
 RUN rm /etc/nginx/sites-enabled/default
 COPY app_nginx.conf /etc/nginx/sites-available/

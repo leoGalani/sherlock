@@ -9,7 +9,8 @@ CORS_HEADER = 'Content-Type'
 TOKEN_TIMEOUT = 9999
 SECRET_KEY = os.urandom(25)
 #dburl = 'root:@localhost/sherlockdb'
-SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{}'.format(prod_db)
+dburl = prod_db()
+SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{}'.format(dburl)
 
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 SQLALCHEMY_TRACK_MODIFICATIONS = True

@@ -8,6 +8,8 @@ services:
       - .:/sherlock
     depends_on:
       - mysql
+    links:
+      - mysql:mysql
     build: .
   mysql:
     ports:
@@ -21,5 +23,3 @@ services:
       MYSQL_DATABASE: 'sherlockdb'
     volumes:
      - ./database:/var/lib/mysql
-    ports:
-      - "3306:3306"
