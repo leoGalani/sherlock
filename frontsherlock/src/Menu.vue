@@ -1,6 +1,6 @@
 <template>
   <div id="menu_Component">
-    <nav class="uk-navbar-container" uk-navbar v-if="['login', '404', 'register'].indexOf($route.name) === -1">
+    <nav class="uk-navbar-container" uk-navbar v-if="['login', '404', 'registerg', 'register'].indexOf($route.name) === -1">
     <div class="uk-navbar-left">
       <ul class="uk-navbar-nav">
         <li>
@@ -11,8 +11,8 @@
     </div>
     <div class="uk-navbar-right">
       <ul class="uk-navbar-nav">
-        <li v-if="['dashboard', 'new_project'].indexOf($route.name) > -1">
-          <router-link to="/project/new" title="New Project" uk-tooltip="delay: 300" > <i class="material-icons" style="color: rgb(117, 117, 117);">note_add</i> </router-link>
+        <li v-if="['dashboard', 'new_project', 'settings', 'user_edit'].indexOf($route.name) > -1">
+          <router-link :to="{ name: 'new_project' }" title="New Project" uk-tooltip="delay: 300" > <i class="material-icons" style="color: rgb(117, 117, 117);">note_add</i> </router-link>
         </li>
         <li v-else>
           <a><i class="material-icons" style="color: rgb(117, 117, 117);">build</i></a>
@@ -27,7 +27,7 @@
         <li class="nav_divider"></li>
         <li>
           <router-link title="Sherlock Settings" uk-tooltip="delay: 300"
-          :to="{ path: 'settings' }">
+          :to="{ name: 'settings' }">
             <i class="material-icons" style="color: rgb(117, 117, 117);">settings</i>
           </router-link>
         </li>
@@ -35,7 +35,7 @@
           <a><i class="material-icons" style="color: rgb(117, 117, 117);">account_circle</i></a>
           <div uk-dropdown="delay-hide: 50;">
             <ul class="uk-nav uk-dropdown-nav">
-              <li><router-link :to="{ path: '/project/view/'+projectId+'/scenario_cases' }"> My Settings </router-link></li>
+              <li><router-link :to="{ name: 'user_edit' }"> My Settings </router-link></li>
               <li><hr style="width:150px"></li>
             <li><a @click="logoff()"> Logoff </a></li>
             <li><a href="http://sherlockqa.readthedocs.io/" target="_blank" uk-icon="icon: question"> Help </a></li>
@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     logoff () {
-      UIkit.notification('See you later!')
+      UIkit.notification('See you later!', {timout: '700'})
       window.localStorage.removeItem('user')
       window.localStorage.removeItem('auth')
       this.$router.push({path: '/login'})

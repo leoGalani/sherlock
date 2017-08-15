@@ -1,5 +1,5 @@
 """Sherlock User Controllers and Routes."""
-from flask import Blueprint, request, jsonify, make_response, abort
+from flask import Blueprint, request, jsonify, make_response, abort, g
 
 from sherlockapi import db, auth
 from sherlockapi.helpers.string_operations import check_none_and_blank
@@ -30,8 +30,6 @@ def get_all_users():
 @auth.login_required
 def show_user_id(user_id):
     """Return a user.
-
-    ex:
     {
         "email": "email@email.com",
         "id": 1,
@@ -48,8 +46,6 @@ def show_user_id(user_id):
 @auth.login_required
 def show_user_email(email):
     """Return a user.
-
-    ex:
     {
         "email": "email@email.com",
         "id": 1,
@@ -64,12 +60,13 @@ def show_user_email(email):
 
 @user.route('/new', methods=['POST'])
 def new():
-    """POST endpoint for new user.
-
+    """
     Param:
-        {'name': required,
-         'email': required,
-         'password': required }
+    {
+        'name': required,
+        'email': required,
+        'password': required
+     }
     """
     open_user_setting = SherlockSettings.query.filter_by(
         setting='OPEN_USER_REGISTER').first()
@@ -103,21 +100,25 @@ def new():
 @user.route('/edit/<int:user_id>', methods=['POST'])
 @auth.login_required
 def edit(user_id):
-    """POST endpoint for edit user.
-
-    Param:
-        {'name': not_required,
-         'email': not_required,
-         'password': not_required }
     """
-    edited_user = get_user({'id': user_id})
+    Param:
+    {
+        'name': not_required,
+         'email': not_required,
+         'password': not_required
+    }
+    """
+    if g.user.id != user_id:
+        return make_response(jsonify(message='NOT_ALLOWED'))
+
+    edited_user = g.user
 
     if 'name' in request.json:
         edited_user.name = check_none_and_blank(request, 'name')
 
     if 'email' in request.json:
         email = check_none_and_blank(request, 'email')
-        if not User.query.filter_by(username=email).first():
+        if not User.query.filter_by(email=email).first():
             edited_user.email = email
 
     if 'password' in request.json:

@@ -19,7 +19,7 @@
               <div class="uk-margin">
                   <div class="uk-form-controls uk-width-2-3@s">
                     <div class="uk-inline">
-                        <span class="uk-form-icon" uk-icon="icon: user"></span>
+                        <span class="uk-form-icon" uk-icon="icon: mail"></span>
                         <input class="uk-input" id="form-horizontal-text" placeholder="Email" type="text" v-model="register.email">
                       </div>
                   </div>
@@ -36,7 +36,7 @@
               <div class="uk-margin">
                   <div class="uk-form-controls uk-width-2-3@s">
                     <div class="uk-inline">
-                        <span class="uk-form-icon" uk-icon="icon: copy"></span>
+                        <span class="uk-form-icon" v-if="this.register.confirmPassword.length > 1 && this.register.password === this.register.confirmPassword" uk-icon="icon: check"></span>
                         <input class="uk-input" id="form-horizontal-text" placeholder="Confirm Password" v-model="register.confirmPassword" type="password">
                     </div>
                   </div>
@@ -70,9 +70,13 @@ export default {
   },
   methods: {
     handleRegister () {
-      console.log(this.register.name)
-      if (!this.register.name || !this.register.email || !this.register.password) {
+      if (!this.register.name || !this.register.email || !this.register.password || !this.register.confirmPassword) {
         UIkit.notification('<span uk-icon="icon: ban"></span> Fields cannot be empty', {timeout: '700'})
+        return
+      }
+
+      if (this.register.password !== this.register.confirmPassword) {
+        UIkit.notification('<span uk-icon="icon: ban"></span> The passwords dont match!', {status: 'danger', timeout: 700})
         return
       }
       var newUser = {
