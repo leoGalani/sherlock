@@ -28,11 +28,13 @@ ADD requirements.txt /sherlock/
 RUN pip3 install -r /sherlock/requirements.txt
 
 ADD frontsherlock/package.json /sherlock/frontsherlock/
+
 WORKDIR /sherlock/frontsherlock/
 RUN npm install
-RUN npm run build
-
 COPY . /sherlock
+
+WORKDIR /sherlock/frontsherlock/
+RUN npm run build
 
 RUN rm /etc/nginx/sites-enabled/default
 COPY app_nginx.conf /etc/nginx/sites-available/
