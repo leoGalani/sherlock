@@ -1,27 +1,3 @@
-"""Setup script to create and populate the database."""
-#import random
-#import string
-#import yaml
-
-#with open("docker-compose.yml", 'r') as ymlfile:
-#    docker_config = yaml.load(ymlfile)
-
-#random_db_password = ''.join(random.SystemRandom().choice(
-#    string.ascii_uppercase + string.digits) for _ in range(20))
-
-#import pdb; pdb.set_trace()
-
-#docker_config['services']['mysql']['environment']['MYSQL_ROOT_PASSWORD'] = random_db_password
-
-#with open("docker-compose.yml", 'w') as newconf:
-#    yaml.dump(docker_config, newconf)
-
-"""
-This file changes the password from the docker-compose file,
-also changing the configuration do database connection, therefore must be
-applying before importing the application classes and methods.
-"""
-
 def check_first_run(db):
     db.create_all()
 
