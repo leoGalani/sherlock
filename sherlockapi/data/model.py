@@ -5,6 +5,7 @@ from flask import g
 import bcrypt
 
 from marshmallow import Schema, fields
+from marshmallow_enum import EnumField
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 
@@ -65,6 +66,7 @@ class Scenario(db.Model):
     def __init__(self, name, project_id):
         self.name = name
         self.project_id = project_id
+        self.state_code = StateType.active
 
 
 class Case(db.Model):
@@ -79,6 +81,7 @@ class Case(db.Model):
     def __init__(self, name, scenario_id):
         self.name = name
         self.scenario_id = scenario_id
+        self.state_code = StateType.active
 
 
 class User(db.Model):
@@ -152,6 +155,7 @@ class Cycle(db.Model):
         self.cycle = cycle
         self.name = name
         self.project_id = project_id
+        self.state_code = StateType.active
 
 
 class CycleScenarios(db.Model):
@@ -168,6 +172,7 @@ class CycleScenarios(db.Model):
     def __init__(self, cycle_id, scenario_id):
         self.cycle_id = cycle_id
         self.scenario_id = scenario_id
+        self.state_code = StateType.not_executed
 
 
 class CycleCases(db.Model):
@@ -187,6 +192,7 @@ class CycleCases(db.Model):
         self.cycle_id = cycle_id
         self.case_id = case_id
         self.scenario_id = scenario_id
+        self.state_code = StateType.not_executed
 
 class ScenarioNotes(db.Model):
     __tablename__ = "notes"
@@ -250,7 +256,7 @@ class CycleSchema(Schema):
     cycle = fields.Int()
     project_id = fields.Int()
     name = fields.Str()
-    state_code = fields.Str()
+    state_code = EnumField(StateType)
     created_at = fields.Str()
     closed_at = fields.Str()
     last_change = fields.Str()
@@ -260,13 +266,13 @@ class TestCaseSchema(Schema):
     id = fields.Int(dump_only=True)
     scenario_id = fields.Int()
     name = fields.Str()
-    state_code = fields.Str()
+    state_code = EnumField(StateType)
 
 
 class ScenariosSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str()
-    state_code = fields.Str()
+    state_code = EnumField(StateType)
     project_id = fields.Int()
 
 

@@ -56,7 +56,7 @@ def get_project_details(project_id):
             project['last_cycle']['closed_by'] = closed_by
 
         project['last_cycle']['id'] = project_last_cycle.id
-        project['last_cycle']['state_code'] = project_last_cycle.state_code
+        project['last_cycle']['state_code'] = project_last_cycle.state_code.value
         project['last_cycle']['cycle'] = project_last_cycle.cycle
         project['last_cycle']['created_at'] = datetime.strftime(
             project_last_cycle.created_at, '%d-%m-%Y')

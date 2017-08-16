@@ -29,7 +29,7 @@
           </div>
           <div class="uk-grid" v-if="project.have_cycles">
               <div class="uk-width-3-5">
-                <h3 v-if="project.last_cycle.state_code === 'ACTIVE'">Current cycle stats</h3>
+                <h3 v-if="project.last_cycle.state_code === 'active'">Current cycle stats</h3>
                 <h3 v-else>Resume of Last Cycle</h3>
                 <div class="ct-chart">
                   <div v-if="display_load_chart">
@@ -37,9 +37,10 @@
                     Loading chart
                   </div>
                 </div>
-                <router-link v-if="project.last_cycle.state_code === 'ACTIVE'" class="uk-button uk-button-default" style='margin-top:10px;' :to="{ name: 'project_cycles', params: {projectId: this.projectId, cycleId: this.current_cycle.id} }">Execute Test Cases</router-link>
-                <a v-if="project.last_cycle.state_code === 'ACTIVE'" class="uk-button uk-button-default" style='margin-top:10px;' @click="checkCloseCyle(project.last_cycle.id)">Close Cycle</a>
-                <a v-if="project.last_cycle.state_code === 'CLOSED'" @click="createCycle()" class="uk-button uk-button-default"> Create New Cycle</a>
+                <router-link v-if="project.last_cycle.state_code === 'active'" class="uk-button uk-button-default" style='margin-top:10px;' :to="{ name: 'project_cycles', params: {projectId: this.projectId, cycleId: this.current_cycle.id} }">Execute Test Cases</router-link>
+                <a v-if="project.last_cycle.state_code === 'active'" class="uk-button uk-button-default" style='margin-top:10px;' @click="checkCloseCyle(project.last_cycle.id)">Close Cycle</a>
+                <a v-if="project.last_cycle.state_code === 'closed'" @click="createCycle()" class="uk-button uk-button-default"> Create New Cycle</a>
+                <router-link v-if="project.last_cycle.state_code === 'closed'" class="uk-button uk-button-default" :to="{ path: '/project/view/'+projectId+'/scenario_cases' }">Manage Scenarios and Test Cases</router-link>
               </div>
               <div class="uk-width-2-5">
                 <h3>Cycle {{this.current_cycle.cycle}} status </h3>
@@ -51,7 +52,7 @@
                         {{this.current_cycle.created_at}} <a title="dd-mm-yyyy" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: question"></a>
                     </div>
                   </div>
-                  <div v-if="project.last_cycle.state_code === 'CLOSED'">
+                  <div v-if="project.last_cycle.state_code === 'closed'">
                       <div class="uk-form-label" style="font-weight: 800;">closed at:</div>
                       <div>
                         {{this.current_cycle.closed_at}} <a title="dd-mm-yyyy" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: question"></a>
@@ -59,14 +60,14 @@
                   </div>
                 </div>
 
-                <div class="uk-grid-divider uk-child-width-expand@s" uk-grid style="margin-top:20px !important">
+                <div v-if="project.last_cycle.state_code === 'closed'" class="uk-grid-divider uk-child-width-expand@s" uk-grid style="margin-top:20px !important">
                   <div>
                       <div class="uk-form-label" style="font-weight: 800;">closed by:</div>
                       <div>
                         {{this.current_cycle.closed_by}}
                     </div>
                   </div>
-                  <div v-if="project.last_cycle.state_code === 'CLOSED'">
+                  <div v-if="project.last_cycle.state_code === 'closed'">
                       <div class="uk-form-label" style="font-weight: 800;">reason:</div>
                       <div  style="max-height: 137px; white-space: normal" class="hide_overflow">
                         {{this.current_cycle.closed_reason}}</a>
@@ -81,7 +82,7 @@
                         {{this.current_cycle.stats.total_not_executed}}
                     </div>
                   </div>
-                  <div v-if="project.last_cycle.state_code === 'CLOSED'">
+                  <div>
                       <div class="uk-form-label" style="font-weight: 800;">cases passed:</div>
                       <div>
                         {{this.current_cycle.stats.total_passed}}</a>
@@ -96,7 +97,7 @@
                         {{this.current_cycle.stats.total_error}}
                     </div>
                   </div>
-                  <div v-if="project.last_cycle.state_code === 'CLOSED'">
+                  <div>
                       <div class="uk-form-label" style="font-weight: 800;">cases blocked:</div>
                       <div>
                         {{this.current_cycle.stats.total_blocked}}</a>
@@ -179,7 +180,10 @@ export default {
             if (response.body.message === 'CYCLE_CREATED') {
               UIkit.notification('<span uk-icon="icon: check"></span> Cycle Created', {timeout: '700'})
               this.$router.push({name: 'project_cycles', params: { projectId: vueInstance.projectId, cycleId: response.body.cycle_id }})
+            } else if (response.body.message === 'NO_TEST_SCENARIOS') {
+              UIkit.notification('<span uk-icon="icon: ban"></span> Sorry but there is no active Test Case for the next cycle', {timeout: '700'})
             } else {
+              console.log(response.body.message)
               UIkit.notification('<span uk-icon="icon: ban"></span> Please close the current cycle', {timeout: '700'})
             }
           })
@@ -263,6 +267,7 @@ export default {
     this.interval = setInterval(function () {
       this.fetchProject(this.$route.params.projectId)
       this.mountChartCurrentCycle()
+      this.mountChartResume()
     }.bind(this), 1000)
   },
   beforeDestroy: function () {

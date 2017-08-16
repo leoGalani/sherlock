@@ -26,7 +26,7 @@ def home():
                 cycle_id=project_last_cycle.id).all()
 
             item['current_cycle'] = project_last_cycle.cycle
-            item['cycle_state'] = project_last_cycle.state_code.lower()
+            item['cycle_state'] = project_last_cycle.state_code.value
             item['stats'] =  count_cycle_stats(cycle_cases_h)
 
     return make_response(jsonify(projects=projects))

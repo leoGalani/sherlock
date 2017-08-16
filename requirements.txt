@@ -28,3 +28,4 @@ selenium==2.53.6
 Flask-Cors==3.0.3
 PyYAML==3.12
 PyMySQL==0.7.11
+marshmallow-enum==1.3

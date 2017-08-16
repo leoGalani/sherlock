@@ -28,7 +28,7 @@ def count_cycle_stats(casesCycle):
     current_cycles_stats['total_passed'] = 0
 
     for item in casesCycle:
-        current_cycles_stats['total_{}'.format(item.state_code.lower())] += 1
+        current_cycles_stats['total_{}'.format(item.state_code.value)] += 1
 
     return current_cycles_stats
 

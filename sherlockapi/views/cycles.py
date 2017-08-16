@@ -113,6 +113,7 @@ def create(project_id):
 
     scenarios = Scenario.query.filter_by(
         project_id=project.id).filter_by(state_code=StateType.active).all()
+
     cases = Case.query.join(
         Scenario, Case.scenario_id == Scenario.id).filter(
             Scenario.project_id == project.id).filter(
@@ -189,7 +190,7 @@ def get_cases_for_cyle(project_id, cycle_id, scenario_id):
                 temp['case_name'] = case.name
                 temp['case_id'] = case.id
                 temp['case_cycle_id'] = item.id
-                temp['case_cycle_state'] = item.state_code
+                temp['case_cycle_state'] = item.state_code.value
                 obj.append(temp)
                 break
 
@@ -218,18 +219,17 @@ def change_cycle_case_state_code_(project_id):
     last_cycle = get_last_cycle(project_id)
 
     if cycle.id != last_cycle.id:
-        return make_response(jsonify(message='NOT_LAST_CYCLE'), 400)
+        return make_response(jsonify(message='NOT_LAST_CYCLE'))
 
-
-    if not state not in StateType.__members__:
-        return make_response(jsonify(message='ACTION_UNKNOW'), 400)
+    if action not in StateType.__members__:
+        return make_response(jsonify(message='ACTION_UNKNOW'))
 
     edited_cycle_case = CycleCases.query.filter_by(
         cycle_id=cycle.id).filter_by(case_id=case_id).first()
 
     if edited_cycle_case is None:
-        abort(make_response(jsonify(message='UNKNOW_CASE'), 400))
-    edited_cycle_case.state_code = action
+        abort(make_response(jsonify(message='UNKNOW_CASE'), 404))
+    edited_cycle_case.state_code = StateType[action]
     db.session.add(edited_cycle_case)
     db.session.commit()
 

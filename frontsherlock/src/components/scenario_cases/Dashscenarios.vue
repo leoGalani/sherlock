@@ -25,14 +25,14 @@
           <div class="uk-width-4-5">
             <span @click="fecthCases(scenario.id)" style="cursor: pointer; width: 100%">{{ scenario.name }} <br>
           </span>
-          <div v-if="scenario.state_code === 'DISABLE'" class="uk-badge uk-label">Disabled</div>
+          <div v-if="scenario.state_code === 'disable'" class="uk-badge uk-label">Disabled</div>
             <hr>
           </div>
           <div class="uk-width-1-5">
             <ul class="uk-iconnav">
                 <li> <a @click="fecthCases(scenario.id)" uk-icon="icon: chevron-right;"></a></li>
-                <li v-show="scenario.state_code === 'ACTIVE'"> <a @click="disableScenario(scenario.id)" uk-icon="icon: lock"></a></li>
-                <li v-show="scenario.state_code === 'DISABLE'"> <a @click="enableScenario(scenario.id)" uk-icon="icon: unlock"></a></li>
+                <li v-show="scenario.state_code === 'active'"> <a @click="disableScenario(scenario.id)" uk-icon="icon: lock"></a></li>
+                <li v-show="scenario.state_code === 'disable'"> <a @click="enableScenario(scenario.id)" uk-icon="icon: unlock"></a></li>
                 <li><a @click="editScenario(scenario.name, scenario.id)" uk-icon="icon: file-edit"></a></li>
                 <li><a @click="removeScenario(scenario.id)" uk-icon="icon: trash"></a></li>
             </ul>
@@ -48,7 +48,7 @@
         <div v-else>
           <h4 class="scenario_name_case">
             Scenario: {{ scenarioFull.scenario_name }}
-             <div v-if="scenarioFull.scenario_state === 'DISABLE'" class="uk-badge uk-label">Disabled</div>
+             <div v-if="scenarioFull.scenario_state === 'disable'" class="uk-badge uk-label">Disabled</div>
 
           </h4>
           <div class="uk-form-controls">
@@ -64,13 +64,13 @@
               <div class="uk-width-4-5">
                 <span> {{ tstcase.name }} </span>
               </span>
-              <div v-if="tstcase.state_code === 'DISABLE'" class="uk-badge uk-label">Disabled</div>
+              <div v-if="tstcase.state_code === 'disable'" class="uk-badge uk-label">Disabled</div>
                 <hr>
               </div>
               <div class="uk-width-1-5">
                 <ul class="uk-iconnav">
-                    <li v-show="tstcase.state_code === 'ACTIVE'"> <a @click="disableCase(tstcase.id)" uk-icon="icon: lock"></a></li>
-                    <li v-show="tstcase.state_code === 'DISABLE'"> <a @click="enableCase(tstcase.id)" uk-icon="icon: unlock"></a></li>
+                    <li v-show="tstcase.state_code === 'active'"> <a @click="disableCase(tstcase.id)" uk-icon="icon: lock"></a></li>
+                    <li v-show="tstcase.state_code === 'disable'"> <a @click="enableCase(tstcase.id)" uk-icon="icon: unlock"></a></li>
                     <li><a @click="editCase(tstcase.name, scenarioFull.scenario_id, tstcase.id )"uk-icon="icon: file-edit"></a></li>
                     <li><a @click="removeCase(tstcase.id)" uk-icon="icon: trash"></a></li>
                 </ul>
@@ -220,7 +220,7 @@ export default {
     disableCase (caseId) {
       var vueInstance = this
       UIkit.modal.confirm('Do you want to disable this Test Case? It will not be available for the next cycle.').then(function () {
-        vueInstance.$http.post('scenarios/' + vueInstance.scenarioFull.scenario_id + '/tst_case/change_status', {'case_d': caseId, 'action': 'DISABLE'}).then(function (response) {
+        vueInstance.$http.post('scenarios/' + vueInstance.scenarioFull.scenario_id + '/tst_case/change_status', {'case_id': caseId, 'action': 'DISABLE'}).then(function (response) {
           UIkit.notification('<span uk-icon="icon: lock"></span> Test Case Disabled', {timeout: '700'})
           this.fecthCases(vueInstance.scenarioFull.scenario_id)
         })
@@ -231,12 +231,16 @@ export default {
       var vueInstance = this
       UIkit.modal.confirm('Please confirm the Test Case activation.').then(function () {
         vueInstance.$http.post('scenarios/' + vueInstance.scenarioFull.scenario_id + '/tst_case/change_status', {'case_id': caseId, 'action': 'ENABLE'}).then(function (response) {
-          if (response.message === 'SCENARIO_DISABLED') {
+          if (response.body.message === 'SCENARIO_DISABLED') {
             UIkit.notification('<span uk-icon="icon: ban"></span> This Case Scenario is disabled!', {timeout: '700'})
             return
+          } else if (response.body.message === 'DONE') {
+            UIkit.notification('<span uk-icon="icon: unlock"></span> Test Case Enabled', {timeout: '700'})
+            this.fecthCases(vueInstance.scenarioFull.scenario_id)
+          } else {
+            UIkit.notification('<span uk-icon="icon: ban"></span> Something Wrong Happend.', {timeout: '700'})
+            return
           }
-          UIkit.notification('<span uk-icon="icon: unlock"></span> Test Case Enabled', {timeout: '700'})
-          this.fecthCases(vueInstance.scenarioFull.scenario_id)
         })
       }, function () {
       })

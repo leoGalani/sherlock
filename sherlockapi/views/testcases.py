@@ -59,6 +59,7 @@ def tstcase_changestatus(scenario_id):
 
     TODO: State is not defined
     """
+
     case_id = check_none_and_blank(request, 'case_id')
     action = check_none_and_blank(request, 'action')
     tst_case = get_tstcase(case_id)
@@ -69,8 +70,6 @@ def tstcase_changestatus(scenario_id):
     if last_cycle:
         cycle_case = CycleCases.query.filter_by(
             last_cycle.id).filter_by(case_id=case_id).first()
-
-    import pdb; pdb.set_trace()
 
     if action == 'REMOVE':
         db.session.delete(tst_case)
@@ -96,7 +95,7 @@ def tstcase_changestatus(scenario_id):
         db.session.add(cycle_case)
         db.session.commit()
 
-    tst_case.state = state
+    tst_case.state_code = state
     db.session.add(tst_case)
     db.session.commit()
     return make_response(jsonify(message='DONE'))

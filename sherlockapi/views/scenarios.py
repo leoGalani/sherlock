@@ -30,7 +30,7 @@ def get_scenario_n_tst_cases(scenario_id):
     tst_cases = schema.dump(cases).data
 
     return make_response(jsonify(scenario_id=scenario.id,
-                                 scenario_state=scenario.state_code,
+                                 scenario_state=scenario.state_code.value,
                                  scenario_name=scenario.name,
                                  cases=tst_cases))
 
@@ -155,11 +155,11 @@ def scenario_case_process(cycle, scenario, state, action, cycle_state):
             db.session.delete(case)
             db.session.commit()
     else:
-        scenario.state = state
+        scenario.state_code = state
         db.session.add(scenario)
         db.session.commit()
         for case in scenario_cases:
-            case.state_code = state.code
+            case.state_code = state
             db.session.add(case)
             db.session.commit()
 
@@ -187,6 +187,6 @@ def scenario_case_process(cycle, scenario, state, action, cycle_state):
                 db.session.commit()
         else:
             for ccase in cycle_cases:
-                ccase.state = cycle_state
+                ccase.state_code = cycle_state
                 db.session.add(ccase)
                 db.session.commit()

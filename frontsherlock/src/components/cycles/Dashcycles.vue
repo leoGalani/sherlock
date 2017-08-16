@@ -74,10 +74,21 @@
               </div>
               <div class="uk-width-1-5">
                 <ul class="uk-iconnav">
-                    <li> <a v-bind:class="{'passed': classChanger(tstcase.case_cycle_state, 'PASSED')}" @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'PASSED')" uk-icon="icon: check; ratio: 1.2"></a></li>
-                    <li> <a v-bind:class="{'failed': classChanger(tstcase.case_cycle_state, 'ERROR')}" @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'ERROR')" uk-icon="icon: ban; ratio: 1.2"></a></li>
-                    <li> <a v-bind:class="{'blocked': classChanger(tstcase.case_cycle_state, 'BLOCKED')}" @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'BLOCKED')" uk-icon="icon: lock; ratio: 1.2"></a></li>
-                    <li> <a @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'NOT_EXECUTED')" uk-icon="icon: reply; ratio: 1.2"></a></li>
+                    <li> <a @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'passed')">
+                      <span v-show="tstcase.case_cycle_state === 'passed'" uk-icon="icon: check" class='passed'></span>
+                      <span v-show="tstcase.case_cycle_state !== 'passed'" uk-icon="icon: check"></span>
+                      </a></li>
+                    <li> <a @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'error')">
+                      <span v-show="tstcase.case_cycle_state === 'error'" uk-icon="icon: ban" class='failed'></span>
+                      <span v-show="tstcase.case_cycle_state !== 'error'" uk-icon="icon: ban"></span>
+                    </a></li>
+                    <li> <a @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'blocked')">
+                      <span v-show="tstcase.case_cycle_state === 'blocked'" uk-icon="icon: lock" class='blocked'></span>
+                      <span v-show="tstcase.case_cycle_state !== 'blocked'" uk-icon="icon: lock"></span>
+                    </a></li>
+                    <li> <a @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'not_executed')">
+                      <span uk-icon="icon: reply"></span>
+                    </a></li>
                 </ul>
               </div>
             </div>
@@ -141,12 +152,6 @@ export default {
         this.tstcases = this.scenarioFull.cases.reverse()
         UIkit.tab('#cenarios_cases', {'animation': 'uk-animation-middle-left'}).show(1)
       })
-    },
-    classChanger (currentState, rightState) {
-      if (currentState === rightState) {
-        return true
-      }
-      return false
     },
     cleanCases () {
       this.caseslodaded = false
