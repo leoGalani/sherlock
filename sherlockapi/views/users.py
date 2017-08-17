@@ -9,15 +9,6 @@ from sherlockapi.data.model import User, UsersSchema, SherlockSettings
 user = Blueprint('users', __name__)
 
 
-@user.url_value_preprocessor
-@auth.login_required
-def user_pre_processor(endpoint, values):
-    """Blueprint Object Query."""
-    if request.method == 'POST':
-        if request.json is None:
-            abort(make_response(jsonify(message='MISSING_JSON_HEADER'), 400))
-
-
 @user.route('/get_all_users', methods=['GET'])
 @auth.login_required
 def get_all_users():

@@ -11,15 +11,6 @@ from sherlockapi.helpers.util import get_scenario, get_last_cycle
 scenario = Blueprint('scenarios', __name__)
 
 
-@scenario.url_value_preprocessor
-@auth.login_required
-def scenario_pre_process(endpoint, view_args):
-    """Blueprint Object Query."""
-    if request.method == 'POST':
-        if request.json is None:
-            abort(make_response(jsonify(message='MISSING_JSON_HEADER'), 400))
-
-
 @scenario.route('/cases/<int:scenario_id>', methods=['GET'])
 @auth.login_required
 def get_scenario_n_tst_cases(scenario_id):

@@ -13,15 +13,6 @@ from sherlockapi.helpers.util import (count_cycle_stats, get_last_cycle,
 project = Blueprint('projects', __name__)
 
 
-@project.url_value_preprocessor
-@auth.login_required
-def project_pre_processor(endpoint, view_args):
-    """Blueprint Object Query."""
-    if request.method == 'POST':
-        if request.json is None:
-            abort(make_response(jsonify(message='MISSING_JSON_HEADER'), 400))
-
-
 @project.route('/show/<int:project_id>', methods=['GET'])
 @auth.login_required
 def get_project_details(project_id):
