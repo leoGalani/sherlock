@@ -1,6 +1,6 @@
 ![alt tag](https://raw.githubusercontent.com/leoGalani/sherlock/master/frontsherlock/src/assets/img/sherlock.png)
 
-#Sherlock QA
+# Sherlock QA
 
 Sherlock QA is a attempt to simplify the life of testers, product owners and
 people that do regression tests.
@@ -39,8 +39,8 @@ Don't delete the folder called 'database' inside the sherlock folder, since its 
 You can checkout a deployed demo here: http://104.236.221.15/
 Use the demo default credential:
 
-user: admin@admin.xpto
-pass: admin
+- _user:_ admin@admin.xpto
+- _pass:_ admin
 
 More info on how to use or how to extend it, visit http://sherlockqa.readthedocs.io
 To talk about it and share you views with the Comunity, visit http://agiletesters.com.br
