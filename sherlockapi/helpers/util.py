@@ -2,13 +2,6 @@
 from flask import g, abort, make_response, jsonify
 
 from sherlockapi.data.model import User, Project, Scenario, Case, Cycle
-from sherlockapi import cache
-
-
-@cache.memoize(50)
-def project_loader(Project):
-    """Get all projects and retrive to the global flask G."""
-    g.projects = Project.query.all()
 
 
 def get_last_cycle(project_id):

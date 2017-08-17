@@ -1,4 +1,3 @@
-dist
 bin
 include
 lib
@@ -9,14 +8,10 @@ Scripts
 .Python
 *.pyc
 *~
-*.sqlite3
 .DS_Store
 .env
-staticfiles/
 __pycache__
 .idea
 pip-selfcheck.json
 selenium
-**.db
-node_modules/
-jspm_packages/
+database

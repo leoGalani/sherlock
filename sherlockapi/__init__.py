@@ -2,17 +2,13 @@
 from flask import Flask, jsonify, make_response, g
 from flask_httpauth import HTTPBasicAuth
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
-from flask_cache import Cache
 
-app = Flask(__name__, instance_relative_config=True, static_url_path="")
-CORS(app, resources={r'/*': {"origins": '*', 'allow_headers': '*'}})
+
+app = Flask(__name__, instance_relative_config=True)
 app.config.from_object('config')
 secretkey = app.config['SECRET_KEY']
 token_timeout = app.config['TOKEN_TIMEOUT']
 db = SQLAlchemy(app)
-cache = Cache(app, config={'CACHE_TYPE': 'simple'})
-
 auth = HTTPBasicAuth()
 
 from sherlockapi.data import model
@@ -63,9 +59,3 @@ def verify_password(username_or_token, password):
 def get_auth_token():
     token = g.user.generate_auth_token(6000)
     return jsonify({'token': token.decode('ascii'), 'duration': 6000})
-
-
-@app.route('/api/works', methods=['GET'])
-@auth.login_required
-def fodasse():
-    return jsonify({'itworks': 'its using @auth.login_required'})

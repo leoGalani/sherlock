@@ -4,7 +4,6 @@ click==6.6
 flake8==2.5.4
 flake8-docstrings==0.2.6
 Flask==0.12.2
-Flask-Cache==0.13.1
 Flask-SQLAlchemy==2.2
 itsdangerous==0.24
 Jinja2==2.9.6

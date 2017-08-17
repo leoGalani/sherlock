@@ -14,13 +14,8 @@ RUN apt-get install -y libffi-dev
 RUN apt-get install -y libssl-dev g++ gcc
 RUN apt-get install -y libmysqlclient-dev
 RUN apt-get install -y libyaml-dev
-
 RUN apt-get install -y nginx gunicorn supervisor
-RUN apt-get install -y uwsgi
-
 RUN apt-get install -y bcrypt
-
-RUN pip install uwsgi
 
 RUN npm install -g chartist
 
@@ -35,6 +30,9 @@ COPY . /sherlock
 
 WORKDIR /sherlock/frontsherlock/
 RUN npm run build
+
+RUN rm -rf /sherlock/frontsherlock/node_modules
+RUN apt-get remove -y nodejs
 
 WORKDIR /sherlock/
 

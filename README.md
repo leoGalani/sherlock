@@ -34,6 +34,13 @@ You can also build the image yourself, but it may take a while (if you build it 
 
 Don't delete the folder called 'database' inside the sherlock folder, since its used by the docker to persist the mysql data.
 
+###  Demo
+
+You can checkout a deployed demo here: http://104.236.221.15/
+Use the demo default credential:
+
+user: admin@admin.xpto
+pass: admin
 
 More info on how to use or how to extend it, visit http://sherlockqa.readthedocs.io
 To talk about it and share you views with the Comunity, visit http://agiletesters.com.br
