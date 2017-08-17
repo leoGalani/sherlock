@@ -39,11 +39,6 @@ def page_not_found(error):
     return make_response(jsonify(message="ENDPOINT_NOTFOUND"), 404)
 
 
-@app.before_request
-def before_request():
-    project_loader(model.Project)
-
-
 @auth.verify_password
 def verify_password(username_or_token, password):
     """
@@ -68,3 +63,9 @@ def verify_password(username_or_token, password):
 def get_auth_token():
     token = g.user.generate_auth_token(6000)
     return jsonify({'token': token.decode('ascii'), 'duration': 6000})
+
+
+@app.route('/api/works', methods=['GET'])
+@auth.login_required
+def fodasse():
+    return jsonify({'itworks': 'its using @auth.login_required'})
