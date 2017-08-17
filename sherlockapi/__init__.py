@@ -12,7 +12,6 @@ db = SQLAlchemy(app)
 auth = HTTPBasicAuth()
 
 from sherlockapi.data import model
-from sherlockapi.helpers.util import project_loader
 
 from sherlockapi.views.users import user
 from sherlockapi.views.projects import project
