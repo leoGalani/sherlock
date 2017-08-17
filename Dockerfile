@@ -36,6 +36,8 @@ COPY . /sherlock
 WORKDIR /sherlock/frontsherlock/
 RUN npm run build
 
+WORKDIR /sherlock/
+
 RUN rm /etc/nginx/sites-enabled/default
 COPY app_nginx.conf /etc/nginx/sites-available/
 RUN ln -s /etc/nginx/sites-available/app_nginx.conf /etc/nginx/sites-enabled/app_nginx.conf
@@ -45,9 +47,6 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 RUN mkdir -p /var/log/supervisor/
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-EXPOSE 8080
 EXPOSE 80
-EXPOSE 443
-EXPOSE 4567
 
 CMD ["supervisord", "-n"]

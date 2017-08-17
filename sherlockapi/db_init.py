@@ -1,6 +1,5 @@
 def check_first_run(db):
     db.create_all()
-
     from sherlockapi.data.model import User, SherlockSettings
 
     user = User.query.filter_by(id=1).first()
