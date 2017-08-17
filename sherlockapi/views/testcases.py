@@ -10,15 +10,6 @@ from sherlockapi.helpers.util import get_scenario, get_tstcase, get_last_cycle
 test_case = Blueprint('test_cases', __name__)
 
 
-@test_case.url_value_preprocessor
-@auth.login_required
-def pre_process_tstcases(endpoint, values):
-    """Blueprint Object Query."""
-    if request.method == 'POST':
-        if request.json is None:
-            abort(make_response(jsonify(message='MISSING_JSON_HEADER'), 400))
-
-
 @test_case.route('/show/<int:test_case_id>', methods=['GET'])
 @auth.login_required
 def show_testcase(scenario_id, test_case_id):

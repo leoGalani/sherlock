@@ -12,15 +12,6 @@ from sherlockapi.helpers.util import get_project, get_cycle, get_user
 cycle = Blueprint('cycle', __name__)
 
 
-@cycle.url_value_preprocessor
-@auth.login_required
-def cycles_url_pre_processor(endpoint, values):
-    """Blueprint Object Query."""
-    if request.method == 'POST':
-        if request.json is None:
-            abort(make_response(jsonify(message='MISSING_JSON_HEADER'), 400))
-
-
 @cycle.route('/timeline/<int:cycle_limit>', methods=['GET'])
 @cycle.route('/timeline', methods=['GET'])
 @auth.login_required

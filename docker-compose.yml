@@ -4,17 +4,10 @@ services:
     container_name: sherlock
     ports:
      - "80:80"
-    volumes:
-      - .:/sherlock
+    build: .
     depends_on:
       - mysql
-    links:
-      - mysql:mysql
-    build: .
   mysql:
-    ports:
-     - "32768:32768"
-     - "3306:3306"
     container_name: sherlock-mysql
     restart: always
     image: mariadb:latest
