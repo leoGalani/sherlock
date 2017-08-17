@@ -55,7 +55,7 @@ class Scenario(db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(250), nullable=False)
+    name = db.Column(db.Text, nullable=False)
     state_code = db.Column(db.Enum(StateType))
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
 
@@ -74,7 +74,7 @@ class Case(db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(500), nullable=False)
+    name = db.Column(db.Text(500), nullable=False)
     scenario_id = db.Column(db.Integer, db.ForeignKey('scenario.id'))
     state_code = db.Column(db.Enum(StateType))
 
@@ -90,7 +90,7 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
-    email = db.Column(db.String(50), nullable=False, unique=True)
+    email = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(250), nullable=False)
     profile = db.Column(db.String(50), nullable=False)
 
@@ -138,7 +138,7 @@ class Cycle(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     cycle = db.Column(db.Integer, nullable=False)
-    name = db.Column(db.String(250))
+    name = db.Column(db.Text)
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
     state_code = db.Column(db.Enum(StateType))
 
@@ -201,7 +201,7 @@ class ScenarioNotes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
     scenario_id = db.Column(db.Integer)
-    text = db.Column(db.String(250))
+    text = db.Column(db.Text)
 
     def __init__(self, cycle_id, scenario_id,  text):
         """Setting params to the object."""
@@ -217,7 +217,7 @@ class CaseNotes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
     case_id = db.Column(db.Integer)
-    text = db.Column(db.String(250))
+    text = db.Column(db.Text)
 
     def __init__(self, cycle_id, scenario_id,  text):
         self.cycle_id = cycle_id
