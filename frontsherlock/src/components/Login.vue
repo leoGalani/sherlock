@@ -42,8 +42,8 @@ export default {
   data () {
     return {
       login: {
-        email: 'admin@admin.xpto',
-        password: 'admin'
+        email: '',
+        password: ''
       },
       show_register_button: false
     }
