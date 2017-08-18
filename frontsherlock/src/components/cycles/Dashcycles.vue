@@ -7,7 +7,7 @@
     <div class="uk-width-4-5">
       <ul uk-tab="animation: uk-animation-slide-left-medium, uk-animation-slide-right-medium" id='cenarios_cases'>
         <li><a href="#">Scenarios</a></li>
-        <li><a href="#">Cases</a></li>
+        <li><a href="#" v-if="caseslodaded">Cases</a></li>
       </ul>
 
 <ul class="uk-switcher uk-margin" id='cenarios_cases'>
@@ -89,7 +89,7 @@
                       <span v-show="tstcase.case_cycle_state === 'blocked'" uk-icon="icon: lock" class='blocked'></span>
                       <span v-show="tstcase.case_cycle_state !== 'blocked'" uk-icon="icon: lock"></span>
                     </a></li>
-                    <li> <a title="Reset Status" uk-tooltip="delay: 300; pos: bottom" 
+                    <li> <a title="Reset Status" uk-tooltip="delay: 300; pos: bottom"
                       @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'not_executed')">
                       <span uk-icon="icon: reply"></span>
                     </a></li>

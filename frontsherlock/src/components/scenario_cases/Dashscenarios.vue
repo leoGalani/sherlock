@@ -7,7 +7,7 @@
     <div class="uk-width-4-5">
       <ul uk-tab="animation: uk-animation-slide-left-medium, uk-animation-slide-right-medium" id='cenarios_cases'>
         <li><a href="#">Scenarios</a></li>
-        <li><a href="#">Cases</a></li>
+        <li><a href="#" v-if="caseslodaded">Cases</a></li>
       </ul>
 
 <ul class="uk-switcher uk-margin" id='cenarios_cases'>
