@@ -16,7 +16,7 @@
           </div>
         </div>
 
-        <button class="uk-button uk-button-default">Save Setttings</button>
+        <button class="uk-button uk-button-default">Save Settings</button>
       </form>
     </div>
   </div>
@@ -28,7 +28,8 @@ export default {
   name: 'settings',
   data () {
     return {
-      settings: []
+      settings: [],
+      currentUser: ''
     }
   },
   methods: {
@@ -46,6 +47,10 @@ export default {
   },
   created: function () {
     this.getSherlockSettings()
+    this.currentUser = JSON.parse(window.localStorage.getItem('user'))
+    if (this.currentUser.profile !== 'admin') {
+      this.$router.push({name: 'dashboard'})
+    }
   }
 }
 </script>

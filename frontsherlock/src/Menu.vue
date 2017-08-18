@@ -26,7 +26,8 @@
         </li>
         <li class="nav_divider"></li>
         <li>
-          <router-link title="Sherlock Settings" uk-tooltip="delay: 300"
+          <router-link v-if="this.currentUser.profile === 'admin'"
+          title="Sherlock Settings" uk-tooltip="delay: 300"
           :to="{ name: 'settings' }">
             <i class="material-icons" style="color: rgb(117, 117, 117);">settings</i>
           </router-link>
@@ -56,7 +57,8 @@ export default {
   name: 'menu_Component',
   data () {
     return {
-      projectId: ''
+      projectId: '',
+      currentUser: ''
     }
   },
   methods: {
@@ -65,12 +67,21 @@ export default {
       window.localStorage.removeItem('user')
       window.localStorage.removeItem('auth')
       this.$router.push({path: '/login'})
+    },
+    getUserInfo () {
+      this.currentUser = JSON.parse(window.localStorage.getItem('user'))
     }
   },
   updated: function () {
     if (['login', 'register', 'dashboard'].indexOf(this.$route.name) === -1) {
-      // this.$route.params.projectId
       this.projectId = this.$route.params.projectId
+    }
+  },
+  watch: {
+    $route: function () {
+      if (['login', 'register'].indexOf(this.$route.name) === -1) {
+        this.getUserInfo()
+      }
     }
   }
 }
