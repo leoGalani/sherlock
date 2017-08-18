@@ -13,7 +13,7 @@
 <ul class="uk-switcher uk-margin" id='cenarios_cases'>
     <li>
       <div class="content scenario">
-      <div v-for="scenario in scenarios" :key="scenario.scenario_id" class="uk-grid ">
+      <div v-for="scenario in scenarios" :key="scenario.scenario_id" v-if="scenario.cases_stats.total > 0"class="uk-grid ">
           <div @click="fetchCycleCases(scenario.scenario_id)" class="uk-width-4-5" style="cursor: pointer; width: 77% !important;">
             <span>{{ scenario.scenario_name }} <br>
           </span>
