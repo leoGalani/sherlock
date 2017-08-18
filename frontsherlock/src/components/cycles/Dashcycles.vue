@@ -74,19 +74,23 @@
               </div>
               <div class="uk-width-1-5">
                 <ul class="uk-iconnav">
-                    <li> <a @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'passed')">
+                    <li> <a title="Pass" uk-tooltip="delay: 300; pos: bottom"
+                      @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'passed')">
                       <span v-show="tstcase.case_cycle_state === 'passed'" uk-icon="icon: check" class='passed'></span>
                       <span v-show="tstcase.case_cycle_state !== 'passed'" uk-icon="icon: check"></span>
                       </a></li>
-                    <li> <a @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'error')">
+                    <li> <a title="Fail" uk-tooltip="delay: 300; pos: bottom"
+                      @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'error')">
                       <span v-show="tstcase.case_cycle_state === 'error'" uk-icon="icon: ban" class='failed'></span>
                       <span v-show="tstcase.case_cycle_state !== 'error'" uk-icon="icon: ban"></span>
                     </a></li>
-                    <li> <a @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'blocked')">
+                    <li> <a title="Block" uk-tooltip="delay: 300; pos: bottom"
+                      @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'blocked')">
                       <span v-show="tstcase.case_cycle_state === 'blocked'" uk-icon="icon: lock" class='blocked'></span>
                       <span v-show="tstcase.case_cycle_state !== 'blocked'" uk-icon="icon: lock"></span>
                     </a></li>
-                    <li> <a @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'not_executed')">
+                    <li> <a title="Reset Status" uk-tooltip="delay: 300; pos: bottom" 
+                      @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'not_executed')">
                       <span uk-icon="icon: reply"></span>
                     </a></li>
                 </ul>

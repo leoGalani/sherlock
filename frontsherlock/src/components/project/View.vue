@@ -180,7 +180,7 @@ export default {
               UIkit.notification('<span uk-icon="icon: check"></span> Cycle Created', {timeout: '700'})
               this.$router.push({name: 'project_cycles', params: { projectId: vueInstance.projectId, cycleId: response.body.cycle_id }})
             } else if (response.body.message === 'NO_TEST_SCENARIOS') {
-              UIkit.notification('<span uk-icon="icon: ban"></span> Sorry but there is no active Test Case for the next cycle', {timeout: '700'})
+              UIkit.notification('<span uk-icon="icon: ban"></span> Sorry but there is no test case active for the next cycle', {status: 'warning', timeout: '1900'})
             } else {
               console.log(response.body.message)
               UIkit.notification('<span uk-icon="icon: ban"></span> Please close the current cycle', {timeout: '700'})

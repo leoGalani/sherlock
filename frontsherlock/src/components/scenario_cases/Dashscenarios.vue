@@ -30,11 +30,15 @@
           </div>
           <div class="uk-width-1-5">
             <ul class="uk-iconnav">
-                <li> <a @click="fecthCases(scenario.id)" uk-icon="icon: chevron-right;"></a></li>
-                <li v-show="scenario.state_code === 'active'"> <a @click="disableScenario(scenario.id)" uk-icon="icon: lock"></a></li>
-                <li v-show="scenario.state_code === 'disable'"> <a @click="enableScenario(scenario.id)" uk-icon="icon: unlock"></a></li>
-                <li><a @click="editScenario(scenario.name, scenario.id)" uk-icon="icon: file-edit"></a></li>
-                <li><a @click="removeScenario(scenario.id)" uk-icon="icon: trash"></a></li>
+                <li> <a @click="fecthCases(scenario.id)" uk-icon="icon: chevron-right;" title="Load Cases" uk-tooltip="delay: 300; pos: bottom"></a></li>
+                <li v-show="scenario.state_code === 'active'"> <a @click="disableScenario(scenario.id)"
+                  title="Disable Scenario" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: lock"></a></li>
+                <li v-show="scenario.state_code === 'disable'"> <a @click="enableScenario(scenario.id)"
+                  title="Enable Scenario" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: unlock"></a></li>
+                <li><a @click="editScenario(scenario.name, scenario.id)"
+                  title="Edit Scenario" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: file-edit"></a></li>
+                <li><a @click="removeScenario(scenario.id)"
+                  title="Remove Senario and Cases" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: trash"></a></li>
             </ul>
           </div>
       </div>
@@ -69,10 +73,14 @@
               </div>
               <div class="uk-width-1-5">
                 <ul class="uk-iconnav">
-                    <li v-show="tstcase.state_code === 'active'"> <a @click="disableCase(tstcase.id)" uk-icon="icon: lock"></a></li>
-                    <li v-show="tstcase.state_code === 'disable'"> <a @click="enableCase(tstcase.id)" uk-icon="icon: unlock"></a></li>
-                    <li><a @click="editCase(tstcase.name, scenarioFull.scenario_id, tstcase.id )"uk-icon="icon: file-edit"></a></li>
-                    <li><a @click="removeCase(tstcase.id)" uk-icon="icon: trash"></a></li>
+                    <li v-show="tstcase.state_code === 'active'"> <a @click="disableCase(tstcase.id)"
+                      title="Disable Case" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: lock"></a></li>
+                    <li v-show="tstcase.state_code === 'disable'"> <a @click="enableCase(tstcase.id)"
+                      title="Enable Case" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: unlock"></a></li>
+                    <li><a @click="editCase(tstcase.name, scenarioFull.scenario_id, tstcase.id )"
+                      title="Edit Case" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: file-edit"></a></li>
+                    <li><a @click="removeCase(tstcase.id)"
+                      title="Remove Case" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: trash"></a></li>
                 </ul>
               </div>
             </div>
