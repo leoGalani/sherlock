@@ -4,9 +4,6 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update
 RUN apt-get install -y build-essential git python3 python3-pip curl
 
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash
-RUN apt-get install -y nodejs
-
 RUN pip3 install --upgrade pip
 
 RUN apt-get install -y libffi-dev
@@ -16,22 +13,20 @@ RUN apt-get install -y libyaml-dev
 RUN apt-get install -y nginx gunicorn supervisor
 RUN apt-get install -y bcrypt
 
-RUN npm install -g chartist
-
 ADD requirements.txt /sherlock/
 RUN pip3 install -r /sherlock/requirements.txt
 
-ADD frontsherlock/package.json /sherlock/frontsherlock/
-
-WORKDIR /sherlock/frontsherlock/
-RUN npm install
 COPY . /sherlock
 
 WORKDIR /sherlock/frontsherlock/
-RUN npm run build
 
-RUN rm -rf /sherlock/frontsherlock/node_modules
-RUN apt-get remove -y nodejs
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash && \
+    apt-get install -y nodejs && \
+    npm install && \
+    npm run build && \
+    rm -rf /sherlock/frontsherlock/node_modules && \
+    apt-get remove -y nodejs && \
+    apt-get autoremove -y
 
 WORKDIR /sherlock/
 
