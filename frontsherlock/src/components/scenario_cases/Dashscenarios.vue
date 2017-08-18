@@ -292,9 +292,11 @@ export default {
 </script>
 
 <style scoped>
-.uk-textarea uk-width-1-1{
+
+[class*=uk-width]{
     width: 96%;
 }
+
 .dashboard{
   padding: 15px;
 }
@@ -320,7 +322,7 @@ ul li {
   padding-top: 10px;
 }
 
-.uk-inline{
+.uk-inline {
   width: 100%
 }
 
