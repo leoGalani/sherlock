@@ -2,30 +2,31 @@ FROM ubuntu:latest
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update
-RUN apt-get install -y build-essential git python3 python3-pip curl
+RUN apt-get install -y  git python3 python3-pip
 
 RUN pip3 install --upgrade pip
 
-RUN apt-get install -y libffi-dev
-RUN apt-get install -y libssl-dev g++ gcc
 RUN apt-get install -y libmysqlclient-dev
 RUN apt-get install -y libyaml-dev
 RUN apt-get install -y nginx gunicorn supervisor
-RUN apt-get install -y bcrypt
 
 ADD requirements.txt /sherlock/
-RUN pip3 install -r /sherlock/requirements.txt
+
+RUN apt-get install -y libffi-dev bcrypt build-essential && \
+    pip3 install -r /sherlock/requirements.txt && \
+    apt-get remove -y libffi-dev bcrypt build-essential
 
 COPY . /sherlock
 
 WORKDIR /sherlock/frontsherlock/
 
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash && \
+RUN apt-get install -y curl && \
+    curl -sL https://deb.nodesource.com/setup_8.x | bash && \
     apt-get install -y nodejs && \
     npm install && \
     npm run build && \
     rm -rf /sherlock/frontsherlock/node_modules && \
-    apt-get remove -y nodejs && \
+    apt-get remove -y nodejs curl && \
     apt-get autoremove -y
 
 WORKDIR /sherlock/
