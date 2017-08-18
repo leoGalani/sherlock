@@ -13,7 +13,6 @@
               </div>
             </div>
           </router-link>
-
           <div v-if="project.have_cycles === false && project.have_scenarios === false">
             <div class="uk-card uk-card-small uk-card-default uk-card-body">
               <h4 class="uk-card-title">This project have no cycles!</h4>
@@ -23,7 +22,7 @@
             <div v-if="project.have_cycles === false && project.have_scenarios" @click="createCycle()" style="cursor:pointer;">
               <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body">
                 <h4 class="uk-card-title">This project have no cycles!</h4>
-                <p>Click here to create cenarios and test cases for this project.</p>
+                <p>Click here to create the first cycle of this project.</p>
               </div>
             </div>
           </div>
