@@ -230,7 +230,7 @@ export default {
       }
     },
     mountChartResume () {
-      if (this.project.have_cycles) {
+      if (this.project.have_cycles && this.current_cycle.cycle >= 2) {
         this.$http.get('projects/' + this.projectId + '/cycle/timeline').then(function (response) {
           Chartist.Line('.ct-chart-line-legendnames', {
             labels: response.body.cycles_number,

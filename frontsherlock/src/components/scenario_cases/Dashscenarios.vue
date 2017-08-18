@@ -13,10 +13,13 @@
 <ul class="uk-switcher uk-margin" id='cenarios_cases'>
     <li>
       <div class="uk-form-controls">
-          <textarea class="uk-textarea uk-width-1-1"
-          placeholder="Enter a new scenario description" type="textarea"
-          v-model="newScenario" @keyup.shift.enter="addNewScenario">
-        </textarea>
+        <div class="uk-inline">
+            <a href="#" class="uk-form-icon uk-form-icon-flip" @click="addNewScenario" uk-icon="icon: arrow-right"></a>
+            <textarea class="uk-textarea uk-width-1-1"
+            placeholder="Enter a new scenario description" type="textarea"
+            v-model="newScenario" @keyup.shift.enter="addNewScenario">
+          </textarea>
+        </div>
         <center style="padding-top: 17px;"> <hr class="divider_new_scenario"> </center>
       </div>
 
@@ -56,10 +59,13 @@
 
           </h4>
           <div class="uk-form-controls">
+            <div class="uk-inline">
+              <a href="#" class="uk-form-icon uk-form-icon-flip" @click="addNewCase" uk-icon="icon: arrow-right"></a>
               <textarea class="uk-textarea uk-width-1-1"
               placeholder="Enter a new test case" type="textarea"
               v-model="newCase" @keyup.shift.enter="addNewCase">
             </textarea>
+            </div>
             <center style="padding-top: 30px;"> <hr class="divider_new_scenario"> </center>
           </div>
 
@@ -286,7 +292,9 @@ export default {
 </script>
 
 <style scoped>
-
+.uk-textarea uk-width-1-1{
+    width: 96%;
+}
 .dashboard{
   padding: 15px;
 }
@@ -310,6 +318,10 @@ ol, ul {
 ul li {
   padding-bottom: 10px;
   padding-top: 10px;
+}
+
+.uk-inline{
+  width: 100%
 }
 
 .uk-tab>*>a {
