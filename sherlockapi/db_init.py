@@ -1,4 +1,4 @@
-def check_first_run(db):
+def check_first_run(db):    
     db.create_all()
     from sherlockapi.data.model import User, SherlockSettings
 

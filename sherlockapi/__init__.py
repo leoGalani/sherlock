@@ -6,7 +6,6 @@ from flask_httpauth import HTTPBasicAuth
 from flask_sqlalchemy import SQLAlchemy
 
 from dbconfig import prod_db
-from sherlockapi.db_init import check_first_run
 from sherlockapi.blueprints import register_bprints
 
 
@@ -29,7 +28,9 @@ auth = HTTPBasicAuth()
 secretkey = app.config['SECRET_KEY']
 token_timeout = app.config['TOKEN_TIMEOUT']
 
-check_first_run(db)
+# Will load the Models and create the tables
+from sherlockapi.data import model
+
 register_bprints(app)
 
 
