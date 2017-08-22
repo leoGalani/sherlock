@@ -1,32 +1,36 @@
-"""Flask Main Project File."""
+"""Flask and plugin init"""
+import os
+
 from flask import Flask, jsonify, make_response, g
 from flask_httpauth import HTTPBasicAuth
 from flask_sqlalchemy import SQLAlchemy
 
+from dbconfig import prod_db
+from sherlockapi.db_init import check_first_run
+from sherlockapi.blueprints import register_bprints
+
 
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_object('config')
-secretkey = app.config['SECRET_KEY']
-token_timeout = app.config['TOKEN_TIMEOUT']
+
+if 'SHERLOCK_ENV' in os.environ:
+    if os.environ['SHERLOCK_ENV'] == 'PROD':
+        dburl = prod_db()
+else:
+    from flask_cors import CORS
+    CORS(app, resources={r'/*': {"origins": '*', 'allow_headers': '*'}})
+    dburl = 'root:@localhost/sherlockdb'
+
+SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{}'.format(dburl)
+app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+
 db = SQLAlchemy(app)
 auth = HTTPBasicAuth()
+secretkey = app.config['SECRET_KEY']
+token_timeout = app.config['TOKEN_TIMEOUT']
 
-from sherlockapi.data import model
-
-from sherlockapi.views.users import user
-from sherlockapi.views.projects import project
-from sherlockapi.views.scenarios import scenario
-from sherlockapi.views.dashboard import dashboard
-from sherlockapi.views.testcases import test_case
-from sherlockapi.views.cycles import cycle
-
-app.register_blueprint(dashboard, url_prefix='/api/dashboard')
-app.register_blueprint(user, url_prefix='/api/user')
-app.register_blueprint(project, url_prefix='/api/project')
-app.register_blueprint(cycle, url_prefix='/api/projects/<int:project_id>/cycle')
-app.register_blueprint(scenario, url_prefix='/api/scenario')
-app.register_blueprint(test_case,
-                       url_prefix='/api/scenarios/<int:scenario_id>/tst_case')
+check_first_run(db)
+register_bprints(app)
 
 
 @app.errorhandler(404)
@@ -56,5 +60,5 @@ def verify_password(username_or_token, password):
 @app.route('/api/auth_token', methods=['POST'])
 @auth.login_required
 def get_auth_token():
-    token = g.user.generate_auth_token(6000)
-    return jsonify({'token': token.decode('ascii'), 'duration': 6000})
+    token = g.user.generate_auth_token(604800)
+    return jsonify({'token': token.decode('ascii'), 'duration': 604800})
