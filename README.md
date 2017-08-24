@@ -46,3 +46,9 @@ More info on how to use or how to extend it, visit http://sherlockqa.readthedocs
 To talk about it and share you views with the Comunity, visit http://agiletesters.com.br
 
 And remember, a __pr__ is always welcome ;)
+
+### License
+
+![http://creativecommons.org/licenses/by-sa/4.0/](https://i.creativecommons.org/l/by-sa/4.0/88x31.png "Creative Commons Attribution-ShareAlike 4.0 International")
+
+You can use, distribute and make changes to Sherlock, but you can't sell it or use the logo and the fox drawings for another projects.
