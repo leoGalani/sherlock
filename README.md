@@ -36,7 +36,7 @@ Don't delete the folder called 'database' inside the Sherlock folder, since it's
 
 ###  Demo
 
-You can check out a deployed demo here: http://104.236.221.15/
+You can check out a deployed demo here: http://demo.sherlockqa.com/
 Use the demo default credential:
 
 - _user:_ admin@admin.xpto
