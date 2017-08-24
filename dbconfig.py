@@ -9,3 +9,7 @@ def prod_db():
     base = docker_config['services']['mysql']['environment']['MYSQL_DATABASE']
 
     return 'root:{}@{}/{}'.format(base_pass,mysql_container, base)
+
+
+def dev_db():
+ return 'root:@localhost/sherlockdb'

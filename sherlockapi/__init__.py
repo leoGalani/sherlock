@@ -5,7 +5,7 @@ from flask import Flask, jsonify, make_response, g
 from flask_httpauth import HTTPBasicAuth
 from flask_sqlalchemy import SQLAlchemy
 
-from dbconfig import prod_db
+from dbconfig import prod_db, dev_db
 from sherlockapi.blueprints import register_bprints
 
 
@@ -18,6 +18,7 @@ if 'SHERLOCK_ENV' in os.environ:
 else:
     from flask_cors import CORS
     CORS(app, resources={r'/*': {"origins": '*', 'allow_headers': '*'}})
+    db_url = dev_db()
     dburl = 'root:@localhost/sherlockdb'
 
 SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{}'.format(dburl)
