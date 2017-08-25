@@ -69,32 +69,41 @@
           </h4>
           <div class="content scenario">
             <div v-for="tstcase in tstcases" :key="tstcase.case_id" class="uk-grid">
-              <div class="uk-width-4-5">
+              <div style="width: 78% !important;" class="uk-width-4-5">
                 <span> {{ tstcase.case_name }} </span>
               </span>
               <hr>
               </div>
-              <div class="uk-width-1-5">
+              <div class="uk-width-1-5" style="width: 22% !important;">
                 <ul class="uk-iconnav">
-                    <li> <a title="Pass" uk-tooltip="delay: 300; pos: bottom"
+                  <li style="margin-right: 10px"> <a title="Edit Case" uk-tooltip="delay: 300; pos: bottom"
+                    @click="editCase(tstcase.case_name, scenarioFull.scenario_id, tstcase.case_id)">
+                    <span uk-icon="icon: file-edit"></span>
+                    </a></li>
+                    <li style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid; border-radius: 0px 0px 0px 10px;">
+                      <a title="Pass" uk-tooltip="delay: 300; pos: bottom"
                       @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'passed')">
                       <span v-show="tstcase.case_cycle_state === 'passed'" uk-icon="icon: check" class='passed'></span>
                       <span v-show="tstcase.case_cycle_state !== 'passed'" uk-icon="icon: check"></span>
                       </a></li>
-                    <li> <a title="Fail" uk-tooltip="delay: 300; pos: bottom"
+                    <li style="border-top: 1px solid; border-bottom: 1px solid;">
+                      <a title="Fail" uk-tooltip="delay: 300; pos: bottom"
                       @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'error')">
                       <span v-show="tstcase.case_cycle_state === 'error'" uk-icon="icon: ban" class='failed'></span>
                       <span v-show="tstcase.case_cycle_state !== 'error'" uk-icon="icon: ban"></span>
                     </a></li>
-                    <li> <a title="Block" uk-tooltip="delay: 300; pos: bottom"
+                    <li style="border-top: 1px solid; border-bottom: 1px solid;">
+                      <a title="Block" uk-tooltip="delay: 300; pos: bottom"
                       @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'blocked')">
                       <span v-show="tstcase.case_cycle_state === 'blocked'" uk-icon="icon: lock" class='blocked'></span>
                       <span v-show="tstcase.case_cycle_state !== 'blocked'" uk-icon="icon: lock"></span>
                     </a></li>
-                    <li> <a title="Reset Status" uk-tooltip="delay: 300; pos: bottom"
+                    <li style="border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid; padding-right: 10px; border-radius: 0px 10px 10px 0px;">
+                      <a title="Reset Status" uk-tooltip="delay: 300; pos: bottom"
                       @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'not_executed')">
                       <span uk-icon="icon: reply"></span>
-                    </a></li>
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -173,6 +182,24 @@ export default {
           UIkit.notification('<span uk-icon="icon: check"></span> Scenario Edited', {timeout: '700'})
           this.fetchCycleScenarios()
         })
+      })
+    },
+    editCase (caseName, scenarioId, caseId) {
+      var vueInstance = this
+      UIkit.modal.prompt('Edit Test Case:', caseName).then(function (caseName) {
+        if (caseName === '') {
+          UIkit.notification('<span uk-icon="icon: ban"></span>Test Case can`t be blank', {timeout: '700'})
+          return
+        } else if (caseName === null) {
+          return
+        }
+        vueInstance.$http.post('scenarios/' + scenarioId + '/tst_case/edit', {'case_id': caseId, 'case_name': caseName})
+        .then(function (response) {
+          UIkit.notification('<span uk-icon="icon: check"></span> Test Case Edited', {timeout: '700'})
+          this.fetchCycleCases(this.scenarioFull.scenario_id)
+        })
+      }, function () {
+        return
       })
     },
     cleanCases () {
