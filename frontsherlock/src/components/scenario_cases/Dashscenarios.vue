@@ -15,7 +15,7 @@
       <div class="uk-form-controls">
         <div class="uk-inline">
             <a href="#" class="uk-form-icon uk-form-icon-flip" @click="addNewScenario" uk-icon="icon: arrow-right"></a>
-            <textarea class="uk-textarea uk-width-1-1"
+            <textarea class="uk-textarea uk-width-1-1 input_text"
             placeholder="Enter a new scenario description" type="textarea"
             v-model="newScenario" @keyup.shift.enter="addNewScenario">
           </textarea>
@@ -241,6 +241,16 @@ export default {
       }, function () {
       })
     },
+    removeCase (caseId) {
+      var vueInstance = this
+      UIkit.modal.confirm('Do you want to remove this Test Case? This process is not reversable.').then(function () {
+        vueInstance.$http.post('scenarios/' + vueInstance.scenarioFull.scenario_id + '/tst_case/change_status', {'case_id': caseId, 'action': 'REMOVE'}).then(function (response) {
+          UIkit.notification('<span uk-icon="icon: ban"></span> Test Case Removed', {timeout: '700'})
+          this.fecthCases(vueInstance.scenarioFull.scenario_id)
+        })
+      }, function () {
+      })
+    },
     enableCase (caseId) {
       var vueInstance = this
       UIkit.modal.confirm('Please confirm the Test Case activation.').then(function () {
@@ -293,8 +303,8 @@ export default {
 
 <style scoped>
 
-[class*=uk-width]{
-    width: 96%;
+.input_text {
+    width: 96% !important;
 }
 
 .dashboard{

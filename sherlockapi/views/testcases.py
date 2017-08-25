@@ -67,6 +67,7 @@ def tstcase_changestatus(scenario_id):
         if last_cycle:
             db.session.delete(cycle_case)
         db.session.commit()
+        return make_response(jsonify(message='DONE'))
 
     elif action == 'DISABLE':
         state = StateType.disable
