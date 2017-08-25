@@ -91,10 +91,12 @@ export default {
     }
   },
   created: function () {
-    this.checkOpenRegister()
     this.interval = setInterval(function () {
       this.checkOpenRegister()
-    }.bind(this), 4000)
+    }.bind(this), 7000)
+  },
+  mounted: function () {
+    this.checkOpenRegister()
   },
   beforeDestroy: function () {
     clearInterval(this.interval)

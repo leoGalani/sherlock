@@ -69,7 +69,7 @@ export default {
       projectId: '',
       currentUser: '',
       project: '',
-      project_name : ''
+      project_name: ''
     }
   },
   methods: {
@@ -102,8 +102,8 @@ export default {
         this.getUserInfo()
         if (['dashboard', 'new_project', 'settings', 'user_edit'].indexOf(this.$route.name) === -1) {
           this.getProjectInfo()
-        } else{
-        this.project_name = ''
+        } else {
+          this.project_name = ''
         }
       }
     }
