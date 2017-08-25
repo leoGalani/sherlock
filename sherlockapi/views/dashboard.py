@@ -28,6 +28,8 @@ def home():
             item['current_cycle'] = project_last_cycle.cycle
             item['cycle_state'] = project_last_cycle.state_code.value
             item['stats'] =  count_cycle_stats(cycle_cases_h)
+        else:
+            item['cycle_state'] = "nocycle"
 
     return make_response(jsonify(projects=projects))
 

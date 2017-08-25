@@ -21,7 +21,7 @@
                 <i class="material-icons" style="color: rgb(248, 248, 248); margin-top:5px">build</i>
               </span>
               <span style="padding: 6px; color: rgb(248, 248, 248);">
-                {{project.name}} Settings
+                {{project_name}} Settings
               </span>
             </span>
           </a>
@@ -68,7 +68,8 @@ export default {
     return {
       projectId: '',
       currentUser: '',
-      project: ''
+      project: '',
+      project_name: ''
     }
   },
   methods: {
@@ -84,6 +85,7 @@ export default {
     getProjectInfo () {
       this.$http.get('project/show/' + this.$route.params.projectId).then(function (response) {
         this.project = response.body
+        this.project_name = this.project.name
       },
       function (response) {
       })
@@ -100,6 +102,8 @@ export default {
         this.getUserInfo()
         if (['dashboard', 'new_project', 'settings', 'user_edit'].indexOf(this.$route.name) === -1) {
           this.getProjectInfo()
+        } else {
+          this.project_name = ''
         }
       }
     }
