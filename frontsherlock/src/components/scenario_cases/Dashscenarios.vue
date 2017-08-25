@@ -14,7 +14,7 @@
     <li>
       <div class="uk-form-controls">
         <div class="uk-inline">
-            <a href="#" class="uk-form-icon uk-form-icon-flip" @click="addNewScenario" uk-icon="icon: arrow-right"></a>
+            <a class="uk-form-icon uk-form-icon-flip" @click="addNewScenario" uk-icon="icon: arrow-right"></a>
             <textarea class="uk-textarea uk-width-1-1 input_text"
             placeholder="Enter a new scenario description" type="textarea"
             v-model="newScenario" @keyup.shift.enter="addNewScenario">
@@ -60,8 +60,8 @@
           </h4>
           <div class="uk-form-controls">
             <div class="uk-inline">
-              <a href="#" class="uk-form-icon uk-form-icon-flip" @click="addNewCase" uk-icon="icon: arrow-right"></a>
-              <textarea class="uk-textarea uk-width-1-1"
+              <a class="uk-form-icon uk-form-icon-flip" @click="addNewCase" uk-icon="icon: arrow-right"></a>
+              <textarea class="uk-textarea uk-width-1-1 input_text"
               placeholder="Enter a new test case" type="textarea"
               v-model="newCase" @keyup.shift.enter="addNewCase">
             </textarea>

@@ -108,7 +108,7 @@
         <br>
         <hr>
         <h3> info </h3>
-        - If you disabled a case test, it will not appear here.
+        - If you disabled a test case or a scenario, it will not appear here.
       </div>
     </div>
   </div>

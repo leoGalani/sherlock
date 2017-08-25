@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, abort, make_response
 
 from sherlockapi import db, auth
-from sherlockapi.data.model import Case, TestCaseSchema, StateType
+from sherlockapi.data.model import Case, TestCaseSchema, StateType, CycleCases
 from sherlockapi.helpers.string_operations import check_none_and_blank
 
 from sherlockapi.helpers.util import get_scenario, get_tstcase, get_last_cycle
@@ -60,30 +60,31 @@ def tstcase_changestatus(scenario_id):
 
     if last_cycle:
         cycle_case = CycleCases.query.filter_by(
-            last_cycle.id).filter_by(case_id=case_id).first()
+            cycle_id=last_cycle.id).filter_by(case_id=case_id).first()
 
     if action == 'REMOVE':
-        db.session.delete(tst_case)
-        if last_cycle:
+        if last_cycle and last_cycle.state_code == StateType.active:
             db.session.delete(cycle_case)
+            db.session.commit()
+        db.session.delete(tst_case)
         db.session.commit()
         return make_response(jsonify(message='DONE'))
 
     elif action == 'DISABLE':
         state = StateType.disable
-        if last_cycle:
+        if last_cycle and last_cycle.state_code == StateType.active:
             cycle_state = StateType.blocked
     elif action == 'ENABLE':
         state = StateType.active
         if scenario.state_code == StateType.disable:
             return make_response(jsonify(message='SCENARIO_DISABLED'))
-        if last_cycle:
+        if last_cycle and last_cycle.state_code == StateType.active:
             cycle_state = StateType.not_executed
     else:
         return make_response(jsonify(message='ACTION_UNKNOW'))
 
     if last_cycle:
-        cycle_case.cycle_state
+        cycle_case.state_code = cycle_state
         db.session.add(cycle_case)
         db.session.commit()
 

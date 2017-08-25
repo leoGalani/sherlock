@@ -15,7 +15,16 @@
           <router-link :to="{ name: 'new_project' }" title="New Project" uk-tooltip="delay: 300" > <i class="material-icons" style="color: rgb(117, 117, 117);">note_add</i> </router-link>
         </li>
         <li v-else>
-          <a><i class="material-icons" style="color: rgb(117, 117, 117);">build</i></a>
+          <a>
+            <span class="project_settings">
+              <span>
+                <i class="material-icons" style="color: rgb(248, 248, 248); margin-top:5px">build</i>
+              </span>
+              <span style="padding: 6px; color: rgb(248, 248, 248);">
+                {{project.name}} Settings
+              </span>
+            </span>
+          </a>
           <div uk-dropdown="delay-hide: 50;">
             <ul class="uk-nav uk-dropdown-nav">
                 <router-link :to="{ path: '/project/view/'+projectId+'/scenario_cases' }">Manage Cases and Scenarios </router-link>
@@ -58,7 +67,8 @@ export default {
   data () {
     return {
       projectId: '',
-      currentUser: ''
+      currentUser: '',
+      project: ''
     }
   },
   methods: {
@@ -70,6 +80,13 @@ export default {
     },
     getUserInfo () {
       this.currentUser = JSON.parse(window.localStorage.getItem('user'))
+    },
+    getProjectInfo () {
+      this.$http.get('project/show/' + this.$route.params.projectId).then(function (response) {
+        this.project = response.body
+      },
+      function (response) {
+      })
     }
   },
   updated: function () {
@@ -81,6 +98,9 @@ export default {
     $route: function () {
       if (['login', 'register'].indexOf(this.$route.name) === -1) {
         this.getUserInfo()
+        if (['dashboard', 'new_project', 'settings', 'user_edit'].indexOf(this.$route.name) === -1) {
+          this.getProjectInfo()
+        }
       }
     }
   }
@@ -94,6 +114,17 @@ export default {
     width: 1px;
     height: 30px;
     margin-top: 21px;
+}
+
+.project_settings{
+  border-radius: 7px;
+  height: 33px;
+  background-color: #666666;
+  display: inline-flex;
+  padding: 3px;
+  text-transform: none;
+  font-weight: 300;
+
 }
 
 </style>
