@@ -133,6 +133,15 @@ def _create_scenario(request):
     new_scenario = Scenario(name=scenario_name, project_id=project_id)
     db.session.add(new_scenario)
     db.session.commit()
+
+    project_lasty_cycle = get_last_cycle(project_id)
+
+    if project_lasty_cycle:
+        scenario_cycle = CycleScenarios(cycle_id=project_lasty_cycle.id,
+                                        scenario_id=new_scenario.id)
+        db.session.add(scenario_cycle)
+        db.session.commit()
+
     return new_scenario
 
 
@@ -160,7 +169,13 @@ def scenario_case_process(cycle, scenario, state, action, cycle_state):
         cycle_scenario = CycleScenarios.query.filter_by(
             id=cycle.id).filter_by(scenario_id=scenario.id).first()
 
-        cycle_cases = CycleCases.filter_by(id=cycle.id).filter_by(
+        if not cycle_scenario:
+            scenario_cycle = CycleScenarios(cycle_id=cycle.id,
+                                            scenario_id=scenario.id)
+            db.session.add(scenario_cycle)
+            db.session.commit()
+
+        cycle_cases = CycleCases.query.filter_by(id=cycle.id).filter_by(
             scenario_id=scenario.id).all()
 
         # Scenario in the current cycle

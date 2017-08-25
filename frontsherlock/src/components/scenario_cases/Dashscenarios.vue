@@ -59,7 +59,7 @@
 
           </h4>
           <div class="uk-form-controls">
-            <div class="uk-inline">
+            <div v-if="scenarioFull.scenario_state === 'active'" class="uk-inline">
               <a class="uk-form-icon uk-form-icon-flip" @click="addNewCase" uk-icon="icon: arrow-right"></a>
               <textarea class="uk-textarea uk-width-1-1 input_text"
               placeholder="Enter a new test case" type="textarea"

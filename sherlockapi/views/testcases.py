@@ -34,6 +34,18 @@ def new(scenario_id):
     case = Case(name=case_name, scenario_id=scenario.id)
     db.session.add(case)
     db.session.commit()
+
+    project_lasty_cycle = get_last_cycle(scenario.project_id)
+
+    if project_lasty_cycle:
+        cyclecase = CycleCases(cycle_id=project_lasty_cycle.id,
+                               case_id=case.id,
+                               scenario_id=case.scenario_id)
+        db.session.add(cyclecase)
+        db.session.commit()
+        
+
+
     return make_response(jsonify(message='CASE_CREATED'))
 
 
@@ -83,7 +95,7 @@ def tstcase_changestatus(scenario_id):
     else:
         return make_response(jsonify(message='ACTION_UNKNOW'))
 
-    if last_cycle:
+    if last_cycle and last_cycle.state_code == StateType.active:
         cycle_case.state_code = cycle_state
         db.session.add(cycle_case)
         db.session.commit()
@@ -97,7 +109,7 @@ def tstcase_changestatus(scenario_id):
 @test_case.route('/edit', methods=['POST'])
 @auth.login_required
 def edit(scenario_id):
-    """POST endpoint for new scenarios.
+    """POST endpoint for edit scenarios.
 
     Param:
         {
