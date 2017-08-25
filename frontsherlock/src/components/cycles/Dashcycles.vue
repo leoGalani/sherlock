@@ -14,15 +14,17 @@
     <li>
       <div class="content scenario">
       <div v-for="scenario in scenarios" :key="scenario.scenario_id" v-if="scenario.cases_stats.total > 0"class="uk-grid ">
-          <div @click="fetchCycleCases(scenario.scenario_id)" class="uk-width-4-5" style="cursor: pointer; width: 77% !important;">
+          <div @click="fetchCycleCases(scenario.scenario_id)" class="uk-width-4-5" style="cursor: pointer; width: 73% !important;">
             <span>{{ scenario.scenario_name }} <br>
           </span>
             <hr>
           </div>
-          <div class="uk-width-1-5" style="width: 23% !important;">
+          <div class="uk-width-1-5" style="width: 27% !important;">
             <ul class="uk-iconnav">
                 <li style="padding-left: 8px !important;">
                   <a @click="fetchCycleCases(scenario.scenario_id)" uk-icon="icon: chevron-right;" title="Access Test Cases" uk-tooltip="delay: 300; pos: bottom"></a></li>
+                  <li style="padding-left: 8px !important;">
+                    <a @click="editScenario(scenario.scenario_name, scenario.scenario_id)" uk-icon="icon: file-edit;" title="Edit Scenario" uk-tooltip="delay: 300; pos: bottom"></a></li>
                 <li style="padding-left: 8px !important;">
                   <span class="uk-badge passed">
                     <a style="color: white !important; cursor: default !important;" title="Cases Passed" uk-tooltip="delay: 300; pos: bottom ">
@@ -155,6 +157,22 @@ export default {
         this.scenarioFull = response.body
         this.tstcases = this.scenarioFull.cases.reverse()
         UIkit.tab('#cenarios_cases', {'animation': 'uk-animation-middle-left'}).show(1)
+      })
+    },
+    editScenario (scenarioName, scenarioId) {
+      var vueInstance = this
+      UIkit.modal.prompt('Edit Scenario:', scenarioName).then(function (newScenarioName) {
+        if (newScenarioName === '') {
+          UIkit.notification('<span uk-icon="icon: ban"></span> Scenario can`t be blank', {timeout: '700'})
+          return
+        } else if (newScenarioName === null) {
+          return
+        }
+        vueInstance.$http.post('scenario/edit', {'scenario_id': scenarioId, 'scenario_name': newScenarioName})
+        .then(function (response) {
+          UIkit.notification('<span uk-icon="icon: check"></span> Scenario Edited', {timeout: '700'})
+          this.fetchCycleScenarios()
+        })
       })
     },
     cleanCases () {

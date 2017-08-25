@@ -171,13 +171,13 @@ export default {
     editScenario (scenarioName, scenarioId) {
       var vueInstance = this
       UIkit.modal.prompt('Edit Scenario:', scenarioName).then(function (newScenarioName) {
-        if (scenarioName === '') {
+        if (newScenarioName === '') {
           UIkit.notification('<span uk-icon="icon: ban"></span> Scenario can`t be blank', {timeout: '700'})
           return
         } else if (newScenarioName === null) {
           return
         }
-        vueInstance.$http.post('scenario/edit', {'scenario_id': scenarioId, 'scenario_name': scenarioName})
+        vueInstance.$http.post('scenario/edit', {'scenario_id': scenarioId, 'scenario_name': newScenarioName})
         .then(function (response) {
           UIkit.notification('<span uk-icon="icon: check"></span> Scenario Edited', {timeout: '700'})
           this.fetchScenarios()
