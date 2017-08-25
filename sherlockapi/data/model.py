@@ -22,6 +22,7 @@ class StateType(Enum):
     blocked = "blocked"
     ongoing = "ongoing"
     closed = "closed"
+    removed = "removed"
 
 
 class Project(db.Model):

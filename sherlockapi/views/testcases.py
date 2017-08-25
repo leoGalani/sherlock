@@ -43,7 +43,7 @@ def new(scenario_id):
                                scenario_id=case.scenario_id)
         db.session.add(cyclecase)
         db.session.commit()
-        
+
 
 
     return make_response(jsonify(message='CASE_CREATED'))
@@ -65,8 +65,11 @@ def tstcase_changestatus(scenario_id):
 
     case_id = check_none_and_blank(request, 'case_id')
     action = check_none_and_blank(request, 'action')
-    tst_case = get_tstcase(case_id)
     scenario = get_scenario(scenario_id)
+    tst_case = get_tstcase(case_id)
+
+    if scenario.state_code == StateType.disable:
+        return make_response(jsonify(message='SCENARIO_DISABLED'))
 
     last_cycle = get_last_cycle(scenario.project_id)
 
@@ -74,35 +77,33 @@ def tstcase_changestatus(scenario_id):
         cycle_case = CycleCases.query.filter_by(
             cycle_id=last_cycle.id).filter_by(case_id=case_id).first()
 
-    if action == 'REMOVE':
-        if last_cycle and last_cycle.state_code == StateType.active:
-            db.session.delete(cycle_case)
-            db.session.commit()
-        db.session.delete(tst_case)
-        db.session.commit()
-        return make_response(jsonify(message='DONE'))
-
-    elif action == 'DISABLE':
+    if action == 'DISABLE':
         state = StateType.disable
-        if last_cycle and last_cycle.state_code == StateType.active:
-            cycle_state = StateType.blocked
+        cycle_state = StateType.blocked
     elif action == 'ENABLE':
         state = StateType.active
-        if scenario.state_code == StateType.disable:
-            return make_response(jsonify(message='SCENARIO_DISABLED'))
+        cycle_state = StateType.not_executed
+    elif action == 'REMOVE':
         if last_cycle and last_cycle.state_code == StateType.active:
-            cycle_state = StateType.not_executed
+            cycle_state = None
+            if cycle_case:
+                db.session.delete(cycle_case)
+                db.session.commit()
+        state = StateType.removed
     else:
         return make_response(jsonify(message='ACTION_UNKNOW'))
-
-    if last_cycle and last_cycle.state_code == StateType.active:
-        cycle_case.state_code = cycle_state
-        db.session.add(cycle_case)
-        db.session.commit()
 
     tst_case.state_code = state
     db.session.add(tst_case)
     db.session.commit()
+
+    if last_cycle:
+        if last_cycle.state_code == StateType.active:
+            if cycle_case and cycle_state:
+                cycle_case.state_code = cycle_state
+                db.session.add(cycle_case)
+                db.session.commit()
+
     return make_response(jsonify(message='DONE'))
 
 
