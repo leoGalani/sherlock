@@ -30,8 +30,7 @@ def home():
             item['stats'] =  count_cycle_stats(cycle_cases_h)
         else:
             item['cycle_state'] = "nocycle"
-
-    return make_response(jsonify(projects=projects))
+    return make_response(jsonify(projects_qtd=len(projects),projects=projects))
 
 @dashboard.route('/check_global_register_permission', methods=['GET'])
 def check_global_register_permission():

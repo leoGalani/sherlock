@@ -4,12 +4,40 @@
        <center><div uk-spinner></div>
        Loading...</center>
      </div>
-    <h2 v-if="showTitle"> Current Projects </h2>
+     <div class="uk-grid" v-if="showTitle">
+       <div class="uk-width-4-5" style="width:65% !important">
+         <h2 style="margin-left: 18px;"> Current Projects </h2>
+       </div>
+       <div class="uk-width-1-5" style="width:35% !important; text-align: right; padding-right: 14px;">
+         <div class="uk-grid">
+           <div class="uk-width-1-5">
+             <i class="material-icons" style="padding-top: 3px;">filter_list</i>
+           </div>
+           <div class="uk-width-4-5" style="width: 68% !important; text-align: left; padding-left: 15px; margin-left: 0px;">
+             <span>
+             <a class="uk-button  uk-button-default filter_state"
+                v-bind:class="{ filter_state_active: filterActive }"
+                @click="filterActive = !filterActive, filterClick('active')"> active </a>
+             <a class="uk-button uk-button-default filter_state"
+                v-bind:class="{ filter_state_active: filterClose }"
+                @click="filterClose = !filterClose, filterClick('closed')""> closed </a>
+             <a class="uk-button uk-button-default filter_state"
+                v-bind:class="{ filter_state_active: filterNoCycle }"
+                @click="filterNoCycle = !filterNoCycle, filterClick('nocycle')""> no cycle </a>
+           </span>
+           </div>
+          </div>
+       </div>
+     </div>
 
-    <div v-for="project in projects.projects" class="project_box">
+     <div>
+     </div>
+    <transition-group>
+    <div v-for="project in projects.projects" :key="project.id" class="project_box" v-if="filter.length === 0 || filter.indexOf(project.cycle_state) > -1">
       <router-link :to="{ path: 'project/view/'+project.id }" class="box-link">
         <h4 class="hide_overflow">{{project.name}}</h4>
         <hr>
+
         <span v-if="project.have_cycle === true">
           <span> Current Cycle:  {{project.current_cycle}} </span> <br>
           <span> Cycle State: {{project.cycle_state}} </span> <br>
@@ -24,7 +52,12 @@
         </span>
       </router-link>
     </div>
-
+  </transition-group>
+  <div v-if="showNoProject">
+    <center>
+      <h3 style="padding-top: 100px; padding-bottom:100px;"> No Projects matching yor filters. </h3>
+    </center>
+  </div>
     <div v-if="showGreetings">
       <hr>
       <center><h2 style="margin-left:20px"><span class="uk-margin-small-right" uk-icon="icon: heart"></span> Hey, this seems like a brand new installation!  Thanks for giving sherlock a try! <span class="uk-margin-small-right" uk-icon="icon: heart"></span></h2>
@@ -54,7 +87,12 @@ export default {
       projects: [],
       loading: false,
       showTitle: false,
-      showGreetings: false
+      showGreetings: false,
+      filterActive: false,
+      filterClose: false,
+      filterNoCycle: false,
+      filter: [],
+      showNoProject: false
     }
   },
   methods: {
@@ -70,6 +108,21 @@ export default {
           this.showTitle = false
         }
       })
+    },
+    filterClick: function (item) {
+      if (this.filter.indexOf(item) > -1) {
+        var index = this.filter.indexOf(item)
+        this.filter.splice(index, 1)
+      } else {
+        this.filter.push(item)
+      }
+      for (var i = 0; i < this.projects.projects.length > 0; i++) {
+        if (this.filter.length === 0 || this.filter.indexOf(this.projects.projects[i].cycle_state) > -1) {
+          this.showNoProject = false
+          return
+        }
+      }
+      this.showNoProject = true
     }
   },
   created: function () {
@@ -90,12 +143,36 @@ export default {
 
 <style scoped>
 
-.dashboard div{
-  padding: 10px;
-}
-
 .project_box{
   min-height: 210px;
+}
+
+.filter_state {
+  border: solid 1px #333;
+  border-radius: 7px;
+  padding: 0px 20px;
+  line-height: 28px;
+  text-transform: none;
+}
+.filter_state:hover{
+    font-weight: 500;
+    z-index: -1;
+    transform: scale(1);
+    box-shadow: 3px 4px 7px -4px #000000;
+    -webkit-box-shadow: 3px 4px 7px -4px #000000;
+    -moz-box-shadow: 3px 4px 7px -4px #000000;
+    box-shadow: 3px 4px 7px -4px #444444;
+}
+.filter_state_active{
+    color: #fff !important;
+    background-color: #2f5c86;
+    font-weight: 500;
+    z-index: -1;
+    transform: scale(.9);
+    box-shadow: 3px 4px 7px -4px #000000;
+    -webkit-box-shadow: 3px 4px 7px -4px #000000;
+    -moz-box-shadow: 3px 4px 7px -4px #000000;
+    box-shadow: 3px 4px 7px -4px #444444;
 }
 
 </style>
