@@ -55,7 +55,7 @@
   </transition-group>
   <div v-if="showNoProject">
     <center>
-      <h3 style="padding-top: 100px; padding-bottom:100px;"> No Projects matching yor filters. </h3>
+      <h3 style="padding-top: 100px; padding-bottom:100px;"> No Projects matching for your filters. </h3>
     </center>
   </div>
     <div v-if="showGreetings">
