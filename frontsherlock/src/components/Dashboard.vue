@@ -32,7 +32,7 @@
 
      <div>
      </div>
-    <transition-group>
+    <transition-group name="fade">
     <div v-for="project in projects.projects" :key="project.id" class="project_box" v-if="filter.length === 0 || filter.indexOf(project.cycle_state) > -1">
       <router-link :to="{ path: 'project/view/'+project.id }" class="box-link">
         <h4 class="hide_overflow">{{project.name}}</h4>
@@ -53,11 +53,14 @@
       </router-link>
     </div>
   </transition-group>
+
+  <transition name="fade">
   <div v-if="showNoProject">
     <center>
       <h3 style="padding-top: 100px; padding-bottom:100px;"> No Projects matching for your filters. </h3>
     </center>
   </div>
+</transition>
     <div v-if="showGreetings">
       <hr>
       <center><h2 style="margin-left:20px"><span class="uk-margin-small-right" uk-icon="icon: heart"></span> Hey, this seems like a brand new installation!  Thanks for giving sherlock a try! <span class="uk-margin-small-right" uk-icon="icon: heart"></span></h2>
@@ -173,6 +176,13 @@ export default {
     -webkit-box-shadow: 3px 4px 7px -4px #000000;
     -moz-box-shadow: 3px 4px 7px -4px #000000;
     box-shadow: 3px 4px 7px -4px #444444;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0
 }
 
 </style>
