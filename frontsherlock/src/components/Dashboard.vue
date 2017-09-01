@@ -178,11 +178,4 @@ export default {
     box-shadow: 3px 4px 7px -4px #444444;
 }
 
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s
-}
-.fade-enter, .fade-leave-to {
-  opacity: 0
-}
-
 </style>

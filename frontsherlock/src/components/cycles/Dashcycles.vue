@@ -6,7 +6,7 @@
      </div>
     <div class="uk-width-4-5">
       <ul uk-tab="animation: uk-animation-slide-left-medium, uk-animation-slide-right-medium" id='cenarios_cases'>
-        <li><a href="#">Scenarios</a></li>
+        <li><a @click="cleanCases()">Scenarios</a></li>
         <li><a href="#" v-if="caseslodaded">Cases</a></li>
       </ul>
 
@@ -64,11 +64,18 @@
           Please click on any scenario to load the cases.
         </h3>
         <div v-else>
-          <h4 class="scenario_name_case">
-            Scenario: {{ scenarioFull.scenario_name }} <br>
-          </h4>
+          <div class="uk-grid" style="width: 108%;">
+            <div class="uk-width-1-1" style="margin-right:20px">
+              <h4 class="scenario_name_case">
+                Scenario: {{ scenarioFull.scenario_name }} <br>
+              </h4>
+            </div>
+          </div>
+          <br>
           <div class="content scenario">
-            <div v-for="tstcase in tstcases" :key="tstcase.case_id" class="uk-grid">
+            <transition-group name="fade">
+            <div v-for="tstcase in tstcases" :key="tstcase.case_id" class="uk-grid"
+              v-if="filter.length === 0 || filter.indexOf(tstcase.case_cycle_state) > -1" >
               <div style="width: 78% !important;" class="uk-width-4-5">
                 <span> {{ tstcase.case_name }} </span>
               </span>
@@ -107,6 +114,12 @@
                 </ul>
               </div>
             </div>
+          </transition-group>
+          <transition name="fade">
+          <div v-if="showNoCase">
+            <h3> No Test Cases to be displayed with the selected filters </h3>
+          </div>
+        </transition>
           </div>
       </div>
     </li>
@@ -118,8 +131,46 @@
         <br><br><router-link class="uk-button uk-button-default" style='margin-top:10px;' :to="{ path: '/project/view/'+ this.projectId }">Return to DashBoard</router-link>
         <br>
         <hr>
-        <h3> info </h3>
-        - If you disabled a test case or a scenario, it will not appear here.
+          <div v-if="caseslodaded">
+            <form>
+              <fieldset>
+              <legend> Filter by State </legend>
+              <center>
+                <ul class="uk-iconnav" style="float:none; width: 120px;">
+                <li>
+                  <a @click="filterPassed = !filterPassed, filterCases('passed')"
+                   title="Filter by Passed Cases" uk-tooltip="delay: 300; pos: bottom">
+                   <span v-show="filterPassed === false" uk-icon="icon: check"></span>
+                   <span v-show="filterPassed === true" uk-icon="icon: check" class="caseFilter"></span>
+                  </a></li>
+                <li>
+                    <a @click="filterFailed = !filterFailed, filterCases('error')"
+                    title="Filter by Error Cases" uk-tooltip="delay: 300; pos: bottom">
+                  <span v-show="filterFailed === false" uk-icon="icon: ban"></span>
+                  <span v-show="filterFailed === true" uk-icon="icon: ban" class="caseFilter"></span>
+                </a></li>
+                <li>
+                  <a @click="filterBlocked = !filterBlocked, filterCases('blocked')"
+                  title="Filter by Blocked Cases" uk-tooltip="delay: 300; pos: bottom">
+                  <span v-show="filterBlocked === false" uk-icon="icon: lock"></span>
+                  <span v-show="filterBlocked === true" uk-icon="icon: lock" class="caseFilter"></span>
+                </a></li>
+                <li>
+                  <a @click="filterNotExecuted = !filterNotExecuted, filterCases('not_executed')"
+                  title="Filter by Not Executed Cases" uk-tooltip="delay: 300; pos: bottom">
+                  <span v-show="filterNotExecuted === false" uk-icon="icon: reply"></span>
+                  <span v-show="filterNotExecuted === true" uk-icon="icon: reply" class="caseFilter"></span>
+                </a>
+              </li>
+            </ul>
+          </center>
+          </fieldset>
+
+          <fieldset>
+            <legend> Filter by Tag </legend>
+          </fieldset>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -141,7 +192,13 @@ export default {
       newCase: '',
       loading: false,
       caseslodaded: false,
-      viewcase: false
+      viewcase: false,
+      showNoCase: false,
+      filterPassed: false,
+      filterBlocked: false,
+      filterNotExecuted: false,
+      filterFailed: false,
+      filter: []
     }
   },
   methods: {
@@ -201,6 +258,21 @@ export default {
       }, function () {
         return
       })
+    },
+    filterCases: function (item) {
+      if (this.filter.indexOf(item) > -1) {
+        var index = this.filter.indexOf(item)
+        this.filter.splice(index, 1)
+      } else {
+        this.filter.push(item)
+      }
+      for (var i = 0; i < this.tstcases.length > 0; i++) {
+        if (this.filter.length === 0 || this.filter.indexOf(this.tstcases[i].case_cycle_state) > -1) {
+          this.showNoCase = false
+          return
+        }
+      }
+      this.showNoCase = true
     },
     cleanCases () {
       this.caseslodaded = false
@@ -287,20 +359,27 @@ ul li {
   background: green;
   color: white !important;
   stroke: white !important;
-  border-radius: 16px;
+  border-radius: 5px
 }
 
 .failed {
   background-color: #e80303;
   color: white !important;
   stroke: white !important;
-  border-radius: 16px;
+  border-radius: 5px
 }
 
 .blocked {
   background-color: orange;
   color: whitesmoke !important;
   stroke: whitesmoke !important;
-  border-radius: 16px;
+  border-radius: 5px
+}
+
+.caseFilter{
+  background-color: #111;
+  color: whitesmoke !important;
+  stroke: whitesmoke !important;
+  border-radius: 5px;
 }
 </style>

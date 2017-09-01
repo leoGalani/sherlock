@@ -168,4 +168,9 @@ input[type=number]:focus {
     border-color: #453d3f;
 }
 
-  /* SWITCHER */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
