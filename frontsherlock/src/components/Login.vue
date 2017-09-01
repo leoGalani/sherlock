@@ -91,6 +91,8 @@ export default {
     }
   },
   created: function () {
+    window.localStorage.removeItem('user')
+    window.localStorage.removeItem('auth')
     this.interval = setInterval(function () {
       this.checkOpenRegister()
     }.bind(this), 7000)

@@ -75,15 +75,13 @@ export default {
   methods: {
     logoff () {
       UIkit.notification('See you later!', {timout: '700'})
-      window.localStorage.removeItem('user')
-      window.localStorage.removeItem('auth')
       this.$router.push({path: '/login'})
     },
     getUserInfo () {
       this.currentUser = JSON.parse(window.localStorage.getItem('user'))
     },
     getProjectInfo () {
-      this.$http.get('project/show/' + this.$route.params.projectId).then(function (response) {
+      this.$http.get('project/show/' + this.projectId).then(function (response) {
         this.project = response.body
         this.project_name = this.project.name
       },
@@ -91,16 +89,14 @@ export default {
       })
     }
   },
-  updated: function () {
-    if (['login', 'register', 'dashboard'].indexOf(this.$route.name) === -1) {
-      this.projectId = this.$route.params.projectId
-    }
-  },
   watch: {
     $route: function () {
       if (['login', 'register'].indexOf(this.$route.name) === -1) {
         this.getUserInfo()
-        if (['dashboard', 'new_project', 'settings', 'user_edit'].indexOf(this.$route.name) === -1) {
+        if (['dashboard'].indexOf(this.$route.name) === -1) {
+          this.projectId = this.$route.params.projectId
+        }
+        if (['dashboard', 'new_project', 'settings', 'user_edit', '404'].indexOf(this.$route.name) === -1) {
           this.getProjectInfo()
         } else {
           this.project_name = ''
