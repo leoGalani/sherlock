@@ -20,7 +20,7 @@
                 @click="filterActive = !filterActive, filterClick('active')"> active </a>
              <a class="uk-button uk-button-default filter_state"
                 v-bind:class="{ filter_state_active: filterClose }"
-                @click="filterClose = !filterClose, filterClick('closed')""> closed </a>
+                @click="filterClose = !filterClose, filterClick('closed')"> closed </a>
              <a class="uk-button uk-button-default filter_state"
                 v-bind:class="{ filter_state_active: filterNoCycle }"
                 @click="filterNoCycle = !filterNoCycle, filterClick('nocycle')""> no cycle </a>
