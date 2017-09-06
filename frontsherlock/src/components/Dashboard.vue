@@ -152,7 +152,7 @@ export default {
 
 .filter_state {
   border: solid 1px #333;
-  border-radius: 7px;
+  border-radius: 4px;
   padding: 0px 20px;
   line-height: 28px;
   text-transform: none;

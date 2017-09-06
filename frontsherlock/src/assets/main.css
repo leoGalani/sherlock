@@ -174,3 +174,12 @@ input[type=number]:focus {
 .fade-enter, .fade-leave-to {
   opacity: 0;
 }
+
+.uk-label {
+  background: #546475;
+  border-radius: 4px;
+}
+
+.uk-input, .uk-button-default, .uk-textarea {
+  border-radius: 4px;
+}

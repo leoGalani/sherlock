@@ -258,13 +258,13 @@ export default {
   },
   created: function () {
     this.projectId = this.$route.params.projectId
-    this.fetchProject(this.$route.params.projectId)
   },
   mounted: function () {
+    this.fetchProject(this.projectId)
     this.mountChartCurrentCycle()
     this.mountChartResume()
     this.interval = setInterval(function () {
-      this.fetchProject(this.$route.params.projectId)
+      this.fetchProject(this.projectId)
       this.mountChartCurrentCycle()
       this.mountChartResume()
     }.bind(this), 1000)

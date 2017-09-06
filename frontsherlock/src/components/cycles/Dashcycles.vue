@@ -77,7 +77,8 @@
             <div v-for="tstcase in tstcases" :key="tstcase.case_id" class="uk-grid"
               v-if="filter.length === 0 || filter.indexOf(tstcase.case_cycle_state) > -1" >
               <div style="width: 78% !important;" class="uk-width-4-5">
-                <span> {{ tstcase.case_name }} </span>
+                <span> {{ tstcase.case_name }} </span><br>
+                <span> <a uk-icon="icon: tag" style="margin-right:10px"></a> <span class="uk-label" style="font-size:12px"> #sometag</span></span>
               </span>
               <hr>
               </div>
@@ -348,11 +349,6 @@ ul li {
   border: 1px solid orange;
   text-align: center;
   padding: 10px;
-}
-
-.uk-badge {
-    margin: 0px;
-    padding: 0px 7px;
 }
 
 .passed {

@@ -195,8 +195,8 @@ class CycleCases(db.Model):
         self.scenario_id = scenario_id
         self.state_code = StateType.not_executed
 
-class ScenarioNotes(db.Model):
-    __tablename__ = "notes"
+class NotesScenario(db.Model):
+    __tablename__ = "notes_scenario"
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
@@ -211,8 +211,8 @@ class ScenarioNotes(db.Model):
         self.text = text
 
 
-class CaseNotes(db.Model):
-    __tablename__ = "notes"
+class NotesCase(db.Model):
+    __tablename__ = "notes_case"
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
@@ -220,10 +220,36 @@ class CaseNotes(db.Model):
     case_id = db.Column(db.Integer)
     text = db.Column(db.Text)
 
-    def __init__(self, cycle_id, scenario_id,  text):
+    def __init__(self, cycle_id, case_id, text):
+        """Setting params to the object."""
         self.cycle_id = cycle_id
-        self.scenario_id = scenario_id
+        self.case_id = case_id
         self.text = text
+
+class TagScenario(db.Model):
+    __tablename__ = "tags_scenario"
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer, primary_key=True)
+    scenario_id = db.Column(db.Integer)
+    tag = db.Column(db.String(250))
+
+    def __init__(self, scenario_id, tag):
+        self.scenario_id = scenario_id
+        self.tag = tag
+
+
+class TagCase(db.Model):
+    __tablename__ = "tags_case"
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer, primary_key=True)
+    case_id = db.Column(db.Integer)
+    tag = db.Column(db.String(250))
+
+    def __init__(self, case_id, tag):
+        self.case_id = case_id
+        self.tag = tag
 
 
 class SherlockSettings(db.Model):
@@ -244,6 +270,13 @@ class SherlockSettings(db.Model):
 
 
 #  SCHEMAS #####
+
+
+class TagScenarioSchema(Schema):
+    id = fields.Int(dump_only=True)
+    scenario_id = fields.Int()
+    tag = fields.Str()
+
 
 class SettingsSchema(Schema):
     id = fields.Int(dump_only=True)
