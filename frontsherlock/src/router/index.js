@@ -19,7 +19,7 @@ const router = new Router({
   routes: [
     { path: '*', name: '404', component: Login },
     {path: '/', name: 'login', component: Login},
-    {path: '/register', name: 'registerg', component: RegisterGlobal},
+    {path: '/register', name: 'register', component: RegisterGlobal},
     {path: '/dashboard', name: 'dashboard', component: Dashboard, meta: { requiresAuth: true }},
     {path: '/user/edit', name: 'user_edit', component: UserEdit, meta: { requiresAuth: true }},
     {path: '/settings', name: 'settings', component: Settings, meta: { requiresAuth: true }},
