@@ -32,7 +32,7 @@ Vue.http.interceptors.push(function (request, next) {
     }
 
     if (response.status === 404) {
-      UIkit.notification('The item you looking for no longer exist', {status: 'warning', timeout: '700'})
+      UIkit.notification('The item you are looking for no longer exists', {status: 'warning', timeout: '700'})
       this.$router.push({path: '/dashboard'})
     }
   })
