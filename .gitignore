@@ -16,4 +16,3 @@ pip-selfcheck.json
 selenium
 database
 docs/_build
-migrations/
