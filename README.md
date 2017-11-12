@@ -9,17 +9,19 @@ You should automate most your regressions tests, but sometimes you don't have th
 means, time or you need to mix hardware tasks and ask for nontechnical people to test
 your project.
 
-To run locally you will need to have the last version of docker Comunity Edition and docker-compose.
+To run locally you will need to have the last version of docker Community Edition and docker-compose.
 Please, visit the following pages to know how to install them in your system.
 
 - docker: https://docs.docker.com/engine/installation/
 - docker-compose: https://docs.docker.com/compose/install/
 
+If you are using windows, consider installing 'bash' for windows (https://msdn.microsoft.com/en-us/commandline/wsl/about) in order to make use of the setup _bashscript_.
+
 ### Setup
 
 As easy as this:
 
-    docker-compose up -d
+    sh sherlock.sh fast-setup
 
 
 This will download the compiled version of Sherlock with all the dependencies and you will be ready to use as soon the command finish.
@@ -27,12 +29,24 @@ This will download the compiled version of Sherlock with all the dependencies an
 You can also build the image yourself, but it may take a while (if you build it on a small machine like the entry machine on digitalocean, you might face some troubles because lack of memory):
 
 
-    docker-compose -f docker-compose_build.yml build
-    docker-compose -f docker-compose_build.ymlup -d
+    sh sherlock.sh build-setup
 
 
+Don't delete the folders called 'database' inside the Sherlock folder, since it's used by the docker to persist the mysql data.
 
-Don't delete the folder called 'database' inside the Sherlock folder, since it's used by the docker to persist the mysql data.
+### Update
+
+To keep your Sherlock instance with the latest feature, you can update with one of the following commands:
+
+If you started to use Sherlock with the _build-setup_ or also want to add your local changes:
+
+  sh sherlock.sh build-upgrade
+
+
+If you used the _fast-setup_ option, you can update using:
+
+  sh sherlock.sh fast-upgrade
+
 
 ###  Demo
 
