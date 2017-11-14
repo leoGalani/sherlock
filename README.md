@@ -1,5 +1,7 @@
 ![alt tag](https://raw.githubusercontent.com/leoGalani/sherlock/master/frontsherlock/src/assets/img/sherlock.png)
 
+![alt tag](https://app.codeship.com/projects/0b6c4290-abb2-0135-6ca9-56a3e36c7e99/status?branch=master)
+
 # Sherlock QA
 
 Sherlock QA is an attempt to simplify the life of testers, product owners and
