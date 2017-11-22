@@ -21,7 +21,7 @@
                 <i class="material-icons" style="color: rgb(248, 248, 248); margin-top:5px">build</i>
               </span>
               <span style="padding: 6px; color: rgb(248, 248, 248);">
-                {{project_name}} Settings
+                Project Settings
               </span>
             </span>
           </a>

@@ -61,23 +61,27 @@ h1, h2, h3, h4{
 
 .project_box {
   background: #fff;
-  border-radius: 2px;
+  border-radius: 4px;
   display: inline-block;
   height: 230px;
   margin: 1rem;
   position: relative;
   width: 200px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  border: 1px solid #e6e6e6;
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);
   padding: 8px;
 }
 
 .project_box:hover {
-  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  border: 1px solid #bdbdbd;
 }
 
 
 /* COMMON */
+
+.uk-switcher>* {
+  width: 98%;
+}
 
 .uk-link, a {
   display:block;
