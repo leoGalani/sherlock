@@ -24,6 +24,11 @@
       </div>
 
       <div class="content scenario">
+        <div v-if="!scenarios.length">
+          <center>
+            <img class="logo_menu" src='../../assets/img/sherlock_butterfly.png'>
+              </center>
+        </div>
       <div v-for="scenario in scenarios" :key="scenario.id" class="uk-grid ">
           <div class="uk-width-4-5">
             <span @click="fecthCases(scenario.id)" style="cursor: pointer; width: 100%">{{ scenario.name }} <br>
@@ -47,7 +52,7 @@
           </div>
           <div class="uk-width-1-5">
             <ul class="uk-iconnav">
-                <li> <a @click="fecthCases(scenario.id)" uk-icon="icon: chevron-right;" title="Load Cases" uk-tooltip="delay: 300; pos: bottom"></a></li>
+                <li> <a @click="fecthCases(scenario.id)" uk-icon="icon: chevron-right;" title="Load Scenario Cases" uk-tooltip="delay: 300; pos: bottom"></a></li>
                 <li v-show="scenario.state_code === 'active'"> <a @click="disableScenario(scenario.id)"
                   title="Disable Scenario" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: lock"></a></li>
                 <li v-show="scenario.state_code === 'disable'"> <a @click="enableScenario(scenario.id)"
@@ -55,7 +60,7 @@
                 <li><a @click="editScenario(scenario.name, scenario.id)"
                   title="Edit Scenario" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: file-edit"></a></li>
                 <li><a @click="removeScenario(scenario.id)"
-                  title="Remove Senario and Cases" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: trash"></a></li>
+                  title="Remove Scenario and Cases" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: trash"></a></li>
             </ul>
           </div>
       </div>
@@ -84,6 +89,12 @@
           </div>
 
           <div class="content scenario">
+            <div v-if="!tstcases.length">
+
+              <center>
+                <img class="logo_menu" src='../../assets/img/sherlock_butterfly.png'>
+                  </center>
+            </div>
             <div v-for="tstcase in tstcases" :key="tstcase.id" class="uk-grid">
               <div class="uk-width-4-5">
                 <span> {{ tstcase.name }} </span>
