@@ -119,7 +119,7 @@ def remove_scenario():
             state = StateType.active
             cycle_state = StateType.not_executed
         else:
-            state = StateType.remove
+            state = StateType.removed
             cycle_state = None
 
         scenario_case_process(last_cycle,
