@@ -63,22 +63,14 @@
 </transition>
     <div v-if="showGreetings">
       <hr>
-      <center><h2 style="margin-left:20px"><span class="uk-margin-small-right" uk-icon="icon: heart"></span> Hey, this seems like a brand new installation!  Thanks for giving sherlock a try! <span class="uk-margin-small-right" uk-icon="icon: heart"></span></h2>
+      <center>
         <h3> Hmm seems like you don't have any project yet... </h3>
         <img src='../assets/img/sherlock_raposa_bored.png'>
         <h3>
-            You can start creating your first one here: <router-link :to="{ name: 'new_project' }" title="New Project" uk-tooltip="delay: 300" > <i class="material-icons" style="color: rgb(117, 117, 117);">note_add</i> </router-link>
+            You can start creating your first one here: <router-link :to="{ name: 'new_project' }" title="New Project" uk-tooltip="delay: 300" >Add new Project <i class="material-icons" style="color: rgb(117, 117, 117);">note_add</i> </router-link>
         </h3>
-
-        <h3> Also checkout a demo on how to use Sherlock </h3>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/bAMoUoXXLUU" frameborder="0" allowfullscreen></iframe>
-
-
       </center>
-
-
     </div>
-
   </div>
 </template>
 

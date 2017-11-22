@@ -1,7 +1,5 @@
 ![alt tag](https://raw.githubusercontent.com/leoGalani/sherlock/master/frontsherlock/src/assets/img/sherlock.png)
 
-![alt tag](https://app.codeship.com/projects/0b6c4290-abb2-0135-6ca9-56a3e36c7e99/status?branch=master)
-
 # Sherlock QA
 
 Sherlock QA is an attempt to simplify the life of testers, product owners and
@@ -37,8 +35,6 @@ You can also build the image yourself, but it may take a while (if you build it 
 Don't delete the folders called 'database' inside the Sherlock folder, since it's used by the docker to persist the mysql data.
 
 ### Update
-
-To keep your Sherlock instance with the latest feature, you can update with one of the following commands:
 
 If you started to use Sherlock with the _build-setup_ or also want to add your local changes:
 
