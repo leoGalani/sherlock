@@ -4,7 +4,7 @@ from datetime import date, datetime
 
 from sherlockapi import db, auth
 
-from sherlockapi.data.model import Project, User, ProjectSchema
+from sherlockapi.data.model import Project, User, Case, ProjectSchema
 from sherlockapi.data.model import Scenario, Cycle, CycleCases, StateType
 from sherlockapi.helpers.string_operations import check_none_and_blank
 from sherlockapi.helpers.util import (count_cycle_stats, get_last_cycle,
@@ -22,13 +22,22 @@ def get_project_details(project_id):
     user = User.query.filter_by(id=project['owner_id']).first()
 
     scenarios = Scenario.query.filter_by(project_id=project_id).first()
-
     project['owner_name'] = user.name
     project['owner_email'] = user.email
     if scenarios:
         project['have_scenarios'] = True
+        cases = Case.query.join(
+            Scenario, Case.scenario_id == Scenario.id).filter(
+                Scenario.project_id == project_id).filter(
+                    Case.state_code == StateType.active).all()
+        if len(cases) == 0:
+            project['have_active_cases'] = False
+        else:
+            project['have_active_cases'] = True
+
     else:
         project['have_scenarios'] = False
+        project['have_active_cases'] = False
 
     project_last_cycle = get_last_cycle(project_id)
 
