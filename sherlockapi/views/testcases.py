@@ -11,7 +11,7 @@ from sherlockapi.helpers.util import (get_scenario, get_tstcase,
 test_case = Blueprint('test_cases', __name__)
 
 
-@test_case.route('/register_tag_for_case', methods=['POST'])
+@test_case.route('/register_tag', methods=['POST'])
 @auth.login_required
 def register_tag(scenario_id):
     """POST endpoint for adding a tag to a case.
@@ -28,11 +28,13 @@ def register_tag(scenario_id):
     tag = check_none_and_blank(request, 'tag')
     new_tag = TagCase(case_id=case_id,
                       tag=tag)
+    db.session.add(new_tag)
+    db.session.commit()
 
     return make_response(jsonify(message='TAG_CREATED'))
 
 
-@test_case.route('/remove_tag_for_case', methods=['POST'])
+@test_case.route('/remove_tag', methods=['POST'])
 @auth.login_required
 def remove_tag(scenario_id):
     scenario = get_scenario(scenario_id)

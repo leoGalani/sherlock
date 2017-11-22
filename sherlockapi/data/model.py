@@ -278,6 +278,12 @@ class TagScenarioSchema(Schema):
     tag = fields.Str()
 
 
+class TagCaseSchema(Schema):
+    id = fields.Int(dump_only=True)
+    case_id = fields.Int()
+    tag = fields.Str()
+
+
 class SettingsSchema(Schema):
     id = fields.Int(dump_only=True)
     setting = fields.Str()

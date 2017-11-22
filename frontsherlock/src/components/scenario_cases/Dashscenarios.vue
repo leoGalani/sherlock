@@ -42,7 +42,7 @@
               @keyup.enter="addScenarioTag(scenario.id, $event.target.value); $event.target.value = ''">
             <span v-for="tag in scenario.tags" class="uk-label"> #{{tag.tag}}
             <span uk-icon="icon: close; ratio: 0.6" style="stroke: white !important; margin-left: 5px;"
-            @click="removeTag(tag.id, tag.scenario_id)"></span>
+            @click="removeScenarioTag(tag.id, tag.scenario_id)"></span>
           </span>
             <span v-if="scenario.state_code === 'disable'" class="uk-label">Disabled</span>
           </span>
@@ -98,7 +98,18 @@
             <div v-for="tstcase in tstcases" :key="tstcase.id" class="uk-grid">
               <div class="uk-width-4-5">
                 <span> {{ tstcase.name }} </span>
+              </span><br><br>
+              <span>
+                <a uk-icon="icon: tag" style="margin-right:10px" uk-toggle="target: + input; animation: uk-animation-fade"
+                title="Manage Scenario Tags" uk-tooltip="delay: 300; pos: bottom"></a>
+                  <input v-bind:id="'tag_'+tstcase.id" type="text" class="uk-input" placeholder="Use space to separete tags"
+                  style="width: 268px; height: 25px; font-size: 13px;" hidden @keyup.space="addCaseTag(tstcase.id, $event.target.value); $event.target.value = ''"
+                  @keyup.enter="addCaseTag(tstcase.id, $event.target.value); $event.target.value = ''">
+                <span v-for="tag in tstcase.tags" class="uk-label"> #{{tag.tag}}
+                <span uk-icon="icon: close; ratio: 0.6" style="stroke: white !important; margin-left: 5px;"
+                @click="removeCaseTag(tag.id, tag.case_id)"></span>
               </span>
+            </span>
               <div v-if="tstcase.state_code === 'disable'" class="uk-badge uk-label">Disabled</div>
                 <hr>
               </div>
@@ -317,7 +328,7 @@ export default {
         }
       })
     },
-    removeTag (tagId, scenarioId) {
+    removeScenarioTag (tagId, scenarioId) {
       var url = 'scenario/remove_tag'
       let tag = {
         tag_id: tagId,
@@ -332,8 +343,40 @@ export default {
         }
       }
       this.$http.post(url, tag).then(function (response) {
-        if (response.body.message === 'TAG_CREATED') {
+        if (response.body.message === 'TAG_REMOVED') {
           this.fetchScenarios()
+        }
+      })
+    },
+    addCaseTag (CaseId, value) {
+      var url = 'scenarios/' + this.scenarioFull.scenario_id + '/tst_case/register_tag'
+      let newTag = {
+        tag: value,
+        case_id: CaseId
+      }
+      this.$http.post(url, newTag).then(function (response) {
+        if (response.body.message === 'TAG_CREATED') {
+          this.fecthCases(this.scenarioFull.scenario_id)
+        }
+      })
+    },
+    removeCaseTag (tagId, caseId) {
+      var url = 'scenarios/' + this.scenarioFull.scenario_id + '/tst_case/remove_tag'
+      let tag = {
+        tag_id: tagId,
+        case_id: caseId
+      }
+      for (var i = 0; i < this.tstcases.length; i++) {
+        for (var j = 0; j < this.tstcases[i].tags.length; j++) {
+          if (this.tstcases[i].tags[j].id === tagId) {
+            var index = this.tstcases[i].tags.indexOf(this.tstcases[i].tags[j].tag)
+            this.tstcases[i].tags.splice(index, 1)
+          }
+        }
+      }
+      this.$http.post(url, tag).then(function (response) {
+        if (response.body.message === 'TAG_REMOVED') {
+          this.fecthCases(this.scenarioFull.scenario_id)
         }
       })
     },

@@ -3,8 +3,11 @@ from flask import Blueprint, request, g, jsonify, abort, make_response, abort
 from datetime import datetime
 
 from sherlockapi import db, auth
-from sherlockapi.data.model import Scenario, Project, Case, Cycle, CycleCases
-from sherlockapi.data.model import CycleScenarios, StateType, CycleSchema
+from sherlockapi.data.model import (Scenario, Project, Case, Cycle, CycleCases,
+                                    CycleScenarios, StateType, CycleSchema,
+                                    TagScenario, TagScenarioSchema)
+
+TagScenario
 from sherlockapi.helpers.string_operations import check_none_and_blank
 from sherlockapi.helpers.util import get_scenario, get_last_cycle, count_cycle_stats
 from sherlockapi.helpers.util import get_project, get_cycle, get_user
@@ -153,12 +156,20 @@ def get_scenarios_for_cyle(project_id, cycle_id):
     for item in cycle_scenarios_h:
         for scenario in scenarios:
             if scenario.id == item.scenario_id :
-                cases = CycleCases.query.filter_by(cycle_id=cycle.id).filter_by(scenario_id=scenario.id)
+                cases = CycleCases.query.filter_by(
+                    cycle_id=cycle.id).filter_by(scenario_id=scenario.id)
+                scenario_tags_raw = TagScenario.query.filter_by(
+                    scenario_id=scenario['id']).all()
+                schema = TagScenarioSchema(many=True)
+                scenario_tags = schema.dump(scenario_tags_raw).data
+
                 temp = {}
                 temp['scenario_name'] = scenario.name
                 temp['scenario_id'] = scenario.id
                 temp['scenario_cycle_id'] = item.id
                 temp['cases_stats'] = count_cycle_stats(cases)
+                temp['tags'] = scenario_tags
+
                 obj.append(temp)
                 break
     return make_response(jsonify(obj))

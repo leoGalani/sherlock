@@ -1,12 +1,11 @@
 from flask import Blueprint, request, g, jsonify, abort, make_response
 
 from sherlockapi import db, auth
-from sherlockapi.data.model import (Scenario, Project, Case, StateType,
-                                    TagScenario)
 from sherlockapi.data.model import (ScenariosSchema, TagScenarioSchema,
-                                    TestCaseSchema)
+                                    StateType, Cycle, CycleScenarios, Project,
+                                    CycleCases, Scenario, TagCaseSchema,
+                                    TestCaseSchema, TagScenario, TagCase, Case)
 
-from sherlockapi.data.model import Cycle, CycleScenarios, CycleCases
 from sherlockapi.helpers.string_operations import check_none_and_blank
 from sherlockapi.helpers.util import (get_scenario, get_last_cycle,
                                       get_tagscenario)
@@ -57,7 +56,15 @@ def get_scenario_n_tst_cases(scenario_id):
     scenario = get_scenario(scenario_id)
     cases = Case.query.filter_by(
         scenario_id=scenario.id).filter(Case.state_code != StateType.removed).all()
+
     tst_cases = schema.dump(cases).data
+
+    for case in tst_cases:
+        cases_tags_raw = TagCase.query.filter_by(
+            case_id=case['id']).all()
+        schema = TagCaseSchema(many=True)
+        case_tags = schema.dump(cases_tags_raw).data
+        case['tags'] = case_tags
 
     return make_response(jsonify(scenario_id=scenario.id,
                                  scenario_state=scenario.state_code.value,

@@ -29,6 +29,10 @@ h1, h2, h3, h4{
   margin-top: 20%;
 }
 
+fieldset{
+  border: 1px solid #ababab;
+}
+
 /* HEADER  */
   .uk-navbar-item, .uk-navbar-nav>li>a, .uk-navbar-toggle {
     height: 70px;
@@ -41,13 +45,10 @@ h1, h2, h3, h4{
     width:0;
     height:0;
     position:absolute;
-
-
     border-bottom: 8px solid gray;
     border-right:8px solid transparent;
     border-left:8px solid transparent;
     left:40%;
-
     top:-8px;
 }
 
