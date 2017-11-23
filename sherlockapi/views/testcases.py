@@ -1,13 +1,50 @@
 from flask import Blueprint, request, jsonify, abort, make_response
 
 from sherlockapi import db, auth
-from sherlockapi.data.model import Case, TestCaseSchema, StateType, CycleCases
+from sherlockapi.data.model import (Case, TestCaseSchema, StateType,
+                                    CycleCases, TagCase)
 from sherlockapi.helpers.string_operations import check_none_and_blank
-
-from sherlockapi.helpers.util import get_scenario, get_tstcase, get_last_cycle
+from sherlockapi.helpers.util import (get_scenario, get_tstcase,
+                                      get_last_cycle, get_tagcase)
 
 
 test_case = Blueprint('test_cases', __name__)
+
+
+@test_case.route('/register_tag', methods=['POST'])
+@auth.login_required
+def register_tag(scenario_id):
+    """POST endpoint for adding a tag to a case.
+
+    Param:
+        {
+        'case_id': required,
+        'tag': required
+        }
+    """
+    scenario = get_scenario(scenario_id)
+    case_id = check_none_and_blank(request, 'case_id')
+    case = get_tstcase(case_id)
+    tag = check_none_and_blank(request, 'tag')
+    new_tag = TagCase(case_id=case_id,
+                      tag=tag)
+    db.session.add(new_tag)
+    db.session.commit()
+
+    return make_response(jsonify(message='TAG_CREATED'))
+
+
+@test_case.route('/remove_tag', methods=['POST'])
+@auth.login_required
+def remove_tag(scenario_id):
+    scenario = get_scenario(scenario_id)
+    case_id = check_none_and_blank(request, 'case_id')
+    case = get_tstcase(case_id)
+    tag_id = check_none_and_blank(request, 'tag_id')
+    tag = get_tagcase(tag_id)
+    db.session.delete(tag)
+    db.session.commit()
+    return make_response(jsonify(message='TAG_REMOVED'))
 
 
 @test_case.route('/show/<int:test_case_id>', methods=['GET'])
@@ -43,8 +80,6 @@ def new(scenario_id):
                                scenario_id=case.scenario_id)
         db.session.add(cyclecase)
         db.session.commit()
-
-
 
     return make_response(jsonify(message='CASE_CREATED'))
 

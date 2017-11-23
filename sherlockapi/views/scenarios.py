@@ -1,14 +1,51 @@
 from flask import Blueprint, request, g, jsonify, abort, make_response
 
 from sherlockapi import db, auth
-from sherlockapi.data.model import Scenario, Project, Case, TestCaseSchema
-from sherlockapi.data.model import ScenariosSchema, StateType
-from sherlockapi.data.model import Cycle, CycleScenarios, CycleCases
+from sherlockapi.data.model import (ScenariosSchema, TagScenarioSchema,
+                                    StateType, Cycle, CycleScenarios, Project,
+                                    CycleCases, Scenario, TagCaseSchema,
+                                    TestCaseSchema, TagScenario, TagCase, Case)
+
 from sherlockapi.helpers.string_operations import check_none_and_blank
-from sherlockapi.helpers.util import get_scenario, get_last_cycle
+from sherlockapi.helpers.util import (get_scenario, get_last_cycle,
+                                      get_tagscenario)
 
 
 scenario = Blueprint('scenarios', __name__)
+
+
+@scenario.route('/register_tag', methods=['POST'])
+@auth.login_required
+def register_tag():
+    """POST endpoint for adding a tag to a scenario.
+
+    Param:
+        {
+        'scenario_id': required,
+        'tag': required
+        }
+    """
+    scenario_id = check_none_and_blank(request, 'scenario_id')
+    scenario = get_scenario(scenario_id)
+    tag = check_none_and_blank(request, 'tag')
+    new_tag = TagScenario(scenario_id=scenario_id,
+                          tag=tag)
+    db.session.add(new_tag)
+    db.session.commit()
+
+    return make_response(jsonify(message='TAG_CREATED'))
+
+
+@scenario.route('/remove_tag', methods=['POST'])
+@auth.login_required
+def remove_tag():
+    scenario_id = check_none_and_blank(request, 'scenario_id')
+    scenario = get_scenario(scenario_id)
+    tag_id = check_none_and_blank(request, 'tag_id')
+    tag = get_tagscenario(tag_id)
+    db.session.delete(tag)
+    db.session.commit()
+    return make_response(jsonify(message='TAG_REMOVED'))
 
 
 @scenario.route('/cases/<int:scenario_id>', methods=['GET'])
@@ -19,7 +56,15 @@ def get_scenario_n_tst_cases(scenario_id):
     scenario = get_scenario(scenario_id)
     cases = Case.query.filter_by(
         scenario_id=scenario.id).filter(Case.state_code != StateType.removed).all()
+
     tst_cases = schema.dump(cases).data
+
+    for case in tst_cases:
+        cases_tags_raw = TagCase.query.filter_by(
+            case_id=case['id']).all()
+        schema = TagCaseSchema(many=True)
+        case_tags = schema.dump(cases_tags_raw).data
+        case['tags'] = case_tags
 
     return make_response(jsonify(scenario_id=scenario.id,
                                  scenario_state=scenario.state_code.value,
@@ -46,6 +91,13 @@ def get_scenarios_by_project(project_id):
             Scenario.state_code != StateType.removed).all()
     scenario_schema = ScenariosSchema(many=True)
     scenarios = scenario_schema.dump(raw_scenarios).data
+
+    for scenario in  scenarios:
+        scenario_tags_raw = TagScenario.query.filter_by(
+            scenario_id=scenario['id']).all()
+        schema = TagScenarioSchema(many=True)
+        scenario_tags = schema.dump(scenario_tags_raw).data
+        scenario['tags'] = scenario_tags
     return make_response(jsonify(scenarios))
 
 

@@ -16,7 +16,7 @@
         <div class="uk-inline">
             <a class="uk-form-icon uk-form-icon-flip" @click="addNewScenario" uk-icon="icon: arrow-right"></a>
             <textarea class="uk-textarea uk-width-1-1 input_text"
-            placeholder="Enter a new scenario description" type="textarea"
+            placeholder="Enter you new scenario and press shift + enter to save it" type="textarea"
             v-model="newScenario" @keyup.shift.enter="addNewScenario">
           </textarea>
         </div>
@@ -24,16 +24,35 @@
       </div>
 
       <div class="content scenario">
+        <div v-if="!scenarios.length">
+          <center>
+            <img class="logo_menu" src='../../assets/img/sherlock_butterfly.png'>
+              </center>
+        </div>
       <div v-for="scenario in scenarios" :key="scenario.id" class="uk-grid ">
           <div class="uk-width-4-5">
             <span @click="fecthCases(scenario.id)" style="cursor: pointer; width: 100%">{{ scenario.name }} <br>
           </span>
-          <div v-if="scenario.state_code === 'disable'" class="uk-badge uk-label">Disabled</div>
+          <br>
+          <span>
+            <a uk-icon="icon: tag" style="margin-right:10px" uk-toggle="target: + input; animation: uk-animation-fade"
+            title="Manage Scenario Tags" uk-tooltip="delay: 300; pos: bottom"></a>
+              <input v-bind:id="'tag_'+scenario.id" type="text" class="uk-input" placeholder="Use space to separete tags"
+              style="width: 268px; height: 25px; font-size: 13px;" hidden @keyup.space="addScenarioTag(scenario.id, $event.target.value); $event.target.value = ''"
+              @keyup.enter="addScenarioTag(scenario.id, $event.target.value); $event.target.value = ''">
+            <span v-for="tag in scenario.tags" class="uk-label"> #{{tag.tag}}
+            <span uk-icon="icon: close; ratio: 0.6" style="stroke: white !important; margin-left: 5px;"
+            @click="removeScenarioTag(tag.id, tag.scenario_id)"></span>
+          </span>
+            <span v-if="scenario.state_code === 'disable'" class="uk-label">Disabled</span>
+          </span>
+
+
             <hr>
           </div>
           <div class="uk-width-1-5">
             <ul class="uk-iconnav">
-                <li> <a @click="fecthCases(scenario.id)" uk-icon="icon: chevron-right;" title="Load Cases" uk-tooltip="delay: 300; pos: bottom"></a></li>
+                <li> <a @click="fecthCases(scenario.id)" uk-icon="icon: chevron-right;" title="Load Scenario Cases" uk-tooltip="delay: 300; pos: bottom"></a></li>
                 <li v-show="scenario.state_code === 'active'"> <a @click="disableScenario(scenario.id)"
                   title="Disable Scenario" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: lock"></a></li>
                 <li v-show="scenario.state_code === 'disable'"> <a @click="enableScenario(scenario.id)"
@@ -41,7 +60,7 @@
                 <li><a @click="editScenario(scenario.name, scenario.id)"
                   title="Edit Scenario" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: file-edit"></a></li>
                 <li><a @click="removeScenario(scenario.id)"
-                  title="Remove Senario and Cases" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: trash"></a></li>
+                  title="Remove Scenario and Cases" uk-tooltip="delay: 300; pos: bottom" uk-icon="icon: trash"></a></li>
             </ul>
           </div>
       </div>
@@ -70,10 +89,27 @@
           </div>
 
           <div class="content scenario">
+            <div v-if="!tstcases.length">
+
+              <center>
+                <img class="logo_menu" src='../../assets/img/sherlock_butterfly.png'>
+                  </center>
+            </div>
             <div v-for="tstcase in tstcases" :key="tstcase.id" class="uk-grid">
               <div class="uk-width-4-5">
                 <span> {{ tstcase.name }} </span>
+              </span><br><br>
+              <span>
+                <a uk-icon="icon: tag" style="margin-right:10px" uk-toggle="target: + input; animation: uk-animation-fade"
+                title="Manage Scenario Tags" uk-tooltip="delay: 300; pos: bottom"></a>
+                  <input v-bind:id="'tag_'+tstcase.id" type="text" class="uk-input" placeholder="Use space to separete tags"
+                  style="width: 268px; height: 25px; font-size: 13px;" hidden @keyup.space="addCaseTag(tstcase.id, $event.target.value); $event.target.value = ''"
+                  @keyup.enter="addCaseTag(tstcase.id, $event.target.value); $event.target.value = ''">
+                <span v-for="tag in tstcase.tags" class="uk-label"> #{{tag.tag}}
+                <span uk-icon="icon: close; ratio: 0.6" style="stroke: white !important; margin-left: 5px;"
+                @click="removeCaseTag(tag.id, tag.case_id)"></span>
               </span>
+            </span>
               <div v-if="tstcase.state_code === 'disable'" class="uk-badge uk-label">Disabled</div>
                 <hr>
               </div>
@@ -129,11 +165,12 @@ export default {
       newCase: '',
       loading: false,
       caseslodaded: false,
-      viewcase: false
+      viewcase: false,
+      tag_field: ''
     }
   },
   methods: {
-    fetchScenarios (e) {
+    fetchScenarios () {
       this.$http.get('scenario/project_scenarios/' + this.projectId).then(function (response) {
         this.loading = false
         this.scenarios = response.body
@@ -279,6 +316,70 @@ export default {
         UIkit.tab('#cenarios_cases', {'animation': 'uk-animation-middle-left'}).show(1)
       })
     },
+    addScenarioTag (ScenarioId, value) {
+      var url = 'scenario/register_tag'
+      let newTag = {
+        tag: value,
+        scenario_id: ScenarioId
+      }
+      this.$http.post(url, newTag).then(function (response) {
+        if (response.body.message === 'TAG_CREATED') {
+          this.fetchScenarios()
+        }
+      })
+    },
+    removeScenarioTag (tagId, scenarioId) {
+      var url = 'scenario/remove_tag'
+      let tag = {
+        tag_id: tagId,
+        scenario_id: scenarioId
+      }
+      for (var i = 0; i < this.scenarios.length; i++) {
+        for (var j = 0; j < this.scenarios[i].tags.length; j++) {
+          if (this.scenarios[i].tags[j].id === tagId) {
+            var index = this.scenarios[i].tags.indexOf(this.scenarios[i].tags[j].tag)
+            this.scenarios[i].tags.splice(index, 1)
+          }
+        }
+      }
+      this.$http.post(url, tag).then(function (response) {
+        if (response.body.message === 'TAG_REMOVED') {
+          this.fetchScenarios()
+        }
+      })
+    },
+    addCaseTag (CaseId, value) {
+      var url = 'scenarios/' + this.scenarioFull.scenario_id + '/tst_case/register_tag'
+      let newTag = {
+        tag: value,
+        case_id: CaseId
+      }
+      this.$http.post(url, newTag).then(function (response) {
+        if (response.body.message === 'TAG_CREATED') {
+          this.fecthCases(this.scenarioFull.scenario_id)
+        }
+      })
+    },
+    removeCaseTag (tagId, caseId) {
+      var url = 'scenarios/' + this.scenarioFull.scenario_id + '/tst_case/remove_tag'
+      let tag = {
+        tag_id: tagId,
+        case_id: caseId
+      }
+      for (var i = 0; i < this.tstcases.length; i++) {
+        for (var j = 0; j < this.tstcases[i].tags.length; j++) {
+          if (this.tstcases[i].tags[j].id === tagId) {
+            var index = this.tstcases[i].tags.indexOf(this.tstcases[i].tags[j].tag)
+            this.tstcases[i].tags.splice(index, 1)
+          }
+        }
+      }
+      this.$http.post(url, tag).then(function (response) {
+        if (response.body.message === 'TAG_REMOVED') {
+          this.fecthCases(this.scenarioFull.scenario_id)
+        }
+      })
+    },
     cleanCases () {
       this.caseslodaded = false
       this.scenarioFull = []
@@ -365,6 +466,12 @@ ul li {
   border: 1px solid orange;
   text-align: center;
   padding: 10px;
+}
+
+.uk-label{
+  font-size: 12px;
+  padding: 0 10px;
+  margin: 0 3px;
 }
 
 </style>

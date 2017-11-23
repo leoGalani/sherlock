@@ -19,7 +19,7 @@ WORKDIR /sherlock/frontsherlock/
 RUN apt-get update && \
     apt-get install -y curl && \
     curl -sL https://deb.nodesource.com/setup_8.x | bash && \
-    apt-get install -y nodejs && \
+    apt-get install -y nodejs bzip2 && \
     npm install && \
     npm run build && \
     rm -rf /sherlock/frontsherlock/node_modules && \
