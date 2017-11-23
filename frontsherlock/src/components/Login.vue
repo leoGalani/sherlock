@@ -24,7 +24,7 @@
               </div>
 
               <button class="uk-button uk-button-default" type="Submit" style="margin-right:15px; ">Login</button>
-              <router-link v-if="show_register_button" class="uk-button uk-button-default" :to="{ name: 'registerg' }">Register</router-link>
+              <router-link v-if="show_register_button" class="uk-button uk-button-default" :to="{ name: 'register' }">Register</router-link>
             </div>
             </form>
           </center>

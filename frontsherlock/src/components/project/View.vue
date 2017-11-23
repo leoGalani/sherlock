@@ -12,8 +12,8 @@
             <router-link v-if="project.have_scenarios === false" :to="{ path: '/project/view/'+projectId+'/scenario_cases' }">
               <div>
                 <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body">
-                  <h4 class="uk-card-title">This project have no scenarios!</h4>
-                  <p>Click here to create cenarios and test cases for this project.</p>
+                  <h4 class="uk-card-title">This project has no scenarios!</h4>
+                  <p>Click here to create scenarios and test cases for this project.</p>
                 </div>
               </div>
             </router-link>
@@ -27,13 +27,13 @@
             </router-link>
           <div v-if="project.have_cycles === false && project.have_scenarios === false || project.have_active_cases === false">
             <div class="uk-card uk-card-small uk-card-default uk-card-body">
-              <h4 class="uk-card-title">This project have no cycles!</h4>
+              <h4 class="uk-card-title">This project has no cycles!</h4>
               <p>You can't have cycles without test cases!</p>
             </div>
           </div>
             <div v-if="project.have_cycles === false && project.have_scenarios && project.have_active_cases" @click="createCycle()" style="cursor:pointer;">
               <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body">
-                <h4 class="uk-card-title">This project have no cycles!</h4>
+                <h4 class="uk-card-title">This project has no cycles!</h4>
                 <p>Click here to create the first cycle of this project.</p>
               </div>
             </div>
@@ -209,7 +209,7 @@ export default {
       var notExecuted = this.current_cycle.stats.total_not_executed
       var vueInstance = this
       if (notExecuted > 0) {
-        UIkit.modal.confirm('This cycle still have [' + notExecuted.toString() + '] not executed. Are you sure!?').then(function () {
+        UIkit.modal.confirm('This cycle still has [' + notExecuted.toString() + '] not executed. Are you sure!?').then(function () {
           UIkit.modal.prompt('Please provide a reason why closing the cycle with not executed tests? (required):', '').then(function (reason) {
             if (reason === null || reason === '') {
               UIkit.notification('<span uk-icon="icon: ban"></span> You should provide a reason', {timeout: '700'})
