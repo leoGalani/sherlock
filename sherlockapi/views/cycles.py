@@ -5,7 +5,8 @@ from datetime import datetime
 from sherlockapi import db, auth
 from sherlockapi.data.model import (Scenario, Project, Case, Cycle, CycleCases,
                                     CycleScenarios, StateType, CycleSchema,
-                                    TagScenario, TagScenarioSchema)
+                                    TagScenario, TagScenarioSchema, TagCase,
+                                    TagCaseSchema)
 
 TagScenario
 from sherlockapi.helpers.string_operations import check_none_and_blank
@@ -157,9 +158,10 @@ def get_scenarios_for_cyle(project_id, cycle_id):
         for scenario in scenarios:
             if scenario.id == item.scenario_id :
                 cases = CycleCases.query.filter_by(
-                    cycle_id=cycle.id).filter_by(scenario_id=scenario.id)
+                    cycle_id=cycle.id).filter_by(scenario_id=scenario.id).all()
+
                 scenario_tags_raw = TagScenario.query.filter_by(
-                    scenario_id=scenario['id']).all()
+                    scenario_id=scenario.id).all()
                 schema = TagScenarioSchema(many=True)
                 scenario_tags = schema.dump(scenario_tags_raw).data
 
@@ -188,11 +190,17 @@ def get_cases_for_cyle(project_id, cycle_id, scenario_id):
     for item in cycle_cases_h:
         for case in cases:
             if item.case_id == case.id:
+                cases_tags_raw = TagCase.query.filter_by(
+                    case_id=case.id).all()
+                schema = TagCaseSchema(many=True)
+                case_tags = schema.dump(cases_tags_raw).data
+
                 temp = {}
                 temp['case_name'] = case.name
                 temp['case_id'] = case.id
                 temp['case_cycle_id'] = item.id
                 temp['case_cycle_state'] = item.state_code.value
+                temp['tags'] = case_tags
                 obj.append(temp)
                 break
 
