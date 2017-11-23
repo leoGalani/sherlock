@@ -63,22 +63,14 @@
 </transition>
     <div v-if="showGreetings">
       <hr>
-      <center><h2 style="margin-left:20px"><span class="uk-margin-small-right" uk-icon="icon: heart"></span> Hey, this seems like a brand new installation!  Thanks for giving sherlock a try! <span class="uk-margin-small-right" uk-icon="icon: heart"></span></h2>
+      <center>
         <h3> Hmm seems like you don't have any project yet... </h3>
         <img src='../assets/img/sherlock_raposa_bored.png'>
         <h3>
-            You can start creating your first one here: <router-link :to="{ name: 'new_project' }" title="New Project" uk-tooltip="delay: 300" > <i class="material-icons" style="color: rgb(117, 117, 117);">note_add</i> </router-link>
+            You can start creating your first one here: <router-link :to="{ name: 'new_project' }" title="New Project">Add new Project <i class="material-icons" style="color: rgb(117, 117, 117);">note_add</i> </router-link>
         </h3>
-
-        <h3> Also checkout a demo on how to use Sherlock </h3>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/bAMoUoXXLUU" frameborder="0" allowfullscreen></iframe>
-
-
       </center>
-
-
     </div>
-
   </div>
 </template>
 
@@ -152,7 +144,7 @@ export default {
 
 .filter_state {
   border: solid 1px #333;
-  border-radius: 7px;
+  border-radius: 2px;
   padding: 0px 20px;
   line-height: 28px;
   text-transform: none;
@@ -161,14 +153,14 @@ export default {
     font-weight: 500;
     z-index: -1;
     transform: scale(1);
-    box-shadow: 3px 4px 7px -4px #000000;
-    -webkit-box-shadow: 3px 4px 7px -4px #000000;
-    -moz-box-shadow: 3px 4px 7px -4px #000000;
-    box-shadow: 3px 4px 7px -4px #444444;
+    box-shadow: 0px 4px 9px -3px #3333;
+    -webkit-box-shadow: 0px 4px 9px -3px #3333;
+    -moz-box-shadow: 0px 4px 9px -3px #3333;
+    box-shadow: 0px 4px 9px -3px #3333;
 }
 .filter_state_active{
     color: #fff !important;
-    background-color: #2f5c86;
+    background-color: #2578bf;
     font-weight: 500;
     z-index: -1;
     transform: scale(.9);
@@ -176,13 +168,6 @@ export default {
     -webkit-box-shadow: 3px 4px 7px -4px #000000;
     -moz-box-shadow: 3px 4px 7px -4px #000000;
     box-shadow: 3px 4px 7px -4px #444444;
-}
-
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s
-}
-.fade-enter, .fade-leave-to {
-  opacity: 0
 }
 
 </style>

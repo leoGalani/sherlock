@@ -25,8 +25,28 @@ h1, h2, h3, h4{
   font-size: 30px;
 }
 
+#small_loading{
+  background-color: #b2b2bb;
+  border-radius: 10px;
+  color: #fff;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 5px auto;
+  position: absolute;
+  width: 140px;
+  height:28px;
+  padding: 13px;
+  font-size: 20px;
+}
+
 #loading > center{
   margin-top: 20%;
+}
+
+fieldset{
+  border: 1px solid #ababab;
 }
 
 /* HEADER  */
@@ -41,13 +61,10 @@ h1, h2, h3, h4{
     width:0;
     height:0;
     position:absolute;
-
-
     border-bottom: 8px solid gray;
     border-right:8px solid transparent;
     border-left:8px solid transparent;
     left:40%;
-
     top:-8px;
 }
 
@@ -61,23 +78,27 @@ h1, h2, h3, h4{
 
 .project_box {
   background: #fff;
-  border-radius: 2px;
+  border-radius: 4px;
   display: inline-block;
   height: 230px;
   margin: 1rem;
   position: relative;
   width: 200px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  border: 1px solid #e6e6e6;
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);
   padding: 8px;
 }
 
 .project_box:hover {
-  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  border: 1px solid #bdbdbd;
 }
 
 
 /* COMMON */
+
+.uk-switcher>* {
+  width: 98%;
+}
 
 .uk-link, a {
   display:block;
@@ -168,4 +189,18 @@ input[type=number]:focus {
     border-color: #453d3f;
 }
 
-  /* SWITCHER */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+.uk-label {
+  background: #546475;
+  border-radius: 4px;
+}
+
+.uk-input, .uk-button-default, .uk-textarea {
+  border-radius: 4px;
+}

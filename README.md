@@ -7,17 +7,20 @@ others involved in regression testing.
 
 Automated regression tests are ideal, but sometimes do not cover 100% of functionality. Additionally, it can be helpful for non-technical people to help test your code.
 
+
 To run locally you will need to have the latest version of Docker Community Edition and docker-compose.
 Please, visit the following pages for information on how to install these tools.
 
 - docker: https://docs.docker.com/engine/installation/
 - docker-compose: https://docs.docker.com/compose/install/
 
+If you are using windows, consider installing 'bash' for windows (https://msdn.microsoft.com/en-us/commandline/wsl/about) in order to make use of the setup _bashscript_.
+
 ### Setup
 
 As easy as this:
 
-    docker-compose up -d
+    sh sherlock.sh fast-setup
 
 
 This will download the compiled version of Sherlock with all the dependencies. You will be ready to use Sherlock as soon the command finishes.
@@ -25,12 +28,22 @@ This will download the compiled version of Sherlock with all the dependencies. Y
 You can also build the image yourself, but it may take a while (if you build it on a small machine like the entry machine on digitalocean, you might face some troubles due to lack of memory):
 
 
-    docker-compose -f docker-compose_build.yml build
-    docker-compose -f docker-compose_build.ymlup -d
+    sh sherlock.sh build-setup
 
 
+Don't delete the folders called 'database' inside the Sherlock folder, since it's used by the docker to persist the mysql data.
 
-Don't delete the folder called 'database' inside the Sherlock folder, since it's used by the docker to persist the mysql data.
+### Update
+
+If you started to use Sherlock with the _build-setup_ or also want to add your local changes:
+
+  sh sherlock.sh build-upgrade
+
+
+If you used the _fast-setup_ option, you can update using:
+
+  sh sherlock.sh fast-upgrade
+
 
 ###  Demo
 

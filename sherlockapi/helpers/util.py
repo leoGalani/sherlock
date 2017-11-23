@@ -1,7 +1,8 @@
 """Load Objects to be displayed on the sherlock application."""
 from flask import g, abort, make_response, jsonify
 
-from sherlockapi.data.model import User, Project, Scenario, Case, Cycle, StateType
+from sherlockapi.data.model import (User, Project, Scenario, Case,
+                                    Cycle, StateType, TagCase, TagScenario)
 
 
 def get_last_cycle(project_id):
@@ -69,3 +70,15 @@ def get_cycle(cycle_id, project_id):
     if project_cycle is None:
         abort(make_response(jsonify(message='CYCLE_NOT_FOUND'), 404))
     return project_cycle
+
+def get_tagcase(tag_id):
+    tag = TagCase.query.filter_by(id=tag_id).first()
+    if not tag:
+        abort(make_response(jsonify(message='TAG_NOT_FOUND'), 404))
+    return tag
+
+def get_tagscenario(tag_id):
+    tag = TagScenario.query.filter_by(id=tag_id).first()
+    if not tag:
+        abort(make_response(jsonify(message='TAG_NOT_FOUND'), 404))
+    return tag

@@ -4,9 +4,8 @@ click==6.6
 flake8==2.5.4
 flake8-docstrings==0.2.6
 Flask==0.12.2
-Flask-SQLAlchemy==2.2
+Flask-SQLAlchemy==2.3.2
 itsdangerous==0.24
-Jinja2==2.9.6
 MarkupSafe==0.23
 marshmallow==2.7.3
 mccabe==0.4.0
@@ -19,11 +18,10 @@ python-dateutil==2.5.3
 python-mimeparse==1.5.2
 pytz==2016.4
 six==1.10.0
-SQLAlchemy==1.1.13
+SQLAlchemy==1.1.15
 Unidecode==0.4.19
 Werkzeug==0.11.10
 Flask-HTTPAuth==3.2.3
-selenium==2.53.6
 Flask-Cors==3.0.3
 PyYAML==3.12
 PyMySQL==0.7.11
@@ -31,3 +29,6 @@ marshmallow-enum==1.3
 gunicorn==19.7.1
 Sphinx==1.6.3
 sphinx-autobuild==0.7.1
+Flask-Script==2.0.6
+alembic==0.9.6
+Flask-migrate==2.1.1

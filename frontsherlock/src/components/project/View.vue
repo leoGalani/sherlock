@@ -1,25 +1,37 @@
 <template>
   <div class="project details">
+    <div  id="loading" v-if="loading">
+       <center><div uk-spinner></div>
+       Loading...</center>
+     </div>
     <div class="uk-grid">
       <div class="uk-width-3-4">
         <h2><span class="title_span"> {{project.name}} - Project Dashboard </span></h2>
         <div class="content" style="width: 100%; min-height: 400px;">
           <div class="uk-child-width-1-2@s uk-grid-match" uk-grid>
             <router-link v-if="project.have_scenarios === false" :to="{ path: '/project/view/'+projectId+'/scenario_cases' }">
-            <div>
-              <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body">
-                <h4 class="uk-card-title">This project has no scenarios!</h4>
-                <p>Click here to create scenarios and test cases for this project.</p>
+              <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body">
+                  <h4 class="uk-card-title">This project has no scenarios!</h4>
+                  <p>Click here to create scenarios and test cases for this project.</p>
+                </div>
               </div>
-            </div>
-          </router-link>
-          <div v-if="project.have_cycles === false && project.have_scenarios === false">
+            </router-link>
+            <router-link v-else-if="project.have_active_cases === false" :to="{ path: '/project/view/'+projectId+'/scenario_cases' }">
+              <div>
+                <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body">
+                  <h4 class="uk-card-title">This project have no active cases!</h4>
+                  <p>You can't create new cycles without active test cases! Click here to fix this</p>
+                </div>
+              </div>
+            </router-link>
+          <div v-if="project.have_cycles === false && project.have_scenarios === false || project.have_active_cases === false">
             <div class="uk-card uk-card-small uk-card-default uk-card-body">
               <h4 class="uk-card-title">This project has no cycles!</h4>
               <p>You can't have cycles without test cases!</p>
             </div>
           </div>
-            <div v-if="project.have_cycles === false && project.have_scenarios" @click="createCycle()" style="cursor:pointer;">
+            <div v-if="project.have_cycles === false && project.have_scenarios && project.have_active_cases" @click="createCycle()" style="cursor:pointer;">
               <div class="uk-card uk-card-small uk-card-default uk-card-hover uk-card-body">
                 <h4 class="uk-card-title">This project has no cycles!</h4>
                 <p>Click here to create the first cycle of this project.</p>
@@ -39,7 +51,7 @@
                 <router-link v-if="project.last_cycle.state_code === 'active'" class="uk-button uk-button-default" style='margin-top:10px;' :to="{ name: 'project_cycles', params: {projectId: this.projectId, cycleId: this.current_cycle.id} }">Execute Test Cases</router-link>
                 <a v-if="project.last_cycle.state_code === 'active'" class="uk-button uk-button-default" style='margin-top:10px;' @click="checkCloseCyle(project.last_cycle.id)">Close Cycle</a>
                 <a v-if="project.last_cycle.state_code === 'closed'" @click="createCycle()" class="uk-button uk-button-default"> Create New Cycle</a>
-                <router-link v-if="project.last_cycle.state_code === 'closed'" class="uk-button uk-button-default" :to="{ path: '/project/view/'+projectId+'/scenario_cases' }">Manage Scenarios and Test Cases</router-link>
+                <router-link class="uk-button uk-button-default" style='margin-top:10px;' :to="{ path: '/project/view/'+projectId+'/scenario_cases' }">Manage Scenarios and Test Cases</router-link>
               </div>
               <div class="uk-width-2-5">
                 <h3>Cycle {{this.current_cycle.cycle}} status </h3>
@@ -149,12 +161,14 @@ export default {
           'total_not_error': ''
         }
       },
-      display_load_chart: true
+      display_load_chart: true,
+      loading: false
     }
   },
   methods: {
     fetchProject () {
       this.$http.get('project/show/' + this.projectId).then(function (response) {
+        this.loading = false
         this.project = response.body
         this.project.type_of_project = this.project.type_of_project.toLowerCase()
         this.project.privacy_policy = this.project.privacy_policy.toLowerCase()
@@ -258,13 +272,14 @@ export default {
   },
   created: function () {
     this.projectId = this.$route.params.projectId
-    this.fetchProject(this.$route.params.projectId)
+    this.loading = true
   },
   mounted: function () {
+    this.fetchProject(this.projectId)
     this.mountChartCurrentCycle()
     this.mountChartResume()
     this.interval = setInterval(function () {
-      this.fetchProject(this.$route.params.projectId)
+      this.fetchProject(this.projectId)
       this.mountChartCurrentCycle()
       this.mountChartResume()
     }.bind(this), 1000)
@@ -277,6 +292,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+.uk-button{
+  padding: 1px 13px;
+  margin: 10px;
+}
 .project_avatar{
   font-size: 150px;
 }

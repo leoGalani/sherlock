@@ -14,14 +14,9 @@
         <div class="uk-margin">
           <div class="uk-form-label">Project Owner</div>
           <div class="uk-form-controls">
-            <select  v-model="project_owner_id" class="uk-select">
-              <option v-for="user in users" :value="user.id"
-              :selected="user.id == project_owner_id">
-              {{ user.email }} </option>
-            </select>
+            <v-select :value.sync="selected" :options="users" v-model="owner_email"></v-select>
           </div>
         </div>
-
         <div class="uk-margin">
             <div class="uk-form-label">Privacy</div>
             <div class="uk-form-controls uk-form-controls-text">
@@ -52,9 +47,11 @@
 
 <script>
 import UIkit from 'uikit'
+import vSelect from 'vue-select'
 
 export default {
   name: 'dashboard',
+  components: {vSelect},
   data () {
     return {
       projectId: '',
@@ -63,14 +60,24 @@ export default {
       type_of_project: '',
       project_owner: '',
       project_owner_id: '',
-      users: []
+      owner_email: '',
+      rawUsers: [],
+      users: [],
+      selected: ''
     }
   },
   methods: {
     editProject () {
-      if (!this.project_name || !this.type_of_project || !this.privacy_policy) {
+      if (!this.project_name || !this.type_of_project || !this.privacy_policy || !this.owner_email) {
         UIkit.notification('Please fill all the inputs', {status: 'danger', timeout: 700})
       } else {
+        for (var i = 0; i < this.rawUsers.length; i++) {
+          if (this.rawUsers[i].email === this.owner_email) {
+            this.project_owner_id = this.rawUsers[i].id
+            break
+          }
+        }
+
         let editedProject = {
           project_name: this.project_name,
           type_of_project: this.type_of_project,
@@ -85,7 +92,10 @@ export default {
     },
     get_all_users () {
       this.$http.get('user/get_all_users').then(function (response) {
-        this.users = response.body
+        this.rawUsers = response.body
+        for (var i = 0; i < response.body.length; i++) {
+          this.users.push(response.body[i].email)
+        }
       })
     },
     get_project_details () {
@@ -95,13 +105,15 @@ export default {
         this.type_of_project = response.body.type_of_project
         this.project_owner_name = response.body.owner_name
         this.project_owner_id = response.body.owner_id
+        this.selected = response.body.owner_email
+        this.owner_email = response.body.owner_email
       })
     }
   },
   created: function () {
-    this.get_all_users()
     this.projectId = this.$route.params.projectId
     this.get_project_details()
+    this.get_all_users()
   },
   mounted: function () {
   }
