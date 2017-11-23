@@ -25,6 +25,22 @@ h1, h2, h3, h4{
   font-size: 30px;
 }
 
+#small_loading{
+  background-color: #b2b2bb;
+  border-radius: 10px;
+  color: #fff;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 5px auto;
+  position: absolute;
+  width: 140px;
+  height:28px;
+  padding: 13px;
+  font-size: 20px;
+}
+
 #loading > center{
   margin-top: 20%;
 }

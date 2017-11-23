@@ -51,7 +51,7 @@
                 <router-link v-if="project.last_cycle.state_code === 'active'" class="uk-button uk-button-default" style='margin-top:10px;' :to="{ name: 'project_cycles', params: {projectId: this.projectId, cycleId: this.current_cycle.id} }">Execute Test Cases</router-link>
                 <a v-if="project.last_cycle.state_code === 'active'" class="uk-button uk-button-default" style='margin-top:10px;' @click="checkCloseCyle(project.last_cycle.id)">Close Cycle</a>
                 <a v-if="project.last_cycle.state_code === 'closed'" @click="createCycle()" class="uk-button uk-button-default"> Create New Cycle</a>
-                <router-link v-if="project.last_cycle.state_code === 'closed'" class="uk-button uk-button-default" :to="{ path: '/project/view/'+projectId+'/scenario_cases' }">Manage Scenarios and Test Cases</router-link>
+                <router-link class="uk-button uk-button-default" style='margin-top:10px;' :to="{ path: '/project/view/'+projectId+'/scenario_cases' }">Manage Scenarios and Test Cases</router-link>
               </div>
               <div class="uk-width-2-5">
                 <h3>Cycle {{this.current_cycle.cycle}} status </h3>
@@ -292,6 +292,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+.uk-button{
+  padding: 1px 13px;
+  margin: 10px;
+}
 .project_avatar{
   font-size: 150px;
 }

@@ -469,9 +469,9 @@ ul li {
 }
 
 .uk-label{
-  font-size:10px;
-  margin-left: 5px;
-  margin-right: 5px;
+  font-size: 12px;
+  padding: 0 10px;
+  margin: 0 3px;
 }
 
 </style>

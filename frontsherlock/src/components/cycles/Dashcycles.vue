@@ -1,9 +1,15 @@
 <template>
   <div class="dashboard uk-grid">
-    <div  id="loading" v-if="loading">
+    <div id="loading" v-if="loading">
        <center><div uk-spinner></div>
        Loading...</center>
      </div>
+
+     <div id="small_loading" v-if="functional_loading">
+        <div uk-spinner></div>
+        Loading...
+      </div>
+
     <div class="uk-width-4-5">
       <ul uk-tab="animation: uk-animation-slide-left-medium, uk-animation-slide-right-medium" id='cenarios_cases'>
         <li><a @click="cleanCases()">Scenarios</a></li>
@@ -78,39 +84,40 @@
               v-if="filter.length === 0 || filter.indexOf(tstcase.case_cycle_state) > -1" >
               <div style="width: 78% !important;" class="uk-width-4-5">
                 <span> {{ tstcase.case_name }} </span><br>
-                <span> <a uk-icon="icon: tag" style="margin-right:10px"></a> <span class="uk-label" style="font-size:12px"> #sometag</span></span>
+                <span> <a uk-icon="icon: tag" style="margin-right:10px"></a>
+                  <span v-for="tag in tstcase.tags" class="uk-label"> #{{tag.tag}}</span></span>
               </span>
               <hr>
               </div>
               <div class="uk-width-1-5" style="width: 22% !important;">
-                <ul class="uk-iconnav">
+                <ul class="uk-iconnav" style="padding: 0px 10px; border: 1px solid;">
                   <li style="margin-right: 10px"> <a title="Edit Case" uk-tooltip="delay: 300; pos: bottom"
                     @click="editCase(tstcase.case_name, scenarioFull.scenario_id, tstcase.case_id)">
                     <span uk-icon="icon: file-edit"></span>
                     </a></li>
-                    <li style="border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid; border-radius: 0px 0px 0px 10px;">
-                      <a title="Pass" uk-tooltip="delay: 300; pos: bottom"
+                    <li v-bind:class="{passed: tstcase.case_cycle_state === 'passed'}">
+                      <center><a title="Pass" uk-tooltip="delay: 300; pos: bottom"
                       @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'passed')">
                       <span v-show="tstcase.case_cycle_state === 'passed'" uk-icon="icon: check" class='passed'></span>
                       <span v-show="tstcase.case_cycle_state !== 'passed'" uk-icon="icon: check"></span>
-                      </a></li>
-                    <li style="border-top: 1px solid; border-bottom: 1px solid;">
-                      <a title="Fail" uk-tooltip="delay: 300; pos: bottom"
+                    </a></center></li>
+                    <li v-bind:class="{failed: tstcase.case_cycle_state === 'error'}">
+                      <center><a title="Fail" uk-tooltip="delay: 300; pos: bottom"
                       @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'error')">
                       <span v-show="tstcase.case_cycle_state === 'error'" uk-icon="icon: ban" class='failed'></span>
                       <span v-show="tstcase.case_cycle_state !== 'error'" uk-icon="icon: ban"></span>
-                    </a></li>
-                    <li style="border-top: 1px solid; border-bottom: 1px solid;">
-                      <a title="Block" uk-tooltip="delay: 300; pos: bottom"
+                    </a></center></li>
+                    <li v-bind:class="{blocked: tstcase.case_cycle_state === 'blocked'}">
+                      <center><a title="Block" uk-tooltip="delay: 300; pos: bottom"
                       @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'blocked')">
                       <span v-show="tstcase.case_cycle_state === 'blocked'" uk-icon="icon: lock" class='blocked'></span>
                       <span v-show="tstcase.case_cycle_state !== 'blocked'" uk-icon="icon: lock"></span>
-                    </a></li>
-                    <li style="border-right: 1px solid; border-top: 1px solid; border-bottom: 1px solid; padding-right: 10px; border-radius: 0px 10px 10px 0px;">
-                      <a title="Reset Status" uk-tooltip="delay: 300; pos: bottom"
+                    </a></center></li>
+                    <li>
+                      <center><a title="Reset Status" uk-tooltip="delay: 300; pos: bottom"
                       @click="changeCaseStatus(tstcase.case_id, scenarioFull.scenario_id, 'not_executed')">
                       <span uk-icon="icon: reply"></span>
-                    </a>
+                    </a></center>
                   </li>
                 </ul>
               </div>
@@ -166,10 +173,6 @@
             </ul>
           </center>
           </fieldset>
-
-          <fieldset>
-            <legend> Filter by Tag </legend>
-          </fieldset>
           </form>
         </div>
       </div>
@@ -192,6 +195,7 @@ export default {
       newScenario: '',
       newCase: '',
       loading: false,
+      functional_loading: false,
       caseslodaded: false,
       viewcase: false,
       showNoCase: false,
@@ -211,13 +215,14 @@ export default {
       })
     },
     changeCaseStatus (caseId, scenarioId, status) {
+      this.functional_loading = true
       this.$http.post('projects/' + this.projectId + '/cycle/change_case_state_code', {'case_id': caseId, 'cycle_id': this.cycleId, 'action': status})
       .then(function (response) {
+        this.functional_loading = false
         this.fetchCycleCases(scenarioId)
       })
     },
     fetchCycleCases (scenarioId) {
-      this.loading = true
       this.$http.get('projects/' + this.projectId + '/cycle/get_cases_for_cyle/' + this.cycleId + '/scenario/' + scenarioId).then(function (response) {
         this.loading = false
         this.caseslodaded = true
@@ -299,8 +304,18 @@ export default {
 
 <style scoped>
 
+.uk-iconnav>li{
+  padding-left: 0px;
+  width: 30px;
+}
 .dashboard{
   padding: 15px;
+}
+
+.uk-label{
+  font-size: 12px;
+  padding: 0 10px;
+  margin: 0 3px;
 }
 
 .content{
@@ -355,27 +370,23 @@ ul li {
   background: green;
   color: white !important;
   stroke: white !important;
-  border-radius: 5px
 }
 
 .failed {
   background-color: #e80303;
   color: white !important;
   stroke: white !important;
-  border-radius: 5px
 }
 
 .blocked {
   background-color: orange;
   color: whitesmoke !important;
   stroke: whitesmoke !important;
-  border-radius: 5px
 }
 
 .caseFilter{
   background-color: #111;
   color: whitesmoke !important;
   stroke: whitesmoke !important;
-  border-radius: 5px;
 }
 </style>

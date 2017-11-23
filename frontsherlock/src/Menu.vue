@@ -20,7 +20,7 @@
               <span>
                 <i class="material-icons" style="color: rgb(248, 248, 248); margin-top:5px">build</i>
               </span>
-              <span style="padding: 6px; color: rgb(248, 248, 248);">
+              <span style="padding: 6px; color: rgb(248, 248, 248);" data-test-id="project_settings_dropdown">
                 Project Settings
               </span>
             </span>
