@@ -21,7 +21,7 @@ else
   exit 1
 fi
 
-function build {
+build() {
   echo "${CYAN}****************************************************"
   echo "* Building Sherlock... it may take a few minutes...*"
   echo "****************************************************${RESET}"
@@ -29,7 +29,7 @@ function build {
   echo "done!"
 }
 
-function pull {
+pull() {
   echo "${CYAN}*************************************************************"
   echo "* Downloading Sherlock image... it may take a few minutes...*"
   echo "*************************************************************${RESET}"
@@ -66,7 +66,7 @@ echo "----------"
 if [ -d "database" ]; then
     git pull
     pull
-    docker-compose run --rm web python3 manage.py db upgrade
+    d
     echo "done!"
     docker-compose up -d
 else
