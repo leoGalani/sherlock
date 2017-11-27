@@ -168,9 +168,10 @@ input[type=number]:focus {
     display: block;
     margin: 0;
 }
+
 .ct-legend .ct-series-0:before {
-    background-color: #d70206;
-    border-color: #d70206;
+    background-color: green;
+    border-color: green;
 }
 .ct-legend .ct-series-1:before {
     background-color: #f05b4f;
@@ -181,12 +182,23 @@ input[type=number]:focus {
     border-color: #f4c63d;
 }
 .ct-legend .ct-series-3:before {
-    background-color: #d17905;
-    border-color: #d17905;
+    background-color: #807e7d;
+    border-color: #807e7d;
 }
 .ct-legend .ct-series-4:before {
     background-color: #453d3f;
     border-color: #453d3f;
+}
+
+.ct-series-a .ct-bar, .ct-series-a .ct-line, .ct-series-a .ct-point, .ct-series-a .ct-slice-donut {
+  stroke: green !important;
+}
+.ct-series-b .ct-bar, .ct-series-b .ct-line, .ct-series-b .ct-point, .ct-series-b .ct-slice-donut {
+  stroke: #d70206!important;
+}
+
+.ct-series-d .ct-bar, .ct-series-d .ct-line, .ct-series-d .ct-point, .ct-series-d .ct-slice-donut {
+  stroke: #807e7d !important;
 }
 
 .fade-enter-active, .fade-leave-active {

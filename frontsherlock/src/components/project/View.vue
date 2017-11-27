@@ -120,6 +120,7 @@
           </div>
           <hr>
           <div v-if="project.have_cycles">
+            <h3 v-if="this.current_cycle.cycle >= 2">Last 10 cycles stats</h3>
             <div class="ct-chart-line-legendnames" v-if="this.current_cycle.cycle >= 2">
               <div v-if="display_load_chart">
                 <div uk-spinner></div>
@@ -165,6 +166,14 @@ export default {
       loading: false
     }
   },
+  watch: {
+    project: function () {
+      this.mountChartResume()
+    },
+    current_cycle: function () {
+      this.mountChartCurrentCycle()
+    }
+  },
   methods: {
     fetchProject () {
       this.$http.get('project/show/' + this.projectId).then(function (response) {
@@ -196,7 +205,6 @@ export default {
             } else if (response.body.message === 'NO_TEST_SCENARIOS') {
               UIkit.notification('<span uk-icon="icon: ban"></span> Sorry but there is no test case active for the next cycle', {status: 'warning', timeout: '1900'})
             } else {
-              console.log(response.body.message)
               UIkit.notification('<span uk-icon="icon: ban"></span> Please close the current cycle', {timeout: '700'})
             }
           })
@@ -232,16 +240,20 @@ export default {
       })
     },
     mountChartCurrentCycle () {
-      if (this.project.have_cycles) {
-        var citem = this.current_cycle.stats
-        Chartist.Bar('.ct-chart', {
-          labels: ['passed', 'failed', 'blocked', 'not executed'],
-          series: [citem.total_passed, citem.total_error, citem.total_blocked, citem.total_not_executed]
-        }, {
-          distributeSeries: true
-        })
-        this.display_load_chart = false
-      }
+      var vueInstance = this
+      setTimeout(function () {
+        if (vueInstance.project.have_cycles) {
+          var citem = vueInstance.current_cycle.stats
+          Chartist.Bar('.ct-chart', {
+            labels: ['passed', 'failed', 'blocked', 'not executed'],
+            series: [citem.total_passed, citem.total_error, citem.total_blocked, citem.total_not_executed]
+          }, {
+            distributeSeries: true,
+            onlyInteger: true
+          })
+          vueInstance.display_load_chart = false
+        }
+      }, 1000)
     },
     mountChartResume () {
       if (this.project.have_cycles && this.current_cycle.cycle >= 2) {
@@ -254,18 +266,24 @@ export default {
               response.body.cycles_blocked,
               response.body.cycles_not_executed
             ]
-          }, {
-            fullWidth: true,
-            height: '300px',
-            chartPadding: {
-              right: 40
-            },
-            plugins: [
-              Chartist.plugins.legend({
-                legendNames: ['Passed', 'Failed', 'Blocked', 'Not Executed']
-              })
-            ]
-          })
+          },
+            {
+              fullWidth: true,
+              onlyInteger: true,
+              height: '300px',
+              chartPadding: {
+                right: 40
+              },
+              axisY: {
+                onlyInteger: true
+              },
+              plugins: [
+                Chartist.plugins.legend({
+                  legendNames: ['Passed', 'Failed', 'Blocked', 'Not Executed']
+                })
+              ]
+            }
+          )
         })
       }
     }
@@ -276,13 +294,9 @@ export default {
   },
   mounted: function () {
     this.fetchProject(this.projectId)
-    this.mountChartCurrentCycle()
-    this.mountChartResume()
     this.interval = setInterval(function () {
       this.fetchProject(this.projectId)
-      this.mountChartCurrentCycle()
-      this.mountChartResume()
-    }.bind(this), 1000)
+    }.bind(this), 10000)
   },
   beforeDestroy: function () {
     clearInterval(this.interval)
@@ -294,7 +308,7 @@ export default {
 <style scoped>
 
 .uk-button{
-  padding: 1px 13px;
+  padding: 1px 8px;
   margin: 10px;
 }
 .project_avatar{
@@ -315,14 +329,4 @@ export default {
   padding-right: 20px;
 }
 
-.ct-series-a .ct-bar, .ct-series-a .ct-line, .ct-series-a .ct-point, .ct-series-a .ct-slice-donut {
-  stroke: green !important;
-}
-.ct-series-b .ct-bar, .ct-series-b .ct-line, .ct-series-b .ct-point, .ct-series-b .ct-slice-donut {
-  stroke: #d70206!important;
-}
-
-.ct-series-d .ct-bar, .ct-series-d .ct-line, .ct-series-d .ct-point, .ct-series-d .ct-slice-donut {
-  stroke: #807e7d !important;
-}
 </style>
