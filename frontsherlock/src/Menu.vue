@@ -56,6 +56,13 @@
       </ul>
     </div>
   </nav>
+  <center v-if="['login', '404', 'registerg', 'register','dashboard', 'new_project', 'settings', 'user_edit'].indexOf($route.name) === -1">
+    <div class="project_title_line">
+      <span>
+        {{project_name}}
+      </span>
+    </div>
+  </center>
   </div>
 </template>
 
@@ -124,7 +131,29 @@ export default {
   padding: 3px;
   text-transform: none;
   font-weight: 300;
+}
 
+.project_title_line {
+  border-top: 1px solid #dedce6;
+  position: relative;
+  top: 20px;
+  margin-bottom: 30px;
+  width: 85%
+ }
+
+
+.project_title_line span {
+  color: #717171;
+  text-decoration: none;
+  font-size: 13px;
+  text-align: center;
+  padding: 2px 5px;
+  background: #f8f8f8;
+  width: 17%;
+  margin: 0 auto;
+  display: block;
+  position: relative;
+  top: -12px;
 }
 
 </style>

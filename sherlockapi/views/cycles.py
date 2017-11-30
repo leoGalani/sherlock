@@ -19,12 +19,12 @@ cycle = Blueprint('cycle', __name__)
 @cycle.route('/timeline/<int:cycle_limit>', methods=['GET'])
 @cycle.route('/timeline', methods=['GET'])
 @auth.login_required
-def get_cycle_timeline_resume(project_id, cycle_limit=5):
+def get_cycle_timeline_resume(project_id, cycle_limit=7):
     # TODO: Need to find a better way - Did this cz chartist works like that.
 
     project = get_project(project_id)
     project_cycles = Cycle.query.filter_by(
-        project_id=project.id).limit(cycle_limit).all()
+        project_id=project.id).order_by(Cycle.id.desc()).limit(cycle_limit).all()
 
     cycles = []
     cycle_cases_passed = []
@@ -32,10 +32,16 @@ def get_cycle_timeline_resume(project_id, cycle_limit=5):
     cycle_cases_blocked = []
     cycle_cases_not_executed = []
 
-    for item in project_cycles:
+    for item in reversed(project_cycles):
         cycle_cases = CycleCases.query.filter_by(cycle_id=item.id).all()
         stats = count_cycle_stats(cycle_cases)
-        cycles.append('Cycle Number {}'.format(item.cycle))
+        if item.cycle == project_cycles[0].cycle:
+            cycles.append('Current Cycle')
+        else:
+            if item.name == "":
+                cycles.append('Cycle Number {}'.format(item.cycle))
+            else:
+                cycles.append(item.name)
         cycle_cases_passed.append(stats['total_passed'])
         cycle_cases_failed.append(stats['total_error'])
         cycle_cases_blocked.append(stats['total_blocked'])
