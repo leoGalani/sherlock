@@ -9,6 +9,13 @@ h1, h2, h3, h4{
   font-family: 'Ubuntu', sans-serif;
 }
 
+.nav_divider {
+    background-color: orange;
+    width: 1px;
+    height: 30px;
+    margin-top: 21px;
+}
+
 #loading{
   background-color: #000;
   color: #fff;
@@ -215,4 +222,8 @@ input[type=number]:focus {
 
 .uk-input, .uk-button-default, .uk-textarea {
   border-radius: 4px;
+}
+
+.uk-iconnav>*>*{
+  text-align: center;
 }

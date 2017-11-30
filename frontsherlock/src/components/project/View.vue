@@ -6,7 +6,7 @@
      </div>
     <div class="uk-grid">
       <div class="uk-width-3-4">
-        <h2><span class="title_span"> {{project.name}} - Project Dashboard </span></h2>
+        <h2><span class="title_span">Project Dashboard </span></h2>
         <div class="content" style="width: 100%; min-height: 400px;">
           <div class="uk-child-width-1-2@s uk-grid-match" uk-grid>
             <router-link v-if="project.have_scenarios === false" :to="{ path: '/project/view/'+projectId+'/scenario_cases' }">
@@ -324,7 +324,6 @@ export default {
 }
 
 .title_span{
-  border-bottom: 1px solid #e5e5e5;
   margin-left: 12px;
   padding-right: 20px;
 }
