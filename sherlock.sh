@@ -25,38 +25,41 @@ build() {
   echo "${CYAN}****************************************************"
   echo "* Building Sherlock... it may take a few minutes...*"
   echo "****************************************************${RESET}"
-#  docker-compose -f docker-compose_build.yml build
-  echo "done!"
+  docker-compose build
 }
 
 pull() {
   echo "${CYAN}*************************************************************"
   echo "* Downloading Sherlock image... it may take a few minutes...*"
   echo "*************************************************************${RESET}"
-#  docker pull leogalani/sherlockqa
-  echo "done!"
+  docker-compose pull
+}
+
+run() {
+  echo "----------"
+  docker-compose up -d
+  echo "${GREEN}Sherlock is ready to use! Please visit localhost or the ip this machine${RESET}"
 }
 
 
 case "$1" in
+"run")
+run
+;;
 "build-setup")
 build
-echo "--------"
-echo "setting up the database...."
-docker-compose -f docker-compose_build.yml up -d
+run
 ;;
 "fast-setup")
 pull
-docker-compose up -d
-echo "----------"
+run
 ;;
 "build-upgrade")
   if [ -d "database" ]; then
-    git pull
+    git rebase
     build
-    docker-compose -f docker-compose_build.yml run --rm web python3 manage.py db upgrade
-    docker-compose -f docker-compose_build.yml up -d
-    echo "done!"
+    docker-compose run --rm web python3 manage.py db upgrade
+    run
   else
     echo "${RED}There is no database instance! please run again with build-setup or fast-setup${RESET}"
     exit 1
@@ -66,9 +69,7 @@ echo "----------"
 if [ -d "database" ]; then
     git pull
     pull
-    d
-    echo "done!"
-    docker-compose up -d
+    run
 else
   echo "${RED}There is no database instance! please run again with build-setup or fast-setup${RESET}"
   exit 1
@@ -77,7 +78,10 @@ fi
 *)
 echo "${YELLOW} ${BOLD} Welcome to SherlockQA setup bash script! ${RESET}";
 echo "  -------"
+echo "";
 echo "  Please run the script with one of the following arguments:"
+echo "";
+echo "${YELLOW}  run ${RESET} => It will start the sherlock instance at 0.0.0.0 or localhost"
 echo "";
 echo "${YELLOW}  build-setup ${RESET} => If you have enough processing power to build sherlock (dont use it on a small vm)"
 echo "";
