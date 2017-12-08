@@ -249,7 +249,10 @@ export default {
             series: [citem.total_passed, citem.total_error, citem.total_blocked, citem.total_not_executed]
           }, {
             distributeSeries: true,
-            onlyInteger: true
+            onlyInteger: true,
+            axisY: {
+              onlyInteger: true
+            }
           })
           vueInstance.display_load_chart = false
         }
