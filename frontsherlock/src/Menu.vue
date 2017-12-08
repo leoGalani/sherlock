@@ -27,8 +27,13 @@
           </a>
           <div uk-dropdown="delay-hide: 50;">
             <ul class="uk-nav uk-dropdown-nav">
+                <router-link :to="{ path: '/project/view/'+projectId }">Dashboard </router-link>
+                <hr style="width:150px">
                 <router-link :to="{ path: '/project/view/'+projectId+'/scenario_cases' }">Manage Cases and Scenarios </router-link>
                 <hr style="width:150px">
+                <b><router-link v-if="project.last_cycle.state_code === 'active'"
+                :to="{ name: 'project_cycles', params: {projectId: projectId, cycleId: this.current_cycle.id} }">Execute Test Cases</router-link>
+                <hr style="width:150px"> </b>
                 <router-link :to="{ path: '/project/edit/'+projectId }">Edit Project </router-link>
             </ul>
           </div>
@@ -76,7 +81,8 @@ export default {
       projectId: '',
       currentUser: '',
       project: '',
-      project_name: ''
+      project_name: '',
+      current_cycle: ''
     }
   },
   methods: {
@@ -91,6 +97,7 @@ export default {
       this.$http.get('project/show/' + this.projectId).then(function (response) {
         this.project = response.body
         this.project_name = this.project.name
+        this.current_cycle = this.project.last_cycle
       },
       function (response) {
       })
