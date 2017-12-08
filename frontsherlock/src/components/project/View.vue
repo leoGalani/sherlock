@@ -236,6 +236,7 @@ export default {
       this.$http.post('projects/' + this.projectId + '/cycle/close/' + cycleID, {'reason': reason}).then(function (response) {
         if (response.body.message === 'CYCLE_CLOSED') {
           UIkit.notification('<span uk-icon="icon: check"></span> Cycle Closed', {timeout: '700'})
+          this.fetchProject(this.projectId)
         }
       })
     },
