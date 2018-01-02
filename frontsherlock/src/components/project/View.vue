@@ -236,6 +236,7 @@ export default {
       this.$http.post('projects/' + this.projectId + '/cycle/close/' + cycleID, {'reason': reason}).then(function (response) {
         if (response.body.message === 'CYCLE_CLOSED') {
           UIkit.notification('<span uk-icon="icon: check"></span> Cycle Closed', {timeout: '700'})
+          this.fetchProject(this.projectId)
         }
       })
     },
@@ -249,7 +250,10 @@ export default {
             series: [citem.total_passed, citem.total_error, citem.total_blocked, citem.total_not_executed]
           }, {
             distributeSeries: true,
-            onlyInteger: true
+            onlyInteger: true,
+            axisY: {
+              onlyInteger: true
+            }
           })
           vueInstance.display_load_chart = false
         }
