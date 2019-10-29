@@ -20,7 +20,7 @@ pytz==2018.4
 six==1.11.0
 SQLAlchemy==1.2.7
 Unidecode==1.0.22
-Werkzeug==0.14.1
+Werkzeug==0.15.3
 Flask-HTTPAuth==3.2.3
 Flask-Cors==3.0.4
 PyYAML==3.12
