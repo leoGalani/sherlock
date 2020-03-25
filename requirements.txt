@@ -23,7 +23,7 @@ Unidecode==1.0.22
 Werkzeug==0.15.3
 Flask-HTTPAuth==3.2.3
 Flask-Cors==3.0.4
-PyYAML==3.12
+PyYAML==5.1
 PyMySQL==0.8
 marshmallow-enum==1.4.1
 gunicorn==19.8.1
