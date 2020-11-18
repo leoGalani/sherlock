@@ -1,3 +1,8 @@
+## This reap is Deprecated - Sherlock will be rebuild and release early 2021 over @agiletesters org
+### Once the v2 is release, all the code base from v1 will be deleted.
+
+### v2 will not be fully compatible with v1 - use at your own risk.
+
 ![alt tag](https://raw.githubusercontent.com/leoGalani/sherlock/master/frontsherlock/src/assets/img/sherlock.png)
 
 # Sherlock QA
